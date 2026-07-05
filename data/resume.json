@@ -1,5 +1,5 @@
 {
-  "_comment": "Critical Returns — 简历内容数据文件。修改此文件即可更新简历内容，无需改动 HTML/CSS。",
+  "_comment": "简历内容数据文件。修改此文件即可更新简历内容，无需改动 HTML/CSS。",
 
   "meta": {
     "name": "刘文俊",
@@ -16,7 +16,7 @@
     "currentStatus": "在职",
     "jobSearchStatus": "开放求职 · 欢迎来聊",
     "version": "v1.0 · 2026",
-    "pageTitle": "刘文俊 · 消金商业分析师 — Critical Returns",
+    "pageTitle": "刘文俊 · 消金商业分析师",
     "metaDescription": "4年消金运营经验，深度操盘 1400 亿生息资产与 300 万 DAU 大盘。精通 SQL 与 Python 建模，擅长差异化定价与风险控制。"
   },
 

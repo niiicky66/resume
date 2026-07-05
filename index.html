@@ -1448,7 +1448,7 @@ html[data-fs="l"] { font-size: 18px; }
   const exps = R.experience;
   // Compute meta — 用显式的 e.type 字段区分学历，而不是猜 role 文案里有没有
   // "B.B.A" 子串；文案改了/换语言，这里也不会跟着悄悄算错。
-  const jobs = exps.filter(e => e.type !== 'education');
+  const jobs = exps.filter(e => e.type !== 'education' && e.type !== 'internship');
   const companies = jobs.length;
   const years = jobs.reduce((sum, e) => {
     const from = parseInt(e.dateFrom, 10);

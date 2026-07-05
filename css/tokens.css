@@ -1,0 +1,186 @@
+/* ---------- 字体加载 · 必须在所有规则之前（@import 只在样式表顶部合法） ---------- */
+/* 全部本地化，不再依赖任何 Google Fonts CDN：Newsreader / Source Serif 4(+OT) / Inter /
+   Noto Serif SC / Noto Sans SC / Caveat / IBM Plex Mono（含 600 字重）都已下载到 fonts/ 下。 */
+@import url('../fonts/fonts.css');
+
+:root {
+  /* ---------- 色彩 · P1 Faithful · dria 双色印刷 1:1 校准 ---------- */
+  --paper-soft:   #F5F3E2;   /* 最浅 · hover/elevated 表面 */
+  --paper:        #F0EEDA;   /* 主背景 · 暖灰白纸 */
+  --paper-deep:   #E6E2C9;   /* 老化纸 · 分区 */
+  --paper-dust:   #D8D1B3;   /* 灰尘色 */
+
+  --ink:          #191F06;   /* 墨 · 正文 / 深块 (深橄榄近黑) */
+  --ink-primary:  #191F06;   /* 结构主色 = 同墨色 · 分隔线/序号/页脚底 */
+  --ink-deep:     #0F1305;   /* 更深块 */
+  --ink-sage:     #5A5F3F;   /* 中橄榄 muted · 次要文字 */
+  --ink-moss:     #82876A;   /* 浅橄榄 muted */
+
+  --accent-rust:  #D33900;   /* 焰 · 主强调 (斜体强调 / 悬停 / 按钮) */
+  --accent-flame2:#E43E00;   /* 焰亮 · 更亮斜体 */
+  --accent-clay:  #E5754A;   /* 浅焰 · 页脚悬停 */
+  --accent-ochre: #C99A3C;   /* 赭黄 (罕用) */
+  --accent-yellow:#FFFCB0;   /* 黄 · 仅 #191F06 深块上做重对比时刻 */
+
+  /* ---------- 封面 / 禅 · Cover accents (深底首屏 + Ensō logo) ---------- */
+  --cover-bg:    #0A0A0A;    /* 首屏深底 · 近黑 */
+  --cover-ink:   #FFFFFF;    /* 首屏白 · 名字/笔触 */
+  --gold:        #C8A96E;    /* 金 · 禅意暖调强调（封面副标 / 文·点）*/
+  --gold-soft:   #9C8556;    /* 金哑光 */
+
+  --rule:         #C7BE9F;   /* 分隔线 (橄榄染) */
+  --rule-soft:    #DAD2B8;
+  --rule-strong:  #191F06;
+
+  --data-up:      #5C7240;   /* live / 正向 状态点 (克制橄榄绿) */
+  --data-down:    #D33900;   /* 焰 */
+
+  /* ---------- 字体族 · Local + Fallback ---------- */
+  /* @import 已上移到样式表顶部 · 此处只保留 CSS 变量声明 */
+  --font-display: 'Newsreader', 'Noto Serif SC', serif;
+  --font-body:    'Source Serif 4', 'Noto Serif SC', serif;
+  --font-ui:      'Inter', 'PingFang SC', 'Noto Sans SC', sans-serif;
+  --font-mono:    'IBM Plex Mono', 'SF Mono', Menlo, monospace;
+  --font-hand:    'Caveat', 'Noto Serif SC', cursive;
+  /* 数字专用：静态版 Source Serif 4 不含 onum 旧体数字字形，旧体数字必须走这个完整版别名 */
+  --font-num:     'Source Serif 4 OT', 'Source Serif 4', 'Noto Serif SC', serif;
+
+  /* ---------- 字号 · Editorial scale ---------- */
+  --fs-display-xl: clamp(64px, 11vw, 168px);
+  --fs-display-l:  clamp(48px, 7vw, 104px);
+  --fs-display-m:  clamp(36px, 4.5vw, 64px);
+  --fs-h1:         clamp(32px, 3.4vw, 44px);
+  --fs-h2:         clamp(24px, 2.4vw, 32px);
+  --fs-h3:         20px;
+  --fs-body-l:     19px;
+  --fs-body:       16px;
+  --fs-body-s:     14px;
+  --fs-caption:    12px;
+  --fs-eyebrow:    11px;
+
+  /* line-height */
+  --lh-display: 0.98;
+  --lh-tight:   1.12;
+  --lh-snug:    1.32;
+  --lh-body:    1.6;
+  --lh-loose:   1.8;
+
+  /* tracking */
+  --tk-display: -0.025em;
+  --tk-tight:   -0.01em;
+  --tk-normal:  0;
+  --tk-wide:    0.06em;
+  --tk-eyebrow: 0.16em;
+
+  /* ---------- 间距 · 4px 基准 ---------- */
+  --s-1:   4px;
+  --s-2:   8px;
+  --s-3:   12px;
+  --s-4:   16px;
+  --s-5:   24px;
+  --s-6:   32px;
+  --s-8:   48px;
+  --s-10:  64px;
+  --s-12:  80px;
+  --s-16:  128px;
+  --s-20:  160px;
+  --s-24:  200px;
+
+  /* ---------- 圆角 ---------- */
+  --r-0:   0;
+  --r-1:   2px;
+  --r-2:   4px;
+  --r-pill: 999px;
+
+  /* ---------- 动画 ---------- */
+  --dur-fast:  180ms;
+  --dur-base:  320ms;
+  --dur-slow:  600ms;
+  
+  --ease-in:   cubic-bezier(0.55, 0, 1, 0.45);
+  --ease-out:  cubic-bezier(0.0, 0, 0.2, 1);
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  
+  --gutter-x: clamp(24px, 6vw, 120px);
+  --col-gap:  var(--s-5);
+}
+
+/* ============================================================
+   RESET & FOUNDATIONS
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+  font-variant-numeric: tabular-nums;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+}
+body {
+  font-family: var(--font-body);
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  color: var(--ink);
+  background: var(--paper);
+  overflow-x: hidden;
+  transition: background var(--dur-base) var(--ease-out), color var(--dur-base) var(--ease-out);
+}
+.container {
+  width: 100%;
+  max-width: 1380px;
+  margin-inline: auto;
+  padding-inline: var(--gutter-x);
+}
+a { color: inherit; text-decoration: none; }
+
+/* Grid helper */
+.grid-12 {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: var(--col-gap);
+}
+
+/* Chips */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: var(--tk-wide);
+  text-transform: uppercase;
+  padding: 4px 12px;
+  border: 1px solid var(--rule);
+  color: var(--ink-sage);
+  border-radius: var(--r-pill);
+}
+.chip-ink {
+  border-color: var(--ink-primary);
+  color: var(--ink-primary);
+}
+
+/* Typography elements */
+.t-caption {
+  font-family: var(--font-mono);
+  font-size: var(--fs-caption);
+  letter-spacing: var(--tk-wide);
+  text-transform: uppercase;
+}
+
+/* ============================================================
+   REVEAL / TRANSITION ON SCROLL
+   ============================================================ */
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 800ms var(--ease-out), transform 800ms var(--ease-out);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+[data-reveal].is-in {
+  opacity: 1;
+  transform: translateY(0);
+}
+html[data-motion="off"] [data-reveal] {
+  opacity: 1 !important;
+  transform: none !important;
+  transition: none !important;
+}

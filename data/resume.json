@@ -1,0 +1,333 @@
+{
+  "_comment": "Critical Returns — 简历内容数据文件。修改此文件即可更新简历内容，无需改动 HTML/CSS。",
+
+  "meta": {
+    "name": "刘文俊",
+    "nameEn": "Liu Wenjun",
+    "nameDisplay": ["刘", "文俊"],
+    "title": "消金商业分析师",
+    "titleEn": "Consumer Finance Analyst",
+    "city": "深圳",
+    "cityEn": "Shenzhen",
+    "email": "2510520691@qq.com",
+    "phone": "+86 136 8950 7461",
+    "phoneTel": "13689507461",
+    "currentCompany": "乐信",
+    "currentStatus": "在职",
+    "jobSearchStatus": "开放求职 · 欢迎来聊",
+    "version": "v1.0 · 2026",
+    "pageTitle": "刘文俊 · 消金商业分析师 — Critical Returns",
+    "metaDescription": "4年消金运营经验，深度操盘 1400 亿生息资产与 300 万 DAU 大盘。精通 SQL 与 Python 建模，擅长差异化定价与风险控制。"
+  },
+
+  "hero": {
+    "eyebrow": "消金商业分析师 · CONSUMER FINANCE ANALYST",
+    "locationYear": "深圳 · 2026",
+    "headline": "数据驱动<em>增长</em>，<br>经营效益<sage>最优解</sage>",
+    "description": "刘文俊 · <num>4</num> 年消金运营，深度操盘 <em><num>1400</num> 亿</em>生息资产与 <em><num>300</num> 万</em> DAU 大盘，以<em>精细化运营</em>与风险控制驱动规模与收益同步增长。",
+    "ctaText": "查看履历",
+    "ctaHref": "#experience",
+    "stats": [
+      { "value": "1400", "unit": "亿", "caption": "生息资产 · ASSET UNDER PLAY" },
+      { "value": "300", "unit": "万", "caption": "大盘日活 · DAU" }
+    ],
+    "brandLine": "一份会<em>呼吸</em>的简历语言",
+    "sideFooter": "LIU WENJUN · 深圳"
+  },
+
+  "about": {
+    "sectionMeta": "深圳大学 · 工商管理 · 2022",
+    "lead": "<num>4</num> 年消金运营，深度操盘 <em><num>1100</num> 亿</em>资产。横跨<em>行业小微</em>与<em>稳定工薪</em>全客群经营，精通 <sage><num>3% - 24%</num></sage> 客群差异化定价与产品设计，擅长以数据驱动规模与收益<sage>同步增长</sage>。",
+    "notebook": "在乐信与招联的实战中，构建了从精细化客群分层、智能定价到资产组合管理的全链路数据驱动方法论。始终追求风险可控前提下的<em>业务增长最优解</em>。",
+    "stats": [
+      { "value": "1400", "unit": "亿",     "label": "生息资产规模 / Asset" },
+      { "value": "300",  "unit": "万", "label": "大盘日活 / Customer" },
+      { "value": "4",    "unit": "年",     "label": "实战经验 / Years" },
+      { "value": "8",    "unit": "个",     "label": "代表性项目 / Cases" }
+    ]
+  },
+
+  "pullQuote": "数据，是最好的<em>业务语言</em>。",
+
+  "experience": [
+    {
+      "company": "乐信",
+      "companyEn": "Lexin",
+      "role": "消金商业分析师 / Consumer Finance Analyst",
+      "description": "主导老客 <em><num>800 亿</num></em>余额规模生息资产的策略设计，覆盖客群分层经营、差异化定价、资产组合再平衡与产品创新；以数据决策驱动规模与收益同步增长。",
+      "bullets": [
+        "统筹全链路交易转化优化与组合管理日常运营",
+        "主导客群经营分层体系重构与自证增信策略上线",
+        "负责乐周转的全链路定价与风险联动"
+      ],
+      "dateFrom": "2025",
+      "dateTo": "现在",
+      "isCurrent": true
+    },
+    {
+      "company": "招联",
+      "companyEm": "消费金融",
+      "role": "用户运营策略 / Customer Strategy",
+      "description": "负责高优客群的 LTV 经营及沉默客户召回，搭建交互式营销体系并完成跨平台份额竞争策略；主张以 Uplift Model 与渐进式利率回调撬动长期价值。",
+      "bullets": [
+        "建立 RFM × LTV 双轴的高优客群识别模型",
+        "主导沉睡客群的 Uplift 召回与定价回调实验",
+        "主导小微短周转产品上线及全链经营",
+        "会员体系商业化设计与上线运营"
+      ],
+      "dateFrom": "2022",
+      "dateTo": "2025",
+      "isCurrent": false
+    },
+    {
+      "company": "深圳大学",
+      "companyEn": "SZU",
+      "type": "education",
+      "role": "工商管理学士 / B.B.A.",
+      "description": "工商管理本科。在校期间专注于数据分析与商业建模训练，修读 商业数据挖掘 / 运筹学 / 计量经济学 / 概率论及数理统计相关课程，CET-6 通过。",
+      "bullets": [],
+      "dateFrom": "2018",
+      "dateTo": "2022",
+      "isCurrent": false
+    }
+  ],
+
+  "projects": [
+    {
+      "id": "P1",
+      "year": "2025",
+      "title": ["客群", { "em": "经营分层" }, "体系重构"],
+      "summary": "基于 响应 × 竞争双因子预测，将经营客群重新分级为 4 层差异化经营客群，让 *每一层* 都对应一套独立的定价、额度与触达策略。",
+      "whatLbl": "我做了什么",
+      "what": [
+        "归并 60+ 客群标签及内外部数源，重构为 4 层主诉求驱动的层级，重构经营体系",
+        "搭建 响应 / 流失 / 价敏 / 价值多模型框架，做层级流转预测",
+        "辅助客群升迁，监控下迁客群异动，分梯度召回，把握精准营销时点",
+        "与风控团队共建分层 → 策略映射规则"
+      ],
+      "howLbl": "工具 / 方法",
+      "how": ["SQL · Presto", "Python · LightGBM", "A/B 测试", "Response Model", "Uplift Model"],
+      "impactValue": "+25",
+      "impactUnit": "%",
+      "impactLabel": "单客利润产出",
+      "tags": ["乐信", "客群", "建模"]
+    },
+    {
+      "id": "P2",
+      "year": "2025",
+      "title": ["自证", { "em": "增信" }, "体系"],
+      "summary": "为风险被高估的潜在用户开放 *自证通道* — 通过主动提交辅助材料，进入二阶段评级，撬动活跃与规模的同时不让坏账水位失控。",
+      "whatLbl": "我做了什么",
+      "what": [
+        "针对客群分层设计营销策略，并嵌入各场景 / 流程，提供全链举证方案",
+        "串联机审和人审链路，优化通过率",
+        "上线全链路实验：提交、坏账、收益三轴监控"
+      ],
+      "howLbl": "工具 / 方法",
+      "how": ["决策树", "实时表单解析", "风险策略", "A/B"],
+      "impactValue": "+8",
+      "impactUnit": "%",
+      "impactLabel": "放款规模",
+      "tags": ["乐信", "风控", "产品"]
+    },
+    {
+      "id": "P3",
+      "year": "2025",
+      "title": ["久期", { "em": "组合" }, "管理"],
+      "summary": "把整盘 *<num>800 亿</num>* 余额视为一个组合 — 在风险、收益、久期三维做再平衡，让不同期限产品的资金配比随资方供给自适应，提升成交撮合效率。",
+      "whatLbl": "我做了什么",
+      "what": [
+        "建立资产组合三维监控看板（风险 / 收益 / 久期）",
+        "设计跨产品的资金调拨规则",
+        "协同资金商务调配资产久期组合配比"
+      ],
+      "howLbl": "工具 / 方法",
+      "how": ["SQL", "组合优化", "Python · scipy", "资金成本建模"],
+      "impactValue": "+0.6",
+      "impactUnit": "pp",
+      "impactLabel": "组合 IRR 优化",
+      "tags": ["乐信", "组合", "定价"]
+    },
+    {
+      "id": "P4",
+      "year": "2025",
+      "title": ["乐周转", { "em": "产品" }],
+      "summary": "从 0 到 1 设计的短周期资金周转产品。关键是把 *定价矩阵* 与 *期次推荐* 做成一套闭环，让用户每一次申请都对应当下最优的风险-收益组合。",
+      "whatLbl": "我做了什么",
+      "what": [
+        "设计期次 × 风险层 的二维定价矩阵",
+        "搭建智能期次推荐引擎",
+        "上线后操盘日常运营与策略迭代"
+      ],
+      "howLbl": "工具 / 方法",
+      "how": ["定价矩阵", "智能推荐", "资金成本建模", "Python"],
+      "impactValue": "100+",
+      "impactUnit": "亿/月",
+      "impactLabel": "单产品月规模",
+      "tags": ["乐信", "产品创新"]
+    },
+    {
+      "id": "P5",
+      "year": "2024",
+      "title": ["全链路", { "em": "交易转化" }, "优化"],
+      "summary": "把整条交易链路当成一个 *漏斗系统*。每一个断点都用埋点 + 漏斗分析定位，每一个节点都用 A/B 验证。",
+      "whatLbl": "我做了什么",
+      "what": [
+        "搭建全链路埋点体系与漏斗看板",
+        "主导 30+ 节点级 A/B 测试",
+        "CTR / CVR 双引擎调优"
+      ],
+      "howLbl": "工具 / 方法",
+      "how": ["SQL", "漏斗分析", "A/B 测试矩阵", "CTR 预估"],
+      "impactValue": "+8",
+      "impactUnit": "%",
+      "impactLabel": "整体转化率",
+      "tags": ["招联", "产品运营"]
+    },
+    {
+      "id": "P6",
+      "year": "2024",
+      "title": ["短周转", { "em": "产品" }, "创新"],
+      "summary": "面对资金周转高频用户的 *跨期产品矩阵* — 用资金成本与定价联动做产品差异化，让不同期限对应不同风险偏好的客群。",
+      "whatLbl": "我做了什么",
+      "what": [
+        "设计 3 款不同期限的短周转产品",
+        "建立产品间客群分流机制",
+        "资金成本 × 定价 × 风险联动建模"
+      ],
+      "howLbl": "工具 / 方法",
+      "how": ["产品定价模型", "客群分流", "联动建模"],
+      "impactValue": "+18",
+      "impactUnit": "%",
+      "impactLabel": "短周转人均贡献",
+      "tags": ["招联", "产品创新"]
+    },
+    {
+      "id": "P7",
+      "year": "2023",
+      "title": ["高优客群", { "em": "LTV" }, "与会员商业化"],
+      "summary": "把高价值用户单独拎出来做 *长效经营* — 搭建一套会员体系，让头部客群在 12 个月窗口里产生持续贡献。",
+      "whatLbl": "我做了什么",
+      "what": [
+        "RFM × LTV 双轴识别高优客群",
+        "会员体系等级 / 权益 / 商业化设计",
+        "长效经营策略上线与 LTV 跟踪"
+      ],
+      "howLbl": "工具 / 方法",
+      "how": ["RFM", "LTV 预测", "会员等级建模"],
+      "impactValue": "+18",
+      "impactUnit": "%",
+      "impactLabel": "高优客群 12 月 LTV",
+      "tags": ["招联", "会员", "商业化"]
+    },
+    {
+      "id": "P8",
+      "year": "2023",
+      "title": ["沉睡高优客群", { "em": "召回" }],
+      "summary": "高优但已经沉睡的客群是 *最被低估的金矿*。用 Uplift Model 定位\"能被召回的人\"，再用渐进式利率回调撬动他们。",
+      "whatLbl": "我做了什么",
+      "what": [
+        "Uplift Model 识别召回敏感客群",
+        "设计渐进式利率回调实验",
+        "建立沉睡 → 召回 → 再激活的转化路径"
+      ],
+      "howLbl": "工具 / 方法",
+      "how": ["Uplift Model", "利率梯度实验", "触达路径设计"],
+      "impactValue": "+35",
+      "impactUnit": "%",
+      "impactLabel": "沉睡客群召回率",
+      "tags": ["招联", "Uplift", "增长"]
+    }
+  ],
+
+  "skills": [
+    {
+      "index": "01",
+      "category": "数据",
+      "categoryEm": "分析",
+      "items": [
+        { "name": "SQL (Presto / SPark)",       "level": "EXPERT" },
+        { "name": "Excel",                      "level": "EXPERT" },
+        { "name": "Python / R / SPSS",          "level": "PROFICIENT" },
+        { "name": "A/B 实验设计",                "level": "EXPERT" },
+        { "name": "Uplift / Response Model",    "level": "PROFICIENT" }
+      ]
+    },
+    {
+      "index": "02",
+      "category": "产品",
+      "categoryEm": "运营",
+      "items": [
+        { "name": "交易链路优化",   "level": "EXPERT" },
+        { "name": "断点漏斗分析",   "level": "EXPERT" },
+        { "name": "用户分层管理",   "level": "PROFICIENT" },
+        { "name": "RFM 模型",       "level": "EXPERT" },
+        { "name": "CTR 预估调优",   "level": "PROFICIENT" }
+      ]
+    },
+    {
+      "index": "03",
+      "category": "增长",
+      "categoryEm": "策略",
+      "items": [
+        { "name": "沉睡客群召回",   "level": "EXPERT" },
+        { "name": "跨平台份额抢夺", "level": "PROFICIENT" },
+        { "name": "渐进式利率抬升", "level": "EXPERT" },
+        { "name": "裂变增长打法",   "level": "PROFICIENT" },
+        { "name": "行业客群渗透",   "level": "PROFICIENT" }
+      ]
+    },
+    {
+      "index": "04",
+      "category": "风控",
+      "categoryEm": "策略",
+      "items": [
+        { "name": "风险定价矩阵", "level": "EXPERT" },
+        { "name": "智能期次推荐", "level": "PROFICIENT" },
+        { "name": "久期压降策略", "level": "PROFICIENT" },
+        { "name": "人机协同审批", "level": "FAMILIAR" },
+        { "name": "共债水位监控", "level": "PROFICIENT" }
+      ]
+    },
+    {
+      "index": "05",
+      "category": "商业化",
+      "categoryEm": "运营",
+      "items": [
+        { "name": "会员商业化",     "level": "EXPERT" },
+        { "name": "拒量回捞",       "level": "EXPERT" },
+        { "name": "中收产品设计",   "level": "PROFICIENT" },
+        { "name": "LTV 提升策略",   "level": "EXPERT" },
+        { "name": "复购提升策略",   "level": "EXPERT" }
+      ]
+    },
+    {
+      "index": "06",
+      "category": "语言",
+      "categoryEm": "能力",
+      "items": [
+        { "name": "普通话", "level": "NATIVE" },
+        { "name": "粤语",   "level": "NATIVE" },
+        { "name": "英语",   "level": "CET-6" }
+      ]
+    }
+  ],
+
+  "contact": {
+    "lead": "开放 <em>商业分析</em> 与 <em>消金运营</em> 方向求职，<br>欢迎来聊！",
+    "items": [
+      { "key": "EMAIL",    "value": "2510520691@qq.com",        "href": "mailto:2510520691@qq.com" },
+      { "key": "PHONE",    "value": "+86 136 8950 7461",        "href": "tel:13689507461" },
+      { "key": "LOCATION", "value": "深圳 · Shenzhen",          "href": null },
+      { "key": "STATUS",   "value": "开放求职 · 欢迎来聊",       "href": null, "isLive": true }
+    ]
+  },
+
+  "footer": {
+    "signature": "It's nothing <em>new</em>,<br>but it's something <em>different</em>.",
+    "copyright": "© 2026 刘文俊 · LIU WENJUN",
+    "tagline": "消金商业分析师 / CFA",
+    "location": "SHENZHEN · CHINA",
+    "watermark": "刘."
+  }
+}

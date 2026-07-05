@@ -1,0 +1,1164 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>设计系统 · Critical Returns</title>
+<link rel="stylesheet" href="../css/tokens.css">
+<style>
+  /* ----- 页面级布局 ----- */
+  .ds-nav {
+    position: sticky;
+    top: 0;
+    background: var(--paper);
+    border-bottom: 1px solid var(--ink-primary);
+    z-index: 100;
+    backdrop-filter: blur(8px);
+  }
+  .ds-nav-inner {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    padding-block: 18px;
+    gap: var(--s-5);
+  }
+  .ds-nav-brand {
+    font-family: var(--font-display);
+    font-size: 22px;
+    color: var(--ink-primary);
+    letter-spacing: var(--tk-tight);
+  }
+  .ds-nav-brand em { color: var(--accent-rust); font-style: italic; }
+  .ds-nav-links {
+    display: flex;
+    gap: var(--s-5);
+    flex-wrap: wrap;
+  }
+  .ds-nav-links a {
+    font-family: var(--font-mono);
+    font-size: var(--fs-eyebrow);
+    letter-spacing: var(--tk-eyebrow);
+    text-transform: uppercase;
+    color: var(--ink-sage);
+    transition: color var(--dur-fast);
+  }
+  .ds-nav-links a:hover { color: var(--accent-rust); }
+
+  /* hero */
+  .ds-hero {
+    padding-block: var(--s-16) var(--s-12);
+    border-bottom: 1px solid var(--rule);
+  }
+  .ds-hero-eye {
+    font-family: var(--font-mono);
+    font-size: var(--fs-caption);
+    letter-spacing: var(--tk-eyebrow);
+    text-transform: uppercase;
+    color: var(--ink-sage);
+    margin-bottom: var(--s-5);
+  }
+  .ds-hero h1 {
+    font-family: var(--font-display);
+    font-size: var(--fs-display-l);
+    line-height: var(--lh-display);
+    letter-spacing: var(--tk-display);
+    color: var(--ink);
+    text-wrap: balance;
+    max-width: 18ch;
+    margin-bottom: var(--s-6);
+  }
+  .ds-hero h1 em { color: var(--accent-rust); font-style: italic; }
+  .ds-hero-sub {
+    font-size: var(--fs-body-l);
+    color: var(--ink-sage);
+    max-width: 56ch;
+    line-height: var(--lh-body);
+  }
+
+  /* section */
+  .ds-section {
+    padding-block: var(--s-12) var(--s-10);
+  }
+  .ds-sec-head {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: var(--s-5);
+    align-items: baseline;
+    padding-block: var(--s-4);
+    border-top: 1px solid var(--ink-primary);
+    margin-bottom: var(--s-8);
+  }
+  .ds-sec-idx {
+    font-family: var(--font-mono);
+    font-size: var(--fs-caption);
+    letter-spacing: var(--tk-eyebrow);
+    color: var(--ink-primary);
+    text-transform: uppercase;
+    min-width: 36px;
+  }
+  .ds-sec-title {
+    font-family: var(--font-display);
+    font-size: var(--fs-h1);
+    line-height: var(--lh-tight);
+    letter-spacing: var(--tk-tight);
+    color: var(--ink);
+  }
+  .ds-sec-title em { font-style: italic; color: var(--accent-rust); }
+  .ds-sec-meta {
+    font-family: var(--font-mono);
+    font-size: var(--fs-caption);
+    color: var(--ink-moss);
+    letter-spacing: var(--tk-wide);
+  }
+
+  .ds-sub-title {
+    font-family: var(--font-mono);
+    font-size: var(--fs-eyebrow);
+    letter-spacing: var(--tk-eyebrow);
+    text-transform: uppercase;
+    color: var(--ink-sage);
+    padding-bottom: var(--s-3);
+    margin-bottom: var(--s-5);
+    border-bottom: 1px dashed var(--rule);
+  }
+
+  /* color swatches */
+  .swatch-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 1px;
+    background: var(--rule);
+    border: 1px solid var(--rule);
+  }
+  .swatch {
+    background: var(--paper);
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    aspect-ratio: 4/5;
+  }
+  .swatch-color {
+    flex: 1;
+    border-bottom: 1px solid var(--rule);
+  }
+  .swatch-meta {
+    padding: 14px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .swatch-name {
+    font-family: var(--font-body);
+    font-weight: 500;
+    font-size: var(--fs-body-s);
+    color: var(--ink);
+  }
+  .swatch-hex {
+    font-family: var(--font-mono);
+    font-size: var(--fs-caption);
+    color: var(--ink-moss);
+    letter-spacing: var(--tk-wide);
+  }
+  .swatch-token {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--ink-sage);
+    margin-top: 2px;
+    letter-spacing: var(--tk-normal);
+  }
+
+  /* color group label */
+  .color-group {
+    margin-bottom: var(--s-8);
+  }
+
+  /* typography rows */
+  .type-row {
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    gap: var(--s-6);
+    padding-block: var(--s-5);
+    border-bottom: 1px solid var(--rule);
+    align-items: baseline;
+  }
+  .type-row:last-child { border-bottom: 0; }
+  .type-meta {
+    font-family: var(--font-mono);
+    font-size: var(--fs-caption);
+    color: var(--ink-sage);
+    letter-spacing: var(--tk-wide);
+    line-height: 1.6;
+  }
+  .type-meta strong {
+    display: block;
+    font-family: var(--font-body);
+    font-weight: 500;
+    color: var(--ink);
+    text-transform: none;
+    letter-spacing: 0;
+    font-size: var(--fs-body-s);
+    margin-bottom: 4px;
+  }
+  .type-sample { color: var(--ink); }
+
+  /* spacing scale */
+  .spacing-row {
+    display: grid;
+    grid-template-columns: 100px 100px 1fr;
+    gap: var(--s-5);
+    padding-block: var(--s-3);
+    border-bottom: 1px dashed var(--rule);
+    align-items: center;
+  }
+  .spacing-row:last-child { border-bottom: 0; }
+  .spacing-token {
+    font-family: var(--font-mono);
+    font-size: var(--fs-body-s);
+    color: var(--ink);
+  }
+  .spacing-px {
+    font-family: var(--font-mono);
+    font-size: var(--fs-caption);
+    color: var(--ink-moss);
+    letter-spacing: var(--tk-wide);
+  }
+  .spacing-bar {
+    height: 8px;
+    background: var(--ink-primary);
+  }
+
+  /* radius / shadow */
+  .radius-grid, .shadow-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: var(--s-5);
+  }
+  .radius-tile {
+    aspect-ratio: 1;
+    background: var(--paper-soft);
+    border: 1px solid var(--ink-primary);
+    display: flex;
+    align-items: flex-end;
+    padding: 14px;
+    font-family: var(--font-mono);
+    font-size: var(--fs-caption);
+    color: var(--ink-sage);
+    letter-spacing: var(--tk-wide);
+  }
+  .shadow-tile {
+    aspect-ratio: 1;
+    background: var(--paper-soft);
+    display: flex;
+    align-items: flex-end;
+    padding: 14px;
+    font-family: var(--font-mono);
+    font-size: var(--fs-caption);
+    color: var(--ink-sage);
+    letter-spacing: var(--tk-wide);
+  }
+
+  /* components showcase */
+  .comp-block {
+    margin-bottom: var(--s-10);
+  }
+  .comp-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: var(--s-4);
+    gap: var(--s-4);
+    flex-wrap: wrap;
+  }
+  .comp-head h3 {
+    font-family: var(--font-display);
+    font-size: var(--fs-h2);
+    color: var(--ink);
+    font-weight: 400;
+  }
+  .comp-head h3 em { font-style: italic; color: var(--accent-rust); }
+  .comp-head .comp-id {
+    font-family: var(--font-mono);
+    font-size: var(--fs-caption);
+    color: var(--ink-moss);
+    letter-spacing: var(--tk-wide);
+  }
+  .comp-frame {
+    background: var(--paper-soft);
+    border: 1px dashed var(--rule);
+    padding: var(--s-8);
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-4);
+    align-items: center;
+    min-height: 140px;
+    position: relative;
+  }
+  .comp-frame.col { flex-direction: column; align-items: stretch; }
+  .comp-frame.dark {
+    background: var(--ink-primary);
+    border-color: var(--ink-sage);
+    color: var(--paper);
+  }
+  .comp-desc {
+    font-size: var(--fs-body-s);
+    color: var(--ink-sage);
+    margin-bottom: var(--s-4);
+    max-width: 64ch;
+    line-height: var(--lh-body);
+  }
+
+  /* motion demo */
+  .motion-demo {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: var(--s-5);
+    padding-block: var(--s-4);
+    border-bottom: 1px dashed var(--rule);
+    align-items: center;
+  }
+  .motion-token {
+    font-family: var(--font-mono);
+    font-size: var(--fs-body-s);
+    color: var(--ink);
+  }
+  .motion-bar {
+    height: 4px;
+    background: var(--rule-soft);
+    position: relative;
+    overflow: hidden;
+  }
+  .motion-dot {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--ink-primary);
+    position: absolute;
+    top: -6px;
+    left: 0;
+    animation: motion-loop 2400ms infinite;
+  }
+  .motion-demo[data-ease="out"] .motion-dot { animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1); }
+  .motion-demo[data-ease="in-out"] .motion-dot { animation-timing-function: cubic-bezier(0.65, 0, 0.35, 1); }
+  .motion-demo[data-ease="spring"] .motion-dot { animation-timing-function: cubic-bezier(0.34, 1.56, 0.64, 1); }
+  .motion-demo[data-ease="linear"] .motion-dot { animation-timing-function: linear; }
+  @keyframes motion-loop {
+    0%   { left: 0; }
+    45%  { left: calc(100% - 16px); }
+    55%  { left: calc(100% - 16px); }
+    100% { left: 0; }
+  }
+
+  /* layout grid demo */
+  .grid-demo {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: var(--col-gap);
+    background: var(--paper-deep);
+    padding: var(--s-3);
+  }
+  .grid-demo > div {
+    background: var(--ink-primary);
+    color: var(--paper);
+    padding: var(--s-3) var(--s-2);
+    font-family: var(--font-mono);
+    font-size: var(--fs-caption);
+    letter-spacing: var(--tk-wide);
+    text-align: center;
+  }
+
+  /* example project card demo */
+  .demo-proj-card {
+    border-top: 1px solid var(--ink-primary);
+    padding: var(--s-5) 0;
+    display: grid;
+    grid-template-columns: 64px 1fr auto;
+    gap: var(--s-5);
+    align-items: baseline;
+    cursor: pointer;
+    transition: background var(--dur-fast);
+  }
+  .demo-proj-card:hover { background: var(--paper-soft); padding-inline: var(--s-3); margin-inline: calc(var(--s-3) * -1); }
+  .demo-proj-card .year {
+    font-family: var(--font-mono);
+    font-size: var(--fs-caption);
+    color: var(--ink-sage);
+    letter-spacing: var(--tk-wide);
+  }
+  .demo-proj-card .title {
+    font-family: var(--font-display);
+    font-size: var(--fs-h2);
+    line-height: var(--lh-snug);
+    color: var(--ink);
+  }
+  .demo-proj-card .title em { font-style: italic; color: var(--accent-rust); }
+  .demo-proj-card .arrow {
+    font-family: var(--font-mono);
+    color: var(--ink-sage);
+    font-size: 20px;
+    transition: transform var(--dur-fast) var(--ease-out);
+  }
+  .demo-proj-card:hover .arrow { transform: translate(2px, -2px); color: var(--accent-rust); }
+
+  /* skill matrix demo */
+  .demo-skills {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    border-top: 1px solid var(--ink-primary);
+    border-left: 1px solid var(--rule);
+  }
+  .demo-skill-cell {
+    padding: var(--s-5) var(--s-4);
+    border-right: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+    background: var(--paper);
+  }
+  .demo-skill-cell h4 {
+    font-family: var(--font-display);
+    font-size: 22px;
+    font-weight: 400;
+    color: var(--ink-primary);
+    margin-bottom: 6px;
+  }
+  .demo-skill-cell h4 em { font-style: italic; color: var(--accent-rust); }
+  .demo-skill-cell .num {
+    font-family: var(--font-mono);
+    font-size: var(--fs-caption);
+    color: var(--ink-sage);
+    letter-spacing: var(--tk-wide);
+    margin-bottom: var(--s-4);
+  }
+  .demo-skill-cell ul {
+    list-style: none;
+    font-size: var(--fs-body-s);
+    color: var(--ink);
+    line-height: 1.8;
+  }
+  .demo-skill-cell ul li {
+    border-bottom: 1px dotted var(--rule);
+    padding-block: 2px;
+  }
+  .demo-skill-cell ul li:last-child { border-bottom: 0; }
+
+  /* footer */
+  .ds-foot {
+    padding-block: var(--s-10) var(--s-8);
+    border-top: 1px solid var(--ink-primary);
+    margin-top: var(--s-12);
+  }
+  .ds-foot-row {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--s-5);
+    flex-wrap: wrap;
+    align-items: baseline;
+  }
+  .ds-foot-sig {
+    font-family: var(--font-display);
+    font-size: var(--fs-display-m);
+    color: var(--ink);
+    letter-spacing: var(--tk-display);
+  }
+  .ds-foot-sig em { font-style: italic; color: var(--accent-rust); }
+  .ds-foot-meta {
+    font-family: var(--font-mono);
+    font-size: var(--fs-caption);
+    color: var(--ink-moss);
+    letter-spacing: var(--tk-wide);
+  }
+
+  /* small */
+  @media (max-width: 760px) {
+    .type-row { grid-template-columns: 1fr; gap: var(--s-2); }
+    .ds-sec-head { grid-template-columns: auto 1fr; }
+    .ds-sec-meta { grid-column: 1 / -1; }
+    .demo-proj-card { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+     NAV
+     ============================================================ -->
+<nav class="ds-nav">
+  <div class="container ds-nav-inner">
+    <a class="ds-nav-brand" href="../index.html">Critical <em>Returns</em><span style="font-family:var(--font-mono);font-size:11px;color:var(--ink-moss);margin-left:14px;letter-spacing:var(--tk-eyebrow);">DS v1.0</span></a>
+    <div class="ds-nav-links">
+      <a href="#colors">01 Colors</a>
+      <a href="#type">02 Type</a>
+      <a href="#spacing">03 Spacing</a>
+      <a href="#motion">04 Motion</a>
+      <a href="#layout">05 Layout</a>
+      <a href="#components">06 Components</a>
+      <a href="../index.html">→ Resume</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ============================================================
+     HERO
+     ============================================================ -->
+<header class="ds-hero">
+  <div class="container">
+    <div class="ds-hero-eye">设计系统 / DESIGN SYSTEM · v1.0 · 2026</div>
+    <h1>解构 dria. 重塑为<br>一份会<em>呼吸</em>的简历语言。</h1>
+    <p class="ds-hero-sub">
+      继承 dria.com 的编辑刊物气质 — 大留白、衬线斜体强调、01/02 序号分节、底色奶油纸 —
+      忠实校准为 dria 的双色印刷地基 — 暖灰白纸 #F0EEDA、深橄榄墨 #191F06、焰橙 #D33900 作情感强调，
+      亮黄 #FFFCB0 仅在深块上做重对比时刻，构成一套可用于个人简历、作品集、
+      投资笔记类长文的轻量设计系统。
+    </p>
+  </div>
+</header>
+
+<!-- ============================================================
+     01 COLORS
+     ============================================================ -->
+<section class="ds-section" id="colors">
+  <div class="container">
+    <div class="ds-sec-head">
+      <span class="ds-sec-idx">01</span>
+      <h2 class="ds-sec-title">色彩体系 <em>Colors</em></h2>
+      <span class="ds-sec-meta">P1 Faithful · 16 tokens · 4 groups</span>
+    </div>
+
+    <div class="color-group">
+      <div class="ds-sub-title">Paper · 纸面 / 表面</div>
+      <div class="swatch-grid">
+        <div class="swatch"><div class="swatch-color" style="background:var(--paper-soft)"></div><div class="swatch-meta"><span class="swatch-name">Paper Soft</span><span class="swatch-hex">#F5F3E2</span><span class="swatch-token">--paper-soft</span></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:var(--paper)"></div><div class="swatch-meta"><span class="swatch-name">Paper</span><span class="swatch-hex">#F0EEDA</span><span class="swatch-token">--paper · 默认背景</span></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:var(--paper-deep)"></div><div class="swatch-meta"><span class="swatch-name">Paper Deep</span><span class="swatch-hex">#E6E2C9</span><span class="swatch-token">--paper-deep</span></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:var(--paper-dust)"></div><div class="swatch-meta"><span class="swatch-name">Paper Dust</span><span class="swatch-hex">#D8D1B3</span><span class="swatch-token">--paper-dust</span></div></div>
+      </div>
+    </div>
+
+    <div class="color-group">
+      <div class="ds-sub-title">Ink · 墨色 / 主色 (Brand)</div>
+      <div class="swatch-grid">
+        <div class="swatch"><div class="swatch-color" style="background:var(--ink-deep)"></div><div class="swatch-meta"><span class="swatch-name" style="color:var(--paper)">Ink Deep</span><span class="swatch-hex">#0F1305</span><span class="swatch-token">--ink-deep</span></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:var(--ink-primary)"></div><div class="swatch-meta"><span class="swatch-name">Ink Primary ★</span><span class="swatch-hex">#191F06</span><span class="swatch-token">--ink-primary · 墨 / 深块</span></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:var(--ink)"></div><div class="swatch-meta"><span class="swatch-name">Ink</span><span class="swatch-hex">#191F06</span><span class="swatch-token">--ink · 正文</span></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:var(--ink-sage)"></div><div class="swatch-meta"><span class="swatch-name">Ink Sage</span><span class="swatch-hex">#5A5F3F</span><span class="swatch-token">--ink-sage</span></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:var(--ink-moss)"></div><div class="swatch-meta"><span class="swatch-name">Ink Moss</span><span class="swatch-hex">#82876A</span><span class="swatch-token">--ink-moss · muted</span></div></div>
+      </div>
+    </div>
+
+    <div class="color-group">
+      <div class="ds-sub-title">Accent · 强调 (情感语义)</div>
+      <div class="swatch-grid">
+        <div class="swatch"><div class="swatch-color" style="background:var(--accent-rust)"></div><div class="swatch-meta"><span class="swatch-name">Flame ★</span><span class="swatch-hex">#D33900</span><span class="swatch-token">--accent-rust · 焰 / italic·按钮</span></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:var(--accent-flame2)"></div><div class="swatch-meta"><span class="swatch-name">Flame Bright</span><span class="swatch-hex">#E43E00</span><span class="swatch-token">--accent-flame2</span></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:var(--accent-yellow)"></div><div class="swatch-meta"><span class="swatch-name">Yellow ◆</span><span class="swatch-hex">#FFFCB0</span><span class="swatch-token">--accent-yellow · 仅深块高亮</span></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:var(--accent-clay)"></div><div class="swatch-meta"><span class="swatch-name">Clay</span><span class="swatch-hex">#E5754A</span><span class="swatch-token">--accent-clay</span></div></div>
+      </div>
+    </div>
+
+    <div class="color-group" style="margin-bottom:0">
+      <div class="ds-sub-title">Rule · 分隔线 / 边界</div>
+      <div class="swatch-grid">
+        <div class="swatch"><div class="swatch-color" style="background:var(--rule-soft)"></div><div class="swatch-meta"><span class="swatch-name">Rule Soft</span><span class="swatch-hex">#DAD2B8</span><span class="swatch-token">--rule-soft</span></div></div>
+        <div class="swatch"><div class="swatch-color" style="background:var(--rule)"></div><div class="swatch-meta"><span class="swatch-name">Rule</span><span class="swatch-hex">#C7BE9F</span><span class="swatch-token">--rule</span></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     02 TYPE
+     ============================================================ -->
+<section class="ds-section" id="type">
+  <div class="container">
+    <div class="ds-sec-head">
+      <span class="ds-sec-idx">02</span>
+      <h2 class="ds-sec-title">字体方案 <em>Typography</em></h2>
+      <span class="ds-sec-meta">5 families · 10 scales</span>
+    </div>
+
+    <div class="ds-sub-title">字体族</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:var(--s-4);margin-bottom:var(--s-10)">
+      <div class="card">
+        <div class="t-eyebrow" style="margin-bottom:8px">Display · 展示衬线</div>
+        <div style="font-family:var(--font-display);font-size:48px;line-height:1;color:var(--ink);margin-bottom:8px">Newsreader <em style="font-style:italic;color:var(--accent-rust)">italic</em></div>
+        <div class="t-caption">高对比文学衬线，大标题与斜体强调。中文 fallback 思源宋体。</div>
+      </div>
+      <div class="card">
+        <div class="t-eyebrow" style="margin-bottom:8px">Body · 正文衬线</div>
+        <div style="font-family:var(--font-body);font-size:32px;line-height:1.1;color:var(--ink);margin-bottom:8px">Source Serif 4 — <span class="num" style="font-variant-numeric:oldstyle-nums proportional-nums;font-feature-settings:'onum' 1,'pnum' 1">1234567890</span></div>
+        <div class="t-caption">书卷重量的阅读正文，数字默认旧体比例（3·4·5·7·9 下沉飘逸）。中文 fallback 思源宋体。</div>
+      </div>
+      <div class="card">
+        <div class="t-eyebrow" style="margin-bottom:8px">UI · 界面无衬线</div>
+        <div style="font-family:var(--font-ui);font-size:32px;line-height:1.1;color:var(--ink);margin-bottom:8px;font-weight:500">Inter</div>
+        <div class="t-caption">按钮、输入、链接等界面控件。中文 fallback 思源黑体。</div>
+      </div>
+      <div class="card">
+        <div class="t-eyebrow" style="margin-bottom:8px">Mono · 等宽</div>
+        <div style="font-family:var(--font-mono);font-size:28px;line-height:1.1;color:var(--ink);margin-bottom:8px">IBM Plex Mono</div>
+        <div class="t-caption">用于数据、序号、eyebrow、技术标签。</div>
+      </div>
+      <div class="card">
+        <div class="t-eyebrow" style="margin-bottom:8px">Hand · 手写</div>
+        <div style="font-family:var(--font-hand);font-size:40px;line-height:1;color:var(--accent-rust);margin-bottom:8px">Caveat &mdash; 手写批注</div>
+        <div class="t-caption">边栏批注、个人化点缀，用得克制。</div>
+      </div>
+    </div>
+
+    <div class="ds-sub-title">尺寸层级</div>
+    <div>
+      <div class="type-row">
+        <div class="type-meta"><strong>display-xl</strong>clamp(64, 11vw, 168)<br>line 0.98 / track -.025em</div>
+        <div class="type-sample t-display-xl">数据驱动</div>
+      </div>
+      <div class="type-row">
+        <div class="type-meta"><strong>display-l</strong>clamp(48, 7vw, 104)</div>
+        <div class="type-sample t-display-l">在<em class="t-em-rust">风险</em>与收益间</div>
+      </div>
+      <div class="type-row">
+        <div class="type-meta"><strong>display-m</strong>clamp(36, 4.5vw, 64)</div>
+        <div class="type-sample t-display-m">找到最优解</div>
+      </div>
+      <div class="type-row">
+        <div class="type-meta"><strong>h1</strong>clamp(32, 3.4vw, 44)</div>
+        <div class="type-sample t-h1">客群经营分层体系重构</div>
+      </div>
+      <div class="type-row">
+        <div class="type-meta"><strong>h2</strong>clamp(24, 2.4vw, 32)</div>
+        <div class="type-sample t-h2">资产组合管理</div>
+      </div>
+      <div class="type-row">
+        <div class="type-meta"><strong>h3</strong>20 / sans 500</div>
+        <div class="type-sample t-h3">差异化定价策略</div>
+      </div>
+      <div class="type-row">
+        <div class="type-meta"><strong>body-l</strong>19 / 1.6</div>
+        <div class="type-sample t-body-l">4年消金运营，深度操盘 1400 亿生息资产与 300 万 DAU 大盘。</div>
+      </div>
+      <div class="type-row">
+        <div class="type-meta"><strong>body</strong>16 / 1.6</div>
+        <div class="type-sample t-body">精通 SQL 及 Python 建模，擅长通过差异化定价与风险控制驱动资产规模与收益同步增长。</div>
+      </div>
+      <div class="type-row">
+        <div class="type-meta"><strong>eyebrow</strong>11 mono · upper · .16em</div>
+        <div class="type-sample t-eyebrow">SECTION · 01 / PROJECT</div>
+      </div>
+      <div class="type-row">
+        <div class="type-meta"><strong>caption</strong>12 mono</div>
+        <div class="type-sample t-caption">2025 · LEXIN HOLDINGS · CONFIDENTIAL</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     03 SPACING / RADII / SHADOW
+     ============================================================ -->
+<section class="ds-section" id="spacing">
+  <div class="container">
+    <div class="ds-sec-head">
+      <span class="ds-sec-idx">03</span>
+      <h2 class="ds-sec-title">间距 · 圆角 · <em>阴影</em></h2>
+      <span class="ds-sec-meta">4px base</span>
+    </div>
+
+    <div class="grid-12" style="row-gap:var(--s-8)">
+      <div style="grid-column: span 6">
+        <div class="ds-sub-title">间距尺度 (4px base)</div>
+        <div class="spacing-row"><span class="spacing-token">--s-1</span><span class="spacing-px">4px</span><div class="spacing-bar" style="width:4px"></div></div>
+        <div class="spacing-row"><span class="spacing-token">--s-2</span><span class="spacing-px">8px</span><div class="spacing-bar" style="width:8px"></div></div>
+        <div class="spacing-row"><span class="spacing-token">--s-3</span><span class="spacing-px">12px</span><div class="spacing-bar" style="width:12px"></div></div>
+        <div class="spacing-row"><span class="spacing-token">--s-4</span><span class="spacing-px">16px</span><div class="spacing-bar" style="width:16px"></div></div>
+        <div class="spacing-row"><span class="spacing-token">--s-5</span><span class="spacing-px">24px</span><div class="spacing-bar" style="width:24px"></div></div>
+        <div class="spacing-row"><span class="spacing-token">--s-6</span><span class="spacing-px">32px</span><div class="spacing-bar" style="width:32px"></div></div>
+        <div class="spacing-row"><span class="spacing-token">--s-8</span><span class="spacing-px">48px</span><div class="spacing-bar" style="width:48px"></div></div>
+        <div class="spacing-row"><span class="spacing-token">--s-10</span><span class="spacing-px">64px</span><div class="spacing-bar" style="width:64px"></div></div>
+        <div class="spacing-row"><span class="spacing-token">--s-12</span><span class="spacing-px">80px</span><div class="spacing-bar" style="width:80px"></div></div>
+        <div class="spacing-row"><span class="spacing-token">--s-16</span><span class="spacing-px">128px</span><div class="spacing-bar" style="width:128px"></div></div>
+        <div class="spacing-row"><span class="spacing-token">--s-20</span><span class="spacing-px">160px</span><div class="spacing-bar" style="width:160px"></div></div>
+        <div class="spacing-row"><span class="spacing-token">--s-24</span><span class="spacing-px">200px</span><div class="spacing-bar" style="width:200px"></div></div>
+      </div>
+
+      <div style="grid-column: span 6">
+        <div class="ds-sub-title">圆角 (editorial = 几乎不用)</div>
+        <div class="radius-grid">
+          <div class="radius-tile" style="border-radius:0">--r-0 · 0</div>
+          <div class="radius-tile" style="border-radius:2px">--r-1 · 2</div>
+          <div class="radius-tile" style="border-radius:4px">--r-2 · 4</div>
+          <div class="radius-tile" style="border-radius:999px">--r-pill · 999</div>
+        </div>
+
+        <div class="ds-sub-title" style="margin-top:var(--s-8)">阴影 (克制：仅在 elevate 时用)</div>
+        <div class="shadow-grid">
+          <div class="shadow-tile" style="box-shadow:var(--sh-1)">--sh-1 · 1px rule</div>
+          <div class="shadow-tile" style="box-shadow:var(--sh-2)">--sh-2 · float</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     04 MOTION
+     ============================================================ -->
+<section class="ds-section" id="motion">
+  <div class="container">
+    <div class="ds-sec-head">
+      <span class="ds-sec-idx">04</span>
+      <h2 class="ds-sec-title">动效设计 <em>Motion</em></h2>
+      <span class="ds-sec-meta">3 easings · 3 durations</span>
+    </div>
+
+    <div class="grid-12" style="row-gap:var(--s-8)">
+      <div style="grid-column: span 6">
+        <div class="ds-sub-title">Easings</div>
+        <div class="motion-demo" data-ease="out">
+          <span class="motion-token">--ease-out<br><span class="t-caption">.16, 1, .3, 1</span></span>
+          <div class="motion-bar"><div class="motion-dot"></div></div>
+        </div>
+        <div class="motion-demo" data-ease="in-out">
+          <span class="motion-token">--ease-in-out<br><span class="t-caption">.65, 0, .35, 1</span></span>
+          <div class="motion-bar"><div class="motion-dot"></div></div>
+        </div>
+        <div class="motion-demo" data-ease="spring">
+          <span class="motion-token">--ease-spring<br><span class="t-caption">.34, 1.56, .64, 1</span></span>
+          <div class="motion-bar"><div class="motion-dot"></div></div>
+        </div>
+        <div class="motion-demo" data-ease="linear">
+          <span class="motion-token">linear · 参考<br><span class="t-caption">不要用</span></span>
+          <div class="motion-bar"><div class="motion-dot"></div></div>
+        </div>
+      </div>
+
+      <div style="grid-column: span 6">
+        <div class="ds-sub-title">Durations &amp; 使用场景</div>
+        <div class="card-quiet" style="padding-block:var(--s-3)">
+          <div class="t-mono" style="color:var(--ink-primary);font-size:var(--fs-body)">--dur-fast · 180ms</div>
+          <div class="t-caption">悬停反馈、链接状态切换、chip 颜色切换</div>
+        </div>
+        <div class="card-quiet" style="padding-block:var(--s-3)">
+          <div class="t-mono" style="color:var(--ink-primary);font-size:var(--fs-body)">--dur-base · 360ms</div>
+          <div class="t-caption">展开折叠、面板出现、卡片放大</div>
+        </div>
+        <div class="card-quiet" style="padding-block:var(--s-3)">
+          <div class="t-mono" style="color:var(--ink-primary);font-size:var(--fs-body)">--dur-slow · 720ms</div>
+          <div class="t-caption">滚动渐入 (reveal)、大幅过渡</div>
+        </div>
+
+        <div class="ds-sub-title" style="margin-top:var(--s-6)">原则</div>
+        <ul style="list-style:none;font-size:var(--fs-body-s);line-height:1.9;color:var(--ink)">
+          <li>· 默认 <span class="t-mono">ease-out</span>，让内容"落下来"而不是"飞起来"</li>
+          <li>· 主动作用 <span class="t-mono">spring</span>，慎用于装饰性元素</li>
+          <li>· 永远尊重 <span class="t-mono">prefers-reduced-motion</span></li>
+          <li>· 滚动渐入分批 <span class="t-mono">stagger 60ms</span>，制造节奏</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Motion v2 · reveal & hover patterns -->
+    <div class="ds-sub-title" style="margin-top:var(--s-10);display:flex;justify-content:space-between;align-items:baseline;gap:var(--s-4)">
+      <span>Motion v2 · 进入 / 悬停模式</span>
+      <button onclick="replayMotion()" style="font-family:var(--font-mono);font-size:var(--fs-caption);letter-spacing:var(--tk-wide);text-transform:uppercase;color:var(--ink-primary);background:transparent;border:1px solid var(--ink-primary);padding:6px 14px;border-radius:999px;cursor:pointer">↻ 重放</button>
+    </div>
+
+    <div id="motion-demo-zone" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1px;background:var(--rule);border:1px solid var(--rule);margin-bottom:var(--s-6)">
+      <!-- line mask -->
+      <div style="background:var(--paper);padding:var(--s-6)">
+        <div class="t-eyebrow" style="margin-bottom:var(--s-4)">遮罩位移 · Line mask</div>
+        <div class="reveal-lines md-item" style="font-family:var(--font-display);font-size:34px;line-height:1.1;color:var(--ink)">
+          <div class="reveal-line" style="--line-delay:0ms"><span>数据驱动<em style="font-style:italic;color:var(--accent-rust)">增长</em></span></div>
+          <div class="reveal-line" style="--line-delay:120ms"><span><em style="font-style:italic;color:var(--accent-rust)">精准定价</em>破局</span></div>
+        </div>
+        <div class="t-caption" style="margin-top:var(--s-4)">文字逐行从一条线后升起 — 编辑设计的核心手法</div>
+      </div>
+      <!-- word stagger -->
+      <div style="background:var(--paper);padding:var(--s-6)">
+        <div class="t-eyebrow" style="margin-bottom:var(--s-4)">词级错落 · Word stagger</div>
+        <p class="md-item" style="font-family:var(--font-display);font-size:26px;line-height:1.3;color:var(--ink)">
+          <span class="reveal-word" style="--word-delay:0ms">在</span>
+          <span class="reveal-word" style="--word-delay:90ms"><em style="font-style:italic;color:var(--accent-rust)">风险</em></span>
+          <span class="reveal-word" style="--word-delay:180ms">与</span>
+          <span class="reveal-word" style="--word-delay:270ms"><em style="font-style:italic;color:var(--ink-primary)">收益</em></span>
+          <span class="reveal-word" style="--word-delay:360ms">之间</span>
+        </p>
+        <div class="t-caption" style="margin-top:var(--s-4)">逐词上浮 — 用于副标题 / 强调句</div>
+      </div>
+      <!-- draw line + clip -->
+      <div style="background:var(--paper);padding:var(--s-6)">
+        <div class="t-eyebrow" style="margin-bottom:var(--s-4)">线条绘入 · Draw line</div>
+        <div class="md-item draw-line" style="height:2px;background:var(--ink-primary);margin-bottom:var(--s-5)"></div>
+        <div class="md-item" data-reveal="clip" style="font-family:var(--font-display);font-size:30px;color:var(--ink-primary)">裁切擦除 Clip</div>
+        <div class="t-caption" style="margin-top:var(--s-4)">分隔线从左展开 · 块从下显形 (dria 招牌)</div>
+      </div>
+    </div>
+
+    <div class="ds-sub-title">悬停微交互 · Hover (把指针移上去)</div>
+    <div style="display:flex;flex-wrap:wrap;gap:var(--s-5);align-items:center">
+      <div class="hover-lift card" style="padding:var(--s-5) var(--s-6);cursor:pointer">
+        <div class="t-mono" style="color:var(--ink-primary)">.hover-lift</div>
+        <div class="t-caption" style="margin-top:4px">轻抬 4px</div>
+      </div>
+      <a href="#motion" class="hover-underline" style="font-family:var(--font-body);font-weight:500;color:var(--ink-primary)">.hover-underline 下划线擦入</a>
+      <div class="hover-accent" style="padding:var(--s-4) var(--s-5);background:var(--paper-soft);cursor:pointer">
+        <div class="t-mono" style="color:var(--ink)">.hover-accent</div>
+        <div class="t-caption" style="margin-top:4px">底部强调线从左生长</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  function replayMotion() {
+    const items = document.querySelectorAll('#motion-demo-zone .md-item, #motion-demo-zone [data-reveal]');
+    items.forEach((el) => {
+      el.classList.remove('is-in');
+      void el.offsetWidth;
+      el.classList.add('is-in');
+    });
+  }
+  // 首次进入视口时自动播放
+  (() => {
+    const zone = document.getElementById('motion-demo-zone');
+    if (!zone || !('IntersectionObserver' in window)) { replayMotion(); return; }
+    const io = new IntersectionObserver((es) => {
+      es.forEach((e) => { if (e.isIntersecting) { replayMotion(); io.disconnect(); } });
+    }, { threshold: 0.3 });
+    io.observe(zone);
+  })();
+
+  // 安全兜底：演出窗口后强制 reveal 落定（截图 / 节流 iframe 下 transition 会卡住）
+  (() => {
+    const settle = () => {
+      document.querySelectorAll('#motion-demo-zone .md-item, #motion-demo-zone [data-reveal]')
+        .forEach(el => el.classList.add('is-in'));
+      document.documentElement.classList.add('reveal-settled');
+    };
+    window.addEventListener('load', () => setTimeout(settle, 1700));
+    setTimeout(settle, 4000);
+  })();
+</script>
+<section class="ds-section" id="layout">
+  <div class="container">
+    <div class="ds-sec-head">
+      <span class="ds-sec-idx">05</span>
+      <h2 class="ds-sec-title">布局体系 <em>Layout</em></h2>
+      <span class="ds-sec-meta">12-col · responsive</span>
+    </div>
+
+    <div class="ds-sub-title">12 列编辑栅格 · gutter clamp(24, 5vw, 96)</div>
+    <div class="grid-demo">
+      <div>1</div><div>2</div><div>3</div><div>4</div><div>5</div><div>6</div>
+      <div>7</div><div>8</div><div>9</div><div>10</div><div>11</div><div>12</div>
+    </div>
+
+    <div class="ds-sub-title" style="margin-top:var(--s-8)">常用列分配</div>
+    <div style="display:flex;flex-direction:column;gap:var(--s-3)">
+      <div style="display:grid;grid-template-columns:repeat(12,1fr);gap:var(--col-gap)">
+        <div style="grid-column:span 8;background:var(--ink-primary);color:var(--paper);padding:var(--s-3);text-align:center;font-family:var(--font-mono);font-size:var(--fs-caption)">8 col · 正文</div>
+        <div style="grid-column:span 4;background:var(--paper-deep);color:var(--ink);padding:var(--s-3);text-align:center;font-family:var(--font-mono);font-size:var(--fs-caption)">4 col · 边栏</div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(12,1fr);gap:var(--col-gap)">
+        <div style="grid-column:span 3;background:var(--ink-primary);color:var(--paper);padding:var(--s-3);text-align:center;font-family:var(--font-mono);font-size:var(--fs-caption)">3 索引</div>
+        <div style="grid-column:span 9;background:var(--paper-deep);color:var(--ink);padding:var(--s-3);text-align:center;font-family:var(--font-mono);font-size:var(--fs-caption)">9 · 项目列表</div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(12,1fr);gap:var(--col-gap)">
+        <div style="grid-column:span 4;background:var(--accent-rust);color:var(--paper);padding:var(--s-3);text-align:center;font-family:var(--font-mono);font-size:var(--fs-caption)">4 · stat</div>
+        <div style="grid-column:span 4;background:var(--accent-rust);color:var(--paper);padding:var(--s-3);text-align:center;font-family:var(--font-mono);font-size:var(--fs-caption)">4 · stat</div>
+        <div style="grid-column:span 4;background:var(--accent-rust);color:var(--paper);padding:var(--s-3);text-align:center;font-family:var(--font-mono);font-size:var(--fs-caption)">4 · stat</div>
+      </div>
+    </div>
+
+    <div class="ds-sub-title" style="margin-top:var(--s-8)">响应式断点</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:var(--s-4)">
+      <div class="card">
+        <div class="t-eyebrow">XS · &lt; 480</div>
+        <div style="font-family:var(--font-display);font-size:28px;color:var(--ink-primary);margin-top:8px">手机</div>
+        <div class="t-caption" style="margin-top:6px">单列 · gutter 24</div>
+      </div>
+      <div class="card">
+        <div class="t-eyebrow">S · 480 – 768</div>
+        <div style="font-family:var(--font-display);font-size:28px;color:var(--ink-primary);margin-top:8px">大手机</div>
+        <div class="t-caption" style="margin-top:6px">单列 → 2 列</div>
+      </div>
+      <div class="card">
+        <div class="t-eyebrow">M · 768 – 1080</div>
+        <div style="font-family:var(--font-display);font-size:28px;color:var(--ink-primary);margin-top:8px">平板</div>
+        <div class="t-caption" style="margin-top:6px">8/4 分栏</div>
+      </div>
+      <div class="card">
+        <div class="t-eyebrow">L · &gt; 1080</div>
+        <div style="font-family:var(--font-display);font-size:28px;color:var(--ink-primary);margin-top:8px">桌面</div>
+        <div class="t-caption" style="margin-top:6px">12-col full grid</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     06 COMPONENTS
+     ============================================================ -->
+<section class="ds-section" id="components">
+  <div class="container">
+    <div class="ds-sec-head">
+      <span class="ds-sec-idx">06</span>
+      <h2 class="ds-sec-title">组件库 <em>Components</em></h2>
+      <span class="ds-sec-meta">12 atoms · 6 patterns</span>
+    </div>
+
+    <!-- A. Numbered section header -->
+    <div class="comp-block">
+      <div class="comp-head">
+        <h3>编号分节 · <em>Numbered Section</em></h3>
+        <span class="comp-id">.sec-num</span>
+      </div>
+      <p class="comp-desc">继承自 dria 的 01/02/03 序号 + 衬线大标题，顶部一根 ink 实线分隔。所有主分区都走这套。</p>
+      <div class="comp-frame col">
+        <div class="sec-num" style="border-top-color:var(--ink-primary)">
+          <span class="sec-num__index">01</span>
+          <h3 class="sec-num__title">关于我 · <span style="font-style:italic;color:var(--accent-rust)">About</span></h3>
+        </div>
+        <div class="sec-num">
+          <span class="sec-num__index">02</span>
+          <h3 class="sec-num__title">代表性项目</h3>
+        </div>
+      </div>
+    </div>
+
+    <!-- B. Italic emphasis -->
+    <div class="comp-block">
+      <div class="comp-head">
+        <h3>斜体强调 · <em>Italic Emphasis</em></h3>
+        <span class="comp-id">.t-em-rust / .t-em-sage</span>
+      </div>
+      <p class="comp-desc">在无衬线正文中插入衬线斜体词，自带颜色情感强调。最具识别性的微观语言。</p>
+      <div class="comp-frame col">
+        <p style="font-size:24px;line-height:1.4;color:var(--ink)">数据驱动增长，<span class="t-em-rust">精准定价</span>破局，在<span class="t-em-sage">风险与收益</span>间找到最优解。</p>
+        <p style="font-size:18px;line-height:1.6;color:var(--ink-sage)">深度操盘 <span class="t-em-rust">1400 亿</span>生息资产与 <span class="t-em-rust">300 万 DAU</span> 大盘。</p>
+      </div>
+    </div>
+
+    <!-- C. Links -->
+    <div class="comp-block">
+      <div class="comp-head">
+        <h3>链接 · <em>Links</em></h3>
+        <span class="comp-id">.lnk / .lnk-quiet</span>
+      </div>
+      <p class="comp-desc">主链接带尾箭头，hover 时变 rust + 拉开间距；安静链接走下划线，仅用 hover 色切换。</p>
+      <div class="comp-frame">
+        <a href="#" class="lnk">查看完整项目</a>
+        <a href="#" class="lnk">下载简历 PDF</a>
+        <span>包含一段<a href="#" class="lnk-quiet">嵌入式链接</a>的句子。</span>
+      </div>
+    </div>
+
+    <!-- D. Buttons -->
+    <div class="comp-block">
+      <div class="comp-head">
+        <h3>按钮 · <em>Buttons</em></h3>
+        <span class="comp-id">.btn variants</span>
+      </div>
+      <p class="comp-desc">pill 形状 · 仅边框、实色、ghost 三态。所有按钮都用 ease-out 180ms。</p>
+      <div class="comp-frame">
+        <button class="btn">默认 · Outline</button>
+        <button class="btn btn-solid">主操作 · Solid</button>
+        <button class="btn btn-ghost">次要 · Ghost</button>
+      </div>
+    </div>
+
+    <!-- E. Chips -->
+    <div class="comp-block">
+      <div class="comp-head">
+        <h3>标签 · <em>Chips</em></h3>
+        <span class="comp-id">.chip variants</span>
+      </div>
+      <p class="comp-desc">mono 等宽 · 用于技能、年份、状态标记。</p>
+      <div class="comp-frame">
+        <span class="chip">SQL</span>
+        <span class="chip">PYTHON</span>
+        <span class="chip chip-ink">A/B TESTING</span>
+        <span class="chip chip-ink">UPLIFT MODEL</span>
+        <span class="chip chip-solid">2025 · 在职</span>
+      </div>
+    </div>
+
+    <!-- F. Cards -->
+    <div class="comp-block">
+      <div class="comp-head">
+        <h3>卡片 · <em>Cards</em></h3>
+        <span class="comp-id">.card / .card-quiet / .card-ink / .frame-ticks</span>
+      </div>
+      <p class="comp-desc">四种卡：实体卡、安静卡 (仅上边线)、深色卡、带四角刻度的 frame。</p>
+      <div class="comp-frame col" style="gap:var(--s-5)">
+        <div class="card">
+          <div class="t-eyebrow" style="margin-bottom:8px">PROJECT · 2025</div>
+          <div style="font-family:var(--font-display);font-size:28px;line-height:1.1;color:var(--ink);margin-bottom:8px">客群<em style="color:var(--accent-rust);font-style:italic">经营分层</em>体系重构</div>
+          <p style="font-size:14px;color:var(--ink-sage)">基于 RFM + 价值预测构建 5 层客群分级，年化贡献增量 18%。</p>
+        </div>
+
+        <div class="card-quiet">
+          <div class="t-eyebrow" style="margin-bottom:8px">QUIET · 2024</div>
+          <div style="font-family:var(--font-display);font-size:24px;color:var(--ink)">全链路交易转化优化</div>
+        </div>
+
+        <div class="card-ink">
+          <div class="t-eyebrow" style="margin-bottom:8px;color:var(--ink-moss)">INK · CURRENT</div>
+          <div style="font-family:var(--font-display);font-size:28px;color:var(--paper);margin-bottom:8px">乐信控股 · <em style="font-style:italic;color:var(--accent-clay)">在职</em></div>
+          <p style="color:var(--paper-dust);font-size:14px">操盘 800 亿余额规模生息资产，持续探索数据驱动方法论。</p>
+        </div>
+
+        <div class="card frame-ticks" style="border:1px solid var(--ink-primary)">
+          <span class="tk-bl"></span><span class="tk-br"></span>
+          <div class="t-eyebrow" style="margin-bottom:8px">FRAME TICKS · 装饰</div>
+          <div style="font-family:var(--font-display);font-size:24px;color:var(--ink-primary)">四角刻度框</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- G. Stats -->
+    <div class="comp-block">
+      <div class="comp-head">
+        <h3>数据指标 · <em>Stats</em></h3>
+        <span class="comp-id">.stat</span>
+      </div>
+      <p class="comp-desc">大号衬线数字 + mono 单位/标签，专门为简历里的"业绩数字"设计。</p>
+      <div class="comp-frame" style="gap:0;display:grid;grid-template-columns:repeat(4,1fr)">
+        <div class="stat">
+          <div class="stat__value">1400<span class="unit">亿</span></div>
+          <div class="stat__label">生息资产规模</div>
+        </div>
+        <div class="stat">
+          <div class="stat__value">300<span class="unit">万 DAU</span></div>
+          <div class="stat__label">大盘日活</div>
+        </div>
+        <div class="stat">
+          <div class="stat__value">4<span class="unit">年</span></div>
+          <div class="stat__label">消金运营经验</div>
+        </div>
+        <div class="stat">
+          <div class="stat__value">8<span class="unit">个</span></div>
+          <div class="stat__label">代表性项目</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- H. Inputs -->
+    <div class="comp-block">
+      <div class="comp-head">
+        <h3>输入 · <em>Inputs</em></h3>
+        <span class="comp-id">.input</span>
+      </div>
+      <p class="comp-desc">仅底边线 · focus 时变 ink-primary。简历联系区用。</p>
+      <div class="comp-frame col" style="max-width:480px">
+        <input class="input" type="email" placeholder="你的邮箱">
+        <input class="input" type="text" placeholder="主题（可选）">
+        <textarea class="input" rows="3" placeholder="写点什么…"></textarea>
+      </div>
+    </div>
+
+    <!-- I. Marginalia -->
+    <div class="comp-block">
+      <div class="comp-head">
+        <h3>边栏批注 · <em>Marginalia</em></h3>
+        <span class="comp-id">.margin-note</span>
+      </div>
+      <p class="comp-desc">手写体小注释，仅用于装饰，每页 ≤ 3 处。</p>
+      <div class="comp-frame">
+        <p style="font-size:18px;color:var(--ink);max-width:60ch;line-height:1.7">深度操盘 1400 亿生息资产<span class="margin-note" style="margin-left:12px">← 这是简历的支点</span></p>
+      </div>
+    </div>
+
+    <!-- J. Project row pattern -->
+    <div class="comp-block">
+      <div class="comp-head">
+        <h3>Pattern · <em>Project Row</em></h3>
+        <span class="comp-id">复合 · 年份 + 标题 + 箭头</span>
+      </div>
+      <p class="comp-desc">简历项目列表的核心模式 · hover 时背景轻染。点击展开详情 (在 index.html 里实现)。</p>
+      <div class="comp-frame col" style="padding-block:var(--s-4)">
+        <div class="demo-proj-card">
+          <span class="year">2025</span>
+          <span class="title">客群<em>经营分层</em>体系重构</span>
+          <span class="arrow">↗</span>
+        </div>
+        <div class="demo-proj-card">
+          <span class="year">2025</span>
+          <span class="title">资产组合管理</span>
+          <span class="arrow">↗</span>
+        </div>
+        <div class="demo-proj-card">
+          <span class="year">2024</span>
+          <span class="title">全链路<em>交易转化</em>优化</span>
+          <span class="arrow">↗</span>
+        </div>
+        <div class="demo-proj-card">
+          <span class="year">2023</span>
+          <span class="title">沉睡高优客群召回</span>
+          <span class="arrow">↗</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- K. Skills matrix pattern -->
+    <div class="comp-block">
+      <div class="comp-head">
+        <h3>Pattern · <em>Skills Matrix</em></h3>
+        <span class="comp-id">分格的能力矩阵</span>
+      </div>
+      <p class="comp-desc">brutalist 信息密度感 + editorial 排版 · 每格一个能力域。</p>
+      <div class="comp-frame col" style="padding:0">
+        <div class="demo-skills">
+          <div class="demo-skill-cell">
+            <div class="num">01</div>
+            <h4>数据<em>分析</em></h4>
+            <ul>
+              <li>SQL · Spark / Hadoop</li>
+              <li>Python 建模</li>
+              <li>A/B 测试设计</li>
+              <li>Uplift Model</li>
+            </ul>
+          </div>
+          <div class="demo-skill-cell">
+            <div class="num">02</div>
+            <h4>商业<em>运营</em></h4>
+            <ul>
+              <li>差异化定价</li>
+              <li>客群分层经营</li>
+              <li>LTV 提升策略</li>
+            </ul>
+          </div>
+          <div class="demo-skill-cell">
+            <div class="num">03</div>
+            <h4>风控<em>定价</em></h4>
+            <ul>
+              <li>风险定价矩阵</li>
+              <li>智能期次推荐</li>
+              <li>人机协同审批</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============================================================
+     FOOTER
+     ============================================================ -->
+<footer class="ds-foot">
+  <div class="container">
+    <div class="ds-foot-row" style="margin-bottom:var(--s-6)">
+      <div class="ds-foot-sig">It's nothing <em>new</em>,<br>but it's something <em>different</em>.</div>
+      <div style="display:flex;gap:var(--s-5);align-items:baseline">
+        <a class="lnk" href="../index.html">查看应用：刘文俊简历</a>
+      </div>
+    </div>
+    <hr class="rule">
+    <div class="ds-foot-row" style="margin-top:var(--s-5)">
+      <div class="ds-foot-meta">CRITICAL RETURNS · DESIGN SYSTEM V1.0</div>
+      <div class="ds-foot-meta">DERIVED FROM DRIA.COM · 2026</div>
+      <div class="ds-foot-meta">© 刘文俊</div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

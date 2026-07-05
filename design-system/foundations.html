@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Foundations v2 · 配色与字体选型 · dria 忠实还原</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,300..600;1,8..60,300..600&family=Newsreader:ital,opsz,wght@0,6..72,300..600;1,6..72,300..600&family=Bricolage+Grotesque:opsz,wght@10..48,300..700&family=Inter:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Noto+Serif+SC:wght@300;400;600&family=Noto+Sans+SC:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  /* default specimen tokens = P1 Faithful + T2 Bridge */
+  --sp-ink:    #191F06;
+  --sp-paper:  #F0EEDA;
+  --sp-flame:  #D33900;
+  --sp-flame2: #E43E00;
+  --sp-yellow: #FFFCB0;
+  --sp-rule:   rgba(25,31,6,0.18);
+  --sp-muted:  #5A5F3F;
+
+  --sp-serif: 'Source Serif 4', 'Noto Serif SC', Georgia, serif;
+  --sp-sans:  'Inter', 'Noto Sans SC', system-ui, sans-serif;
+
+  --mono: 'IBM Plex Mono', monospace;
+
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-heavy: cubic-bezier(0.22, 1, 0.36, 1);
+
+  /* page chrome (fixed, neutral dark) */
+  --bg:   #14140F;
+  --bg2:  #1C1C15;
+  --line: #34342A;
+  --txt:  #E9E5CF;
+  --txt2: #9A9683;
+  --flame-ui: #E43E00;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--txt);
+  font-family: var(--mono);
+  -webkit-font-smoothing: antialiased;
+  line-height: 1.5;
+}
+
+.wrap { max-width: 1280px; margin: 0 auto; padding: 0 clamp(20px, 4vw, 56px); }
+
+/* ---------- page header ---------- */
+.ph {
+  border-bottom: 1px solid var(--line);
+  position: sticky; top: 0; z-index: 50;
+  background: color-mix(in srgb, var(--bg) 90%, transparent);
+  backdrop-filter: blur(10px);
+}
+.ph-in { display: flex; align-items: baseline; justify-content: space-between; padding: 16px 0; gap: 20px; flex-wrap: wrap; }
+.ph-title { font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--txt); }
+.ph-title b { color: var(--flame-ui); }
+.ph-links { display: flex; gap: 18px; }
+.ph-links a { color: var(--txt2); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; text-decoration: none; transition: color .2s; }
+.ph-links a:hover { color: var(--flame-ui); }
+
+.intro { padding: clamp(28px,5vw,56px) 0 clamp(20px,3vw,32px); max-width: 72ch; }
+.intro h1 { font-family: var(--sp-serif); font-weight: 400; font-size: clamp(28px,4vw,48px); line-height: 1.08; color: var(--txt); letter-spacing: -0.015em; margin-bottom: 16px; }
+.intro h1 em { font-style: italic; color: var(--flame-ui); }
+.intro p { color: var(--txt2); font-family: var(--mono); font-size: 13px; line-height: 1.7; }
+
+.lab { font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--txt2); display: flex; align-items: center; gap: 14px; margin: clamp(40px,6vw,72px) 0 22px; }
+.lab::after { content: ''; flex: 1; height: 1px; background: var(--line); }
+.lab .ix { color: var(--flame-ui); }
+.lab .hint { flex: none; color: var(--txt2); text-transform: none; letter-spacing: 0.04em; font-size: 10px; }
+.lab.solo::after { display: none; }
+
+/* ============================================================
+   LIVE SPECIMEN
+   ============================================================ */
+.specimen-shell { position: sticky; top: 53px; z-index: 40; padding-top: 18px; padding-bottom: 8px; background: linear-gradient(var(--bg) 72%, transparent); }
+.specimen {
+  position: relative;
+  background: var(--sp-paper);
+  color: var(--sp-ink);
+  border: 1px solid var(--line);
+  overflow: hidden;
+  min-height: 360px;
+  display: grid;
+  grid-template-columns: 1.55fr 1fr;
+}
+@media (max-width: 760px) { .specimen { grid-template-columns: 1fr; min-height: 320px; } }
+
+/* base = revealed end-state, so reduced-motion / non-animated loads show the content (cover only re-appears as the wipe's start frame while .play animates) */
+.sp-cover { position: absolute; inset: 0; z-index: 6; background: var(--sp-flame); transform-origin: right center; transform: scaleX(0); }
+.sp-main { padding: clamp(24px,3.5vw,46px); display: flex; flex-direction: column; justify-content: space-between; gap: 22px; position: relative; z-index: 2; }
+.sp-eye { font-family: var(--mono); font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--sp-muted); }
+.sp-head {
+  font-family: var(--sp-serif); font-weight: 400;
+  font-size: clamp(34px, 5.4vw, 74px); line-height: 0.99; letter-spacing: -0.02em; color: var(--sp-ink);
+}
+.sp-head em { font-style: italic; color: var(--sp-flame2); }
+.sp-bottom { display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
+.sp-desc { font-family: var(--sp-sans); font-size: 14px; line-height: 1.55; color: var(--sp-ink); max-width: 34ch; }
+.sp-btn {
+  font-family: var(--sp-sans); font-weight: 500; font-size: 13px;
+  background: var(--sp-flame); color: var(--sp-paper);
+  border: none; padding: 13px 22px; border-radius: 999px; cursor: pointer; white-space: nowrap;
+  transition: transform .2s var(--ease), background .2s;
+}
+.sp-btn:hover { background: var(--sp-flame2); transform: translateY(-2px); }
+
+/* dark side block = where #FFFCB0 highlight lives */
+.sp-side {
+  background: var(--sp-ink); color: var(--sp-paper);
+  padding: clamp(24px,3vw,40px); display: flex; flex-direction: column; justify-content: space-between; gap: 18px;
+  position: relative; z-index: 2;
+}
+.sp-side .num { font-family: var(--sp-serif); font-size: clamp(48px,7vw,104px); line-height: 0.9; color: var(--sp-yellow); }
+.sp-side .num em { font-style: italic; color: var(--sp-flame2); }
+.sp-side .cap { font-family: var(--mono); font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: color-mix(in srgb, var(--sp-paper) 55%, transparent); }
+.sp-side .yellow-tab { align-self: flex-start; background: var(--sp-yellow); color: var(--sp-ink); font-family: var(--mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; padding: 5px 10px; }
+
+/* choreography — 默认播放（本页即动效演示场，不被系统 reduced-motion 静音） */
+  .specimen.play .sp-cover { animation: cover-wipe 820ms var(--ease-heavy) forwards; }
+  .specimen.play .sp-head  { clip-path: inset(0 100% 0 0); animation: serif-draw 1000ms var(--ease) 360ms forwards; }
+  .specimen.play .sp-eye   { opacity: 0; animation: rise 700ms var(--ease) 300ms forwards; }
+  .specimen.play .sp-desc,
+  .specimen.play .sp-btn   { opacity: 0; animation: rise 760ms var(--ease) 760ms forwards; }
+  .specimen.play .sp-side > *{ opacity: 0; animation: rise 760ms var(--ease) 600ms forwards; }
+  .specimen.play .sp-side  { opacity: 0; animation: side-fade 700ms var(--ease) 500ms forwards; }
+  .specimen.breathe .sp-side .num { animation: breathe 6s ease-in-out 1.8s infinite; }
+@keyframes cover-wipe { from { transform: scaleX(1); } to { transform: scaleX(0); } }
+@keyframes serif-draw { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0 0 0 0); } }
+@keyframes rise { from { opacity: 0; transform: translateY(22px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes side-fade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes breathe { 0%,100% { transform: translateY(0) scale(1); } 50% { transform: translateY(-3px) scale(1.015); } }
+
+.sp-controls { display: flex; gap: 10px; align-items: center; padding: 12px 2px 0; flex-wrap: wrap; }
+.sp-controls .now { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--txt2); }
+.sp-controls .now b { color: var(--txt); }
+.replay { font-family: var(--mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; background: transparent; color: var(--txt); border: 1px solid var(--line); padding: 7px 14px; border-radius: 999px; cursor: pointer; transition: border-color .2s, color .2s; }
+.replay:hover { border-color: var(--flame-ui); color: var(--flame-ui); }
+
+/* ============================================================
+   PALETTE OPTIONS
+   ============================================================ */
+.opt-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+.pal { border: 1px solid var(--line); background: var(--bg2); cursor: pointer; transition: border-color .25s, transform .25s var(--ease); overflow: hidden; text-align: left; }
+.pal:hover { border-color: #56564a; transform: translateY(-3px); }
+.pal.sel { border-color: var(--flame-ui); }
+.pal-preview { height: 124px; display: flex; position: relative; }
+.pal-preview span { flex: 1; }
+.pal-preview .yhint { position: absolute; right: 10px; bottom: 10px; width: 26px; height: 26px; border: 1px solid rgba(0,0,0,0.25); font-family: var(--mono); font-size: 8px; display: flex; align-items: center; justify-content: center; color: #191F06; }
+.pal-body { padding: 16px; }
+.pal-name { font-family: var(--sp-serif); font-size: 20px; color: var(--txt); margin-bottom: 4px; }
+.pal-name em { font-style: italic; color: var(--flame-ui); }
+.pal-tag { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--txt2); margin-bottom: 14px; }
+.pal-swatches { display: flex; flex-direction: column; gap: 6px; }
+.pal-sw { display: flex; align-items: center; gap: 10px; font-size: 11px; }
+.pal-sw .chip { width: 16px; height: 16px; border: 1px solid rgba(255,255,255,0.12); flex-shrink: 0; }
+.pal-sw .hex { color: var(--txt); letter-spacing: 0.06em; }
+.pal-sw .role { color: var(--txt2); margin-left: auto; }
+.pal-pick { margin-top: 14px; font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--txt2); display: flex; align-items: center; gap: 8px; }
+.pal.sel .pal-pick { color: var(--flame-ui); }
+.pal-pick .dot { width: 7px; height: 7px; border-radius: 50%; border: 1px solid currentColor; }
+.pal.sel .pal-pick .dot { background: var(--flame-ui); border-color: var(--flame-ui); }
+
+/* ============================================================
+   TYPE OPTIONS
+   ============================================================ */
+.type-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 16px; }
+.typ { border: 1px solid var(--line); background: var(--bg2); cursor: pointer; padding: 24px; transition: border-color .25s, transform .25s var(--ease); position: relative; }
+.typ:hover { border-color: #56564a; transform: translateY(-3px); }
+.typ.sel { border-color: var(--flame-ui); }
+.typ.rec::after { content: '推荐'; position: absolute; top: 0; right: 0; background: var(--flame-ui); color: #fff; font-family: var(--mono); font-size: 9px; letter-spacing: 0.12em; padding: 4px 9px; }
+.typ-top { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 18px; gap: 12px; }
+.typ-name { font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--txt); }
+.typ-name b { color: var(--flame-ui); }
+.typ-pick { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--txt2); display: flex; align-items: center; gap: 7px; white-space: nowrap; }
+.typ.sel .typ-pick { color: var(--flame-ui); }
+.typ-pick .dot { width: 7px; height: 7px; border-radius: 50%; border: 1px solid currentColor; }
+.typ.sel .typ-pick .dot { background: var(--flame-ui); border-color: var(--flame-ui); }
+.typ-spec-serif { font-weight: 400; font-size: 38px; line-height: 1.04; color: var(--txt); letter-spacing: -0.015em; margin-bottom: 6px; }
+.typ-spec-serif em { font-style: italic; color: var(--flame-ui); }
+.typ-spec-sans { font-size: 14px; line-height: 1.6; color: var(--txt2); margin-top: 12px; padding-top: 14px; border-top: 1px solid var(--line); }
+.typ-roles { display: flex; flex-direction: column; gap: 5px; font-family: var(--mono); font-size: 10px; color: var(--txt2); margin-top: 16px; }
+.typ-roles div { display: flex; gap: 8px; }
+.typ-roles .rk { color: var(--txt2); width: 42px; flex: none; }
+.typ-roles .rv { color: var(--txt); letter-spacing: 0.04em; }
+.typ-roles .reuse { color: #7FA86B; }
+
+/* ============================================================
+   MOTION SPEC
+   ============================================================ */
+.motion-spec { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px,1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); }
+.ms-card { background: var(--bg2); padding: 22px; }
+.ms-card .step { font-family: var(--sp-serif); font-size: 32px; color: var(--flame-ui); line-height: 1; margin-bottom: 12px; }
+.ms-card h4 { font-family: var(--sp-serif); font-weight: 400; font-size: 19px; color: var(--txt); margin-bottom: 8px; }
+.ms-card h4 .dir { font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; color: var(--txt2); display: block; margin-top: 4px; text-transform: uppercase; }
+.ms-card p { font-size: 12px; line-height: 1.65; color: var(--txt2); }
+
+.principles { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px,1fr)); gap: 16px; margin-top: 20px; }
+.principle { border-left: 2px solid var(--flame-ui); padding: 4px 0 4px 16px; }
+.principle h5 { font-family: var(--sp-serif); font-weight: 400; font-size: 18px; color: var(--txt); margin-bottom: 6px; }
+.principle h5 em { font-style: italic; color: var(--flame-ui); }
+.principle p { font-size: 12px; line-height: 1.6; color: var(--txt2); }
+
+footer.pf { border-top: 1px solid var(--line); margin-top: clamp(56px,8vw,96px); padding: 28px 0; display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+footer.pf span { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--txt2); }
+footer.pf a { color: var(--flame-ui); text-decoration: none; }
+
+.note { font-size: 11px; line-height: 1.7; color: var(--txt2); max-width: 76ch; margin-top: 16px; padding: 14px 16px; border: 1px dashed var(--line); }
+.note b { color: var(--txt); }
+.note .y { background: #FFFCB0; color: #191F06; padding: 0 5px; }
+</style>
+</head>
+<body>
+
+<header class="ph">
+  <div class="wrap ph-in">
+    <div class="ph-title">Foundations v2 · <b>dria 忠实还原</b></div>
+    <nav class="ph-links">
+      <a href="#palette">配色</a>
+      <a href="#type">字体</a>
+      <a href="#motion">动效</a>
+      <a href="../index.html">→ 简历</a>
+      <a href="design-system.html">→ 设计系统</a>
+    </nav>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <div class="intro">
+    <h1>校准后的<em>双色印刷</em>地基<br>—— 纸是 #F0EEDA，黄是点睛。</h1>
+    <p>已按源页面重新核对：整页底为暖灰白 #F0EEDA，#D33900 按钮与之对比，#FFFCB0 亮黄仅在 #191F06 深块上做"重对比时刻"。字体把 dria 的「衬线展示 + 无衬线正文」结构和你 RSS 项目的字体栈一并放进来对比。点任意卡片，顶部样机实时套用并重放入场序列。</p>
+  </div>
+
+  <!-- LIVE SPECIMEN -->
+  <div class="specimen-shell">
+    <div class="specimen play breathe" id="specimen">
+      <div class="sp-cover"></div>
+      <div class="sp-main">
+        <div class="sp-eye">Critical Returns · 样机预览</div>
+        <h2 class="sp-head">数据驱动<em>增长</em>，<br>风险收益<em>最优解</em></h2>
+        <div class="sp-bottom">
+          <p class="sp-desc">4 年消金运营，深度操盘 1400 亿生息资产与 300 万 DAU 大盘。</p>
+          <button class="sp-btn">查看简历 →</button>
+        </div>
+      </div>
+      <div class="sp-side">
+        <span class="yellow-tab">在职 · 乐信</span>
+        <div class="num">14<em>00</em><span style="font-size:0.26em;font-family:var(--mono);vertical-align:super;letter-spacing:0.1em;color:color-mix(in srgb,var(--sp-paper) 55%,transparent)"> 亿</span></div>
+        <div class="cap">↑ 这块深底 + 亮黄数字，就是 #FFFCB0 的唯一用法</div>
+      </div>
+    </div>
+    <div class="sp-controls">
+      <button class="replay" onclick="replay()">↻ 重放入场序列</button>
+      <span class="now">配色 <b id="now-pal">P1 · Faithful</b> &nbsp;·&nbsp; 字体 <b id="now-typ">T2 · Bridge</b></span>
+    </div>
+  </div>
+
+  <!-- ============ PALETTE ============ -->
+  <div class="lab" id="palette"><span class="ix">01</span> 配色体系 · Colour <span class="hint">— 点选套用 · 已用真实 #F0EEDA 基底</span></div>
+  <div class="opt-grid">
+
+    <!-- P1 Faithful -->
+    <button class="pal sel" data-pal="1" data-name="Faithful"
+      data-ink="#191F06" data-paper="#F0EEDA" data-flame="#D33900" data-flame2="#E43E00" data-yellow="#FFFCB0" data-muted="#5A5F3F" data-rule="rgba(25,31,6,0.18)">
+      <div class="pal-preview">
+        <span style="background:#191F06"></span>
+        <span style="background:#F0EEDA"></span>
+        <span style="background:#D33900"></span>
+        <span class="yhint" style="background:#FFFCB0">YEL</span>
+      </div>
+      <div class="pal-body">
+        <div class="pal-name">P1 · <em>Faithful</em></div>
+        <div class="pal-tag">源站 1:1 校准 · 最有原味</div>
+        <div class="pal-swatches">
+          <div class="pal-sw"><span class="chip" style="background:#191F06"></span><span class="hex">#191F06</span><span class="role">墨 / 深块·正文</span></div>
+          <div class="pal-sw"><span class="chip" style="background:#F0EEDA"></span><span class="hex">#F0EEDA</span><span class="role">纸 / 整页底</span></div>
+          <div class="pal-sw"><span class="chip" style="background:#D33900"></span><span class="hex">#D33900</span><span class="role">焰 / 按钮</span></div>
+          <div class="pal-sw"><span class="chip" style="background:#E43E00"></span><span class="hex">#E43E00</span><span class="role">焰亮 / 斜体字</span></div>
+          <div class="pal-sw"><span class="chip" style="background:#FFFCB0"></span><span class="hex">#FFFCB0</span><span class="role">黄 / 仅深块高亮</span></div>
+        </div>
+        <div class="pal-pick"><span class="dot"></span> 当前选中</div>
+      </div>
+    </button>
+
+    <!-- P2 Reading -->
+    <button class="pal" data-pal="2" data-name="Reading"
+      data-ink="#191F06" data-paper="#F4F2E6" data-flame="#D33900" data-flame2="#E43E00" data-yellow="#FFFCB0" data-muted="#62674A" data-rule="rgba(25,31,6,0.14)">
+      <div class="pal-preview">
+        <span style="background:#191F06"></span>
+        <span style="background:#F4F2E6"></span>
+        <span style="background:#D33900"></span>
+        <span class="yhint" style="background:#FFFCB0">YEL</span>
+      </div>
+      <div class="pal-body">
+        <div class="pal-name">P2 · <em>Reading</em></div>
+        <div class="pal-tag">纸再亮一档 · 长读最舒适 · 推荐</div>
+        <div class="pal-swatches">
+          <div class="pal-sw"><span class="chip" style="background:#191F06"></span><span class="hex">#191F06</span><span class="role">墨</span></div>
+          <div class="pal-sw"><span class="chip" style="background:#F4F2E6"></span><span class="hex">#F4F2E6</span><span class="role">纸（更亮净）</span></div>
+          <div class="pal-sw"><span class="chip" style="background:#D33900"></span><span class="hex">#D33900</span><span class="role">焰 / 按钮</span></div>
+          <div class="pal-sw"><span class="chip" style="background:#FFFCB0"></span><span class="hex">#FFFCB0</span><span class="role">黄 / 仅深块高亮</span></div>
+        </div>
+        <div class="pal-pick"><span class="dot"></span> 选用此套</div>
+      </div>
+    </button>
+
+    <!-- P3 Press -->
+    <button class="pal" data-pal="3" data-name="Press"
+      data-ink="#0F1305" data-paper="#191F06" data-flame="#E43E00" data-flame2="#FF5A1F" data-yellow="#FFFCB0" data-muted="#8A8F6E" data-rule="rgba(240,238,218,0.16)">
+      <div class="pal-preview">
+        <span style="background:#191F06"></span>
+        <span style="background:#FFFCB0"></span>
+        <span style="background:#E43E00"></span>
+        <span class="yhint" style="background:#F0EEDA">PPR</span>
+      </div>
+      <div class="pal-body">
+        <div class="pal-name">P3 · <em>Press</em></div>
+        <div class="pal-tag">深块主导 · 气场最足 · 配 Manifesto</div>
+        <div class="pal-swatches">
+          <div class="pal-sw"><span class="chip" style="background:#191F06"></span><span class="hex">#191F06</span><span class="role">墨 / 主底</span></div>
+          <div class="pal-sw"><span class="chip" style="background:#FFFCB0"></span><span class="hex">#FFFCB0</span><span class="role">黄 / 标题字</span></div>
+          <div class="pal-sw"><span class="chip" style="background:#F0EEDA"></span><span class="hex">#F0EEDA</span><span class="role">纸 / 正文字</span></div>
+          <div class="pal-sw"><span class="chip" style="background:#E43E00"></span><span class="hex">#E43E00</span><span class="role">焰 / 强调·按钮</span></div>
+        </div>
+        <div class="pal-pick"><span class="dot"></span> 选用此套</div>
+      </div>
+    </button>
+
+    <!-- P4 Quiet -->
+    <button class="pal" data-pal="4" data-name="Quiet"
+      data-ink="#191F06" data-paper="#F0EEDA" data-flame="#D33900" data-flame2="#D33900" data-yellow="#E7E3CA" data-muted="#5A5F3F" data-rule="rgba(25,31,6,0.14)">
+      <div class="pal-preview">
+        <span style="background:#191F06"></span>
+        <span style="background:#F0EEDA"></span>
+        <span style="background:#D33900"></span>
+        <span class="yhint" style="background:#E7E3CA">—</span>
+      </div>
+      <div class="pal-body">
+        <div class="pal-name">P4 · <em>Quiet</em></div>
+        <div class="pal-tag">去黄 · 单一焰色 · 最稳重保守</div>
+        <div class="pal-swatches">
+          <div class="pal-sw"><span class="chip" style="background:#191F06"></span><span class="hex">#191F06</span><span class="role">墨</span></div>
+          <div class="pal-sw"><span class="chip" style="background:#F0EEDA"></span><span class="hex">#F0EEDA</span><span class="role">纸</span></div>
+          <div class="pal-sw"><span class="chip" style="background:#D33900"></span><span class="hex">#D33900</span><span class="role">焰 / 唯一强调</span></div>
+          <div class="pal-sw"><span class="chip" style="background:#E7E3CA"></span><span class="hex">#E7E3CA</span><span class="role">米 / 分区块（替黄）</span></div>
+        </div>
+        <div class="pal-pick"><span class="dot"></span> 选用此套</div>
+      </div>
+    </button>
+
+  </div>
+
+  <div class="note">
+    <b>#FFFCB0 的纪律：</b>它<b>不是底色</b>，只在 <span class="y">#191F06 深块</span> 上做"重对比时刻"——首屏数字、深色分区标题。整页底永远是 #F0EEDA。样机右侧深块就是它唯一的合法用法。P3 Press 反向把深块铺成主场，黄升为标题字，气场最足。
+  </div>
+
+  <!-- ============ TYPE ============ -->
+  <div class="lab" id="type"><span class="ix">02</span> 字体方案 · Type <span class="hint">— dria = 衬线展示 + 无衬线正文 · 绿标=复用你 RSS 字体</span></div>
+  <div class="type-grid">
+
+    <!-- T1 Their Stack -->
+    <button class="typ" data-typ="1" data-name="RSS Stack"
+      data-serif="'Bricolage Grotesque','Noto Sans SC',sans-serif" data-sans="'Inter','Noto Sans SC',sans-serif" data-italic="0">
+      <div class="typ-top">
+        <div class="typ-name">T1 · <b>你的 RSS 栈</b></div>
+        <div class="typ-pick"><span class="dot"></span> 选用</div>
+      </div>
+      <div class="typ-spec-serif" style="font-family:'Bricolage Grotesque',sans-serif;font-weight:600">数据驱动<span style="color:var(--flame-ui)">增长</span></div>
+      <div class="typ-spec-sans" style="font-family:'Inter',sans-serif">Bricolage Grotesque 做展示 = 现代科技编辑风。<b style="color:var(--txt)">代价：丢掉 dria 的衬线斜体签名</b>，整体偏"工具产品"而非"投资刊物"。但跨项目一致性最高。</div>
+      <div class="typ-roles">
+        <div><span class="rk">展示</span><span class="rv reuse">Bricolage Grotesque ✓复用</span></div>
+        <div><span class="rk">UI</span><span class="rv reuse">Inter ✓复用</span></div>
+        <div><span class="rk">正文</span><span class="rv reuse">Source Serif 4 ✓复用</span></div>
+      </div>
+    </button>
+
+    <!-- T2 Bridge (recommended) -->
+    <button class="typ sel rec" data-typ="2" data-name="Bridge"
+      data-serif="'Source Serif 4','Noto Serif SC',Georgia,serif" data-sans="'Inter','Noto Sans SC',sans-serif" data-italic="1">
+      <div class="typ-top">
+        <div class="typ-name">T2 · <b>Bridge 折中</b></div>
+        <div class="typ-pick"><span class="dot"></span> 当前</div>
+      </div>
+      <div class="typ-spec-serif" style="font-family:'Source Serif 4',serif">We move <em style="font-family:'Source Serif 4',serif;font-style:italic">where</em></div>
+      <div class="typ-spec-sans" style="font-family:'Inter',sans-serif">把 <b style="color:var(--txt)">Source Serif 4 升任展示 + 斜体强调</b>（它有光学尺寸+优雅斜体），Inter 做 UI。<b style="color:var(--txt)">复用你 3 个字体里的 2 个</b>，又还原 dria 衬线斜体 DNA。</div>
+      <div class="typ-roles">
+        <div><span class="rk">展示</span><span class="rv reuse">Source Serif 4 ✓复用·升任</span></div>
+        <div><span class="rk">UI</span><span class="rv reuse">Inter ✓复用</span></div>
+        <div><span class="rk">正文</span><span class="rv">Source Serif 4 / Inter</span></div>
+      </div>
+    </button>
+
+    <!-- T3 Literary -->
+    <button class="typ" data-typ="3" data-name="Literary"
+      data-serif="'Newsreader','Noto Serif SC',serif" data-sans="'Inter','Noto Sans SC',sans-serif" data-italic="1">
+      <div class="typ-top">
+        <div class="typ-name">T3 · <b>Literary 最像 dria</b></div>
+        <div class="typ-pick"><span class="dot"></span> 选用</div>
+      </div>
+      <div class="typ-spec-serif" style="font-family:'Newsreader',serif">something <em style="font-family:'Newsreader',serif;font-style:italic">different</em></div>
+      <div class="typ-spec-sans" style="font-family:'Inter',sans-serif">Newsreader 的高对比文学斜体 = 最贴 dria 那种投资刊物气。Inter 正文。代价：引入一个你 RSS 栈外的新字体。</div>
+      <div class="typ-roles">
+        <div><span class="rk">展示</span><span class="rv">Newsreader（新增）</span></div>
+        <div><span class="rk">UI</span><span class="rv reuse">Inter ✓复用</span></div>
+        <div><span class="rk">正文</span><span class="rv reuse">Source Serif 4 ✓复用</span></div>
+      </div>
+    </button>
+
+  </div>
+
+  <div class="note">
+    <b>我的评估：</b>你 RSS 栈是「无衬线展示 + 衬线正文」，dria 正好<b>相反</b>。直接照搬（T1）会丢掉 dria 的灵魂——衬线斜体。所以我推荐 <b>T2 Bridge</b>：把你已有的 <b>Source Serif 4 升上展示位</b>吃下斜体强调，Inter 管 UI——复用 2/3、一致性保住、还原度更高。想要最浓的"投资刊物味"再上 <b>T3</b>（多引一个 Newsreader）。
+  </div>
+
+  <!-- ============ MOTION ============ -->
+  <div class="lab solo" id="motion"><span class="ix">03</span> 动效语言 · Motion <span class="hint">— 顶部样机即实时演示</span></div>
+
+  <div class="motion-spec">
+    <div class="ms-card">
+      <div class="step">1</div>
+      <h4>遮罩横扫<span class="dir">→ 右 to 左 · 820ms</span></h4>
+      <p>焰色面板覆盖舞台，从右向左退去揭开内容。一个"幕启"的仪式，也是整段编排的发令枪。</p>
+    </div>
+    <div class="ms-card">
+      <div class="step">2</div>
+      <h4>衬线描入<span class="dir">→ 左 to 右 · 1000ms</span></h4>
+      <p>大标题用 clip-path 从左往右"写"出来，像钢笔落纸。衬线斜体在这一步最出戏——慢，才显贵。</p>
+    </div>
+    <div class="ms-card">
+      <div class="step">3</div>
+      <h4>元素浮起<span class="dir">↑ 下 to 上 · 760ms</span></h4>
+      <p>按钮、描述、深块数字从下方 22px 升起淡入，错峰 60–160ms。辅助信息"跟上来"，不抢标题。</p>
+    </div>
+    <div class="ms-card">
+      <div class="step">4</div>
+      <h4>持续微呼吸<span class="dir">∞ 6s 循环 · 滚动差速</span></h4>
+      <p>落定后关键块以 1.5% 幅度极缓缩放/上浮；滚动时各层微小差速漂移。页面"活着"但从不喧哗。</p>
+    </div>
+  </div>
+
+  <div class="principles">
+    <div class="principle"><h5>有<em>先后</em></h5><p>绝不让元素同时出现。编排顺序 = 视觉重要性，幕→题→辅一气呵成。</p></div>
+    <div class="principle"><h5>有<em>方向</em></h5><p>每类元素有签名方向：遮罩横扫、衬线横描、辅助竖升。方向一致，记忆点才稳。</p></div>
+    <div class="principle"><h5>慢而<em>稳</em></h5><p>时长 760–1000ms，重 ease-out，落定无回弹。"重量感"来自缓慢减速，而非弹跳。</p></div>
+    <div class="principle"><h5>会<em>呼吸</em></h5><p>静止态不是死的：极小幅持续运动 + 滚动差速，给沉稳版面一层活气。尊重 reduced-motion。</p></div>
+  </div>
+
+  <div class="note" style="margin-top:24px">
+    切换配色 / 字体会自动重放入场序列，方便你对比"动 + 色 + 字"三者合在一起的整体气质。挑好后告诉我编号组合，例如 <b>P2 + T2</b>，我落到 tokens.css / 简历 / 设计系统。
+  </div>
+
+  <footer class="pf">
+    <span>Foundations v2 · 2026</span>
+    <span>Faithful to <a href="https://www.dria.com/" target="_blank" rel="noopener">dria.com</a></span>
+    <span>挑好 → 落地到 <a href="../index.html">简历</a></span>
+  </footer>
+
+</div>
+
+<script>
+  const specimen = document.getElementById('specimen');
+  const root = document.documentElement;
+
+  function applyPalette(btn) {
+    const d = btn.dataset;
+    root.style.setProperty('--sp-ink', d.ink);
+    root.style.setProperty('--sp-paper', d.paper);
+    root.style.setProperty('--sp-flame', d.flame);
+    root.style.setProperty('--sp-flame2', d.flame2);
+    root.style.setProperty('--sp-yellow', d.yellow);
+    root.style.setProperty('--sp-muted', d.muted);
+    root.style.setProperty('--sp-rule', d.rule);
+    document.querySelectorAll('.pal').forEach(p => p.classList.remove('sel'));
+    btn.classList.add('sel');
+    document.getElementById('now-pal').textContent = 'P' + d.pal + ' · ' + d.name;
+  }
+
+  function applyType(btn) {
+    const d = btn.dataset;
+    root.style.setProperty('--sp-serif', d.serif);
+    root.style.setProperty('--sp-sans', d.sans);
+    document.querySelectorAll('.typ').forEach(p => p.classList.remove('sel'));
+    btn.classList.add('sel');
+    document.getElementById('now-typ').textContent = 'T' + d.typ + ' · ' + d.name;
+  }
+
+  function replay() {
+    specimen.classList.remove('play', 'breathe');
+    void specimen.offsetWidth;
+    specimen.classList.add('play');
+    setTimeout(() => specimen.classList.add('breathe'), 1600);
+  }
+
+  document.querySelectorAll('.pal').forEach(btn => btn.addEventListener('click', () => { applyPalette(btn); replay(); }));
+  document.querySelectorAll('.typ').forEach(btn => btn.addEventListener('click', () => { applyType(btn); replay(); }));
+
+  window.addEventListener('load', () => setTimeout(replay, 300));
+</script>
+
+</body>
+</html>

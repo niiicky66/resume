@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>字体实验室 · Type Lab · 三层级 + 数字 × 中英文 × 渲染检测</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!-- batch 1: original families -->
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300..600;1,6..72,300..600&family=Source+Serif+4:ital,opsz,wght@0,8..60,300..600;1,8..60,300..600&family=Instrument+Serif:ital@0;1&family=Spectral:ital,wght@0,300;0,400;0,500;0,600;1,400;1,500&family=Bricolage+Grotesque:opsz,wght@10..48,300..700&family=Inter:wght@300;400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&family=Hanken+Grotesk:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Noto+Serif+SC:wght@300;400;500;600&family=Noto+Sans+SC:wght@300;400;500;600&display=swap" rel="stylesheet">
+<!-- batch 2: scheme additions (Google) -->
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400..700;1,400..600&family=Geist:wght@300..800&family=Geist+Mono:wght@400;500;600&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&family=Golos+Text:wght@400;500;600&family=LXGW+WenKai+TC:wght@300;400;700&display=swap" rel="stylesheet">
+<!-- batch 3: Fontshare (Switzer / Satoshi) -->
+<link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=switzer@300,400,500,600,700&f[]=satoshi@400,500,700&display=swap">
+<style>
+:root {
+  /* ---- P1 Faithful (locked) ---- */
+  --ink:    #191F06;
+  --paper:  #F0EEDA;
+  --flame:  #D33900;
+  --flame2: #E43E00;
+  --yellow: #FFFCB0;
+  --muted:  #5A5F3F;
+  --rule:   rgba(25,31,6,0.18);
+
+  /* ---- resolved font roles (JS sets these) ---- */
+  --f-display: 'Newsreader', 'Noto Serif SC', serif;
+  --f-ui:      'Inter', 'Noto Sans SC', sans-serif;
+  --f-body:    'Source Serif 4', 'Noto Serif SC', serif;
+  /* --f-num: (set by JS only when a dedicated number font is chosen) */
+  --num-variant: normal;
+
+  /* chrome */
+  --bg:   #14140F;
+  --bg2:  #1C1C15;
+  --bg3:  #24241B;
+  --line: #34342A;
+  --txt:  #E9E5CF;
+  --txt2: #9A9683;
+  --fl:   #E43E00;
+  --mono: 'IBM Plex Mono', monospace;
+  --ok:   #7FB06A;
+  --warn: #E0A53C;
+  --ease: cubic-bezier(0.16,1,0.3,1);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--bg); color: var(--txt); font-family: var(--mono); -webkit-font-smoothing: antialiased; line-height: 1.5; }
+.wrap { max-width: 1340px; margin: 0 auto; padding: 0 clamp(20px,4vw,56px); }
+
+/* header */
+.ph { border-bottom: 1px solid var(--line); position: sticky; top: 0; z-index: 50; background: color-mix(in srgb, var(--bg) 90%, transparent); backdrop-filter: blur(10px); }
+.ph-in { display: flex; align-items: baseline; justify-content: space-between; padding: 16px 0; gap: 20px; flex-wrap: wrap; }
+.ph-title { font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--txt); }
+.ph-title b { color: var(--fl); }
+.ph-links { display: flex; gap: 18px; }
+.ph-links a { color: var(--txt2); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; text-decoration: none; transition: color .2s; }
+.ph-links a:hover { color: var(--fl); }
+
+.intro { padding: clamp(28px,5vw,52px) 0 clamp(16px,3vw,24px); max-width: 80ch; }
+.intro h1 { font-family: 'Newsreader', serif; font-weight: 400; font-size: clamp(28px,4vw,48px); line-height: 1.08; color: var(--txt); letter-spacing: -0.015em; margin-bottom: 16px; }
+.intro h1 em { font-style: italic; color: var(--fl); }
+.intro p { color: var(--txt2); font-size: 13px; line-height: 1.7; }
+.intro p b { color: var(--txt); }
+
+/* dria + correction strip */
+.signals { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; padding-bottom: clamp(18px,3vw,28px); }
+@media (max-width: 760px){ .signals { grid-template-columns: 1fr; } }
+.sig { border: 1px solid var(--line); background: var(--bg2); padding: 14px 16px; }
+.sig .sig-k { font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--fl); margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+.sig .sig-k .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--fl); }
+.sig p { font-size: 11.5px; line-height: 1.7; color: var(--txt2); }
+.sig p b { color: var(--txt); }
+.sig p .hl { background: #FFFCB0; color: #191F06; padding: 0 5px; }
+.sig.warn .sig-k { color: var(--warn); }
+.sig.warn .dot { background: var(--warn); }
+
+/* ============ main grid: preview (sticky) + controls ============ */
+.lab-grid { display: grid; grid-template-columns: 1.05fr 0.95fr; gap: 28px; align-items: start; padding-bottom: 80px; }
+@media (max-width: 1000px) { .lab-grid { grid-template-columns: 1fr; } }
+
+/* ---- LIVE PREVIEW (P1 colours) ---- */
+.preview-col { position: sticky; top: 78px; }
+@media (max-width: 1000px) { .preview-col { position: static; } }
+
+.platform-bar { display: flex; gap: 8px; align-items: center; margin-bottom: 12px; flex-wrap: wrap; }
+.platform-bar .pf-label { font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--txt2); margin-right: 4px; }
+.seg { display: inline-flex; border: 1px solid var(--line); border-radius: 999px; overflow: hidden; }
+.seg button { background: transparent; color: var(--txt2); border: none; font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; padding: 7px 16px; cursor: pointer; transition: background .2s, color .2s; }
+.seg button.on { background: var(--fl); color: #fff; }
+.pf-note { font-size: 10px; color: var(--txt2); margin-left: auto; letter-spacing: 0.04em; }
+
+.preview {
+  background: var(--paper); color: var(--ink); border: 1px solid var(--line);
+  padding: clamp(24px,3vw,40px); overflow: hidden;
+}
+.pv-eye { font-family: var(--f-ui); font-size: 11px; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); margin-bottom: 22px; }
+.pv-headEN { font-family: var(--f-display); font-weight: 400; font-size: clamp(40px,5.5vw,72px); line-height: 0.98; letter-spacing: -0.02em; color: var(--ink); margin-bottom: 4px; }
+.pv-headEN em { font-style: italic; color: var(--flame2); }
+.pv-headCN { font-family: var(--f-display); font-weight: 500; font-size: clamp(30px,4.4vw,52px); line-height: 1.12; letter-spacing: -0.01em; color: var(--ink); margin-bottom: 22px; }
+.pv-headCN em { font-style: italic; color: var(--flame2); }
+.pv-body { font-family: var(--f-body); font-size: 17px; line-height: 1.66; color: var(--ink); max-width: 46ch; margin-bottom: 14px; }
+.pv-body .em { color: var(--flame2); font-style: italic; }
+.pv-row { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; margin-top: 22px; }
+.pv-btn { font-family: var(--f-ui); font-weight: 500; font-size: 13px; background: var(--flame); color: var(--paper); border: none; padding: 13px 22px; border-radius: 999px; cursor: pointer; }
+.pv-chip { font-family: var(--mono); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); border: 1px solid var(--rule); padding: 7px 12px; border-radius: 999px; }
+
+/* numbers obey the dedicated number role */
+.num { font-family: var(--f-num, inherit); font-variant-numeric: var(--num-variant, normal); }
+
+.pv-dark { background: var(--ink); margin: 24px -1px 0; padding: 24px clamp(24px,3vw,40px); display: flex; align-items: baseline; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+.pv-num { font-family: var(--f-num, var(--f-display)); font-variant-numeric: var(--num-variant, normal); font-size: clamp(44px,6vw,84px); line-height: 0.9; color: var(--yellow); }
+.pv-num em { font-style: italic; color: var(--flame2); }
+.pv-num .u { font-family: var(--mono); font-variant-numeric: normal; font-size: 0.24em; vertical-align: super; letter-spacing: 0.08em; color: color-mix(in srgb, var(--paper) 55%, transparent); margin-left: 4px; }
+.pv-num-cap { font-family: var(--f-ui); font-size: 11px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: color-mix(in srgb, var(--paper) 55%, transparent); max-width: 16ch; text-align: right; }
+
+/* ---- FIGURES LAB (numbers playground) ---- */
+.figlab { background: var(--ink); margin: 0 -1px -1px; padding: 22px clamp(24px,3vw,40px) 26px; border-top: 1px solid rgba(240,238,218,0.12); }
+.figlab-head { font-family: var(--mono); font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; color: color-mix(in srgb, var(--paper) 48%, transparent); margin-bottom: 14px; display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; }
+.figlab-head .live-stack { color: var(--yellow); letter-spacing: 0.04em; text-transform: none; font-size: 9px; }
+.figlab-live { font-family: var(--f-num, var(--f-body)); font-variant-numeric: var(--num-variant, normal); font-size: clamp(34px,4.6vw,58px); line-height: 1; color: var(--paper); letter-spacing: 0.02em; margin-bottom: 20px; }
+.figcmp { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 18px; }
+@media (max-width: 520px){ .figcmp { grid-template-columns: 1fr; } }
+.figcmp .fc { border: 1px solid rgba(240,238,218,0.14); padding: 12px 14px; }
+.figcmp .fc .lbl { font-family: var(--mono); font-size: 8.5px; letter-spacing: 0.14em; text-transform: uppercase; color: color-mix(in srgb, var(--paper) 50%, transparent); display: block; margin-bottom: 7px; }
+.figcmp .fc .digits { font-family: 'Source Serif 4', Georgia, serif; font-size: 30px; line-height: 1; color: var(--paper); letter-spacing: 0.04em; }
+.figcmp .fc.lining .digits { font-variant-numeric: lining-nums; font-feature-settings: 'lnum' 1, 'onum' 0; }
+.figcmp .fc.oldstyle .digits { font-variant-numeric: oldstyle-nums; font-feature-settings: 'onum' 1, 'lnum' 0; }
+.figcmp .fc .digits b { color: var(--flame2); font-weight: inherit; }
+.figcmp .fc .micro { font-family: var(--mono); font-size: 8.5px; color: color-mix(in srgb, var(--paper) 42%, transparent); margin-top: 8px; line-height: 1.5; }
+.figtab { border: 1px solid rgba(240,238,218,0.14); padding: 12px 14px; display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+@media (max-width: 520px){ .figtab { grid-template-columns: 1fr; } }
+.figtab .ft-col .lbl { font-family: var(--mono); font-size: 8.5px; letter-spacing: 0.14em; text-transform: uppercase; color: color-mix(in srgb, var(--paper) 50%, transparent); display: block; margin-bottom: 7px; }
+.figtab .ft-col .rows { font-family: var(--f-num, var(--f-body)); font-size: 17px; line-height: 1.5; color: var(--paper); text-align: right; }
+.figtab .ft-col.prop .rows { font-variant-numeric: proportional-nums; }
+.figtab .ft-col.tab .rows { font-variant-numeric: tabular-nums; }
+.figtab .ft-col .rows div { display: block; }
+
+/* current stack readout */
+.stack-readout { margin-top: 14px; border: 1px dashed var(--line); padding: 12px 14px; display: flex; flex-direction: column; gap: 7px; }
+.stack-readout .sr { display: flex; gap: 10px; font-size: 10px; line-height: 1.5; }
+.stack-readout .sr .role { color: var(--fl); width: 58px; flex: none; letter-spacing: 0.1em; text-transform: uppercase; }
+.stack-readout .sr .val { color: var(--txt2); letter-spacing: 0.03em; word-break: break-word; }
+.stack-readout .sr .val b { color: var(--txt); }
+
+/* ---- CONTROLS ---- */
+.controls-col { display: flex; flex-direction: column; gap: 18px; }
+.legend { border: 1px solid var(--line); background: var(--bg2); padding: 12px 16px; display: flex; gap: 18px; flex-wrap: wrap; align-items: center; }
+.legend .lg-t { font-size: 9px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--txt2); }
+.legend .lg-i { display: inline-flex; align-items: center; gap: 6px; font-family: var(--mono); font-size: 9.5px; color: var(--txt2); }
+.badge { font-family: var(--mono); font-size: 8px; letter-spacing: 0.04em; padding: 2px 6px; border-radius: 3px; border: 1px solid; white-space: nowrap; }
+.badge.ok { color: var(--ok); border-color: color-mix(in srgb, var(--ok) 55%, transparent); }
+.badge.fallback { color: var(--warn); border-color: color-mix(in srgb, var(--warn) 55%, transparent); }
+.badge.missing { color: var(--fl); border-color: color-mix(in srgb, var(--fl) 55%, transparent); background: color-mix(in srgb, var(--fl) 8%, transparent); }
+.badge.pending { color: var(--txt2); border-color: var(--line); }
+.badge.pending::before { content: ''; display: inline-block; width: 5px; height: 5px; border-radius: 50%; background: var(--txt2); margin-right: 4px; vertical-align: middle; animation: blink 1s steps(2) infinite; }
+@keyframes blink { 50% { opacity: 0.25; } }
+
+.role-card { border: 1px solid var(--line); background: var(--bg2); }
+.role-card.num-card { border-color: color-mix(in srgb, var(--fl) 35%, var(--line)); }
+.role-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; padding: 16px 18px; border-bottom: 1px solid var(--line); flex-wrap: wrap; }
+.role-head .rh-l { display: flex; align-items: baseline; gap: 12px; }
+.role-head .tier { font-family: 'Newsreader', serif; font-size: 24px; color: var(--txt); }
+.role-head .tier em { font-style: italic; color: var(--fl); }
+.role-head .tier-en { font-family: var(--mono); font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--txt2); }
+.role-head .where { font-family: var(--mono); font-size: 10px; color: var(--txt2); letter-spacing: 0.04em; text-align: right; max-width: 24ch; line-height: 1.5; }
+
+.subaxis { padding: 14px 18px; border-bottom: 1px solid var(--line); }
+.subaxis:last-child { border-bottom: none; }
+.subaxis .ax-label { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--txt2); margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+.subaxis .ax-label .tag { color: var(--fl); }
+.opts { display: flex; flex-wrap: wrap; gap: 8px; }
+.opt { background: var(--bg3); border: 1px solid var(--line); color: var(--txt2); cursor: pointer; padding: 9px 13px; border-radius: 6px; transition: border-color .2s, color .2s, background .2s; text-align: left; position: relative; }
+.opt:hover { border-color: #56564a; color: var(--txt); }
+.opt.on { border-color: var(--fl); color: var(--txt); background: color-mix(in srgb, var(--fl) 10%, var(--bg3)); }
+.opt .of { font-size: 15px; display: block; line-height: 1.2; }
+.opt .om { font-family: var(--mono); font-size: 9px; letter-spacing: 0.06em; color: var(--txt2); margin-top: 4px; display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+.opt.on .om { color: var(--fl); }
+.opt .scheme-tag { font-family: var(--mono); font-size: 8px; color: var(--txt2); border: 1px solid var(--line); border-radius: 3px; padding: 1px 4px; letter-spacing: 0.04em; }
+.opt .rec-pip { color: var(--fl); font-size: 9px; }
+
+/* segmented controls inside number card */
+.miniseg-row { display: flex; gap: 18px; flex-wrap: wrap; }
+.miniseg .ms-lbl { font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--txt2); margin-bottom: 8px; }
+.miniseg .seg button { font-size: 9px; padding: 6px 12px; }
+
+/* fallback chain viz */
+.fallback { padding: 14px 18px; background: var(--bg); border-top: 1px solid var(--line); }
+.fallback .fb-title { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--txt2); margin-bottom: 10px; }
+.fb-chain { display: flex; align-items: stretch; gap: 0; flex-wrap: wrap; }
+.fb-node { border: 1px solid var(--line); padding: 7px 11px; font-size: 10px; line-height: 1.3; position: relative; background: var(--bg2); }
+.fb-node .pf { font-family: var(--mono); font-size: 8px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--fl); display: block; margin-bottom: 2px; }
+.fb-node .nm { color: var(--txt); }
+.fb-node.fade .nm { color: var(--txt2); }
+.fb-node.fade .pf { color: var(--txt2); }
+.fb-node.active-render { border-color: var(--ok); }
+.fb-node.active-render .pf { color: var(--ok); }
+.fb-arrow { display: flex; align-items: center; color: var(--txt2); padding: 0 7px; font-size: 12px; }
+
+.note { font-size: 11px; line-height: 1.7; color: var(--txt2); padding: 14px 16px; border: 1px dashed var(--line); }
+.note b { color: var(--txt); }
+.note .y { background: #FFFCB0; color: #191F06; padding: 0 5px; }
+
+/* recommendation banner */
+.rec-banner { border: 1px solid var(--fl); background: color-mix(in srgb, var(--fl) 8%, var(--bg2)); padding: 18px 20px; margin-top: 22px; }
+.rec-banner h3 { font-family: 'Newsreader', serif; font-weight: 400; font-size: 22px; color: var(--txt); margin-bottom: 12px; }
+.rec-banner h3 em { font-style: italic; color: var(--fl); }
+.rec-banner .rec-line { display: flex; gap: 10px; font-size: 12px; line-height: 1.6; color: var(--txt2); margin-bottom: 8px; }
+.rec-banner .rec-line .rl { color: var(--fl); width: 50px; flex: none; letter-spacing: 0.08em; text-transform: uppercase; font-family: var(--mono); font-size: 10px; padding-top: 2px; }
+.rec-banner .rec-line b { color: var(--txt); }
+.rec-banner .apply { display: inline-flex; align-items: center; gap: 8px; font-family: var(--mono); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--fl); background: transparent; border: 1px solid var(--fl); padding: 9px 16px; border-radius: 999px; cursor: pointer; transition: background .2s, color .2s; margin-top: 8px; }
+.rec-banner .apply:hover { background: var(--fl); color: #fff; }
+
+footer.pf-foot { border-top: 1px solid var(--line); margin-top: 40px; padding: 26px 0; display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+footer.pf-foot span { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--txt2); }
+footer.pf-foot a { color: var(--fl); text-decoration: none; }
+</style>
+</head>
+<body>
+
+<header class="ph">
+  <div class="wrap ph-in">
+    <div class="ph-title">字体实验室 · <b>Type Lab</b> · v2</div>
+    <nav class="ph-links">
+      <a href="#" id="lnk-reset">重置</a>
+      <a href="foundations.html">→ 配色</a>
+      <a href="../index.html">→ 简历</a>
+      <a href="design-system.html">→ 设计系统</a>
+    </nav>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="intro">
+    <h1>四个层级，<em>中英文</em>各自挑，<br>数字单独拎出来，渲染缺失看得见。</h1>
+    <p>配色锁定 P1 Faithful。字体拆成 <b>展示 / UI / 正文 / 数字</b> 四个层级，每层英文与中文都能独立切换——四套方案里的字体我全部塞进了对应位置，<b>不锁方案、可任意组合</b>。右侧选，左侧样机实时变；顶部切 iOS / Web 看真实降级。每个选项都跑了<b>真实渲染检测</b>，本机没装 / 没加载的字体会标红"缺失"——这就是之前"切了没反应"的原因。</p>
+  </div>
+
+  <div class="signals">
+    <div class="sig">
+      <div class="sig-k"><span class="dot"></span>dria.co 字体风格 · 我们在借鉴的对象</div>
+      <p>无法从外部直接读到 dria.co 的 CSS 字体声明，以下是<b>基于其视觉风格的最接近匹配</b>（建议你在站点上右键 Inspect → font-family 实测核实）：dria 走的是当下 AI 品牌的<b>暖调高对比文学衬线</b>大标题 + 中性无衬线正文。本 lab 中最贴近的展示档是 <span class="hl">Newsreader</span> 或 <span class="hl">EB Garamond</span>（古典优雅档），正文配 <span class="hl">Inter / Geist</span>。已在选项里用 ◎ 标出"dria 风格最近似"。</p>
+    </div>
+    <div class="sig warn">
+      <div class="sig-k"><span class="dot"></span>更正 · Source Serif 4 的默认数字</div>
+      <p>它默认其实是<b>等高比例数字 (Lining)</b>，<b>不是</b>旧体——旧体 3/4/5/7/9 下沉那个效果要手动开 <span class="hl">oldstyle-nums</span>。你喜欢的"4 沉到基线下"飘逸风，已做成数字层的「旧体」开关；下方样机里 0–9 对比块实时演示，下沉位高亮成火焰色。</p>
+    </div>
+  </div>
+
+  <div class="lab-grid">
+
+    <!-- ============ LIVE PREVIEW ============ -->
+    <div class="preview-col">
+      <div class="platform-bar">
+        <span class="pf-label">渲染平台</span>
+        <div class="seg" id="seg-platform">
+          <button data-pf="ios" class="on">iOS · 苹果</button>
+          <button data-pf="web">Web · 安卓/PC</button>
+        </div>
+        <span class="pf-note" id="pf-note">iOS：中文走 PingFang / Songti</span>
+      </div>
+
+      <div class="preview" id="preview">
+        <div class="pv-eye">消金商业分析师 · Consumer Finance Analyst</div>
+        <div class="pv-headEN">Critical <em>returns</em></div>
+        <div class="pv-headCN">数据驱动<em>增长</em>，风险收益最优解</div>
+        <p class="pv-body"><span class="num">4</span> 年消金运营，深度操盘 <span class="em num">1400 亿</span>生息资产与 <span class="em num">300 万 DAU</span> 大盘。精通 SQL 与 Python 建模，擅长以差异化定价与风险控制驱动规模与收益同步增长。</p>
+        <div class="pv-row">
+          <button class="pv-btn">查看完整简历 →</button>
+          <span class="pv-chip">SQL · Python</span>
+          <span class="pv-chip">在职 · 乐信</span>
+        </div>
+        <div class="pv-dark">
+          <div class="pv-num num">1400<span class="u">亿</span></div>
+          <div class="pv-num-cap">生息资产规模<br>Asset under play</div>
+        </div>
+
+        <!-- numbers playground -->
+        <div class="figlab">
+          <div class="figlab-head">数字 / Figures · 实时方案 <span class="live-stack" id="fig-live-stack"></span></div>
+          <div class="figlab-live num" id="fig-live">0 1 2 3 4 5 6 7 8 9</div>
+
+          <div class="figcmp">
+            <div class="fc lining">
+              <span class="lbl">等高 Lining（默认多见于无衬线）</span>
+              <div class="digits" id="dig-lining"></div>
+              <div class="micro">齐顶 · 与大写同高 · 适合表格 / 大写场景</div>
+            </div>
+            <div class="fc oldstyle">
+              <span class="lbl">旧体 Oldstyle（3·4·5·7·9 下沉）</span>
+              <div class="digits" id="dig-old"></div>
+              <div class="micro">高低错落 · 像小写字母 · 融进正文飘逸不沉闷</div>
+            </div>
+          </div>
+
+          <div class="figtab">
+            <div class="ft-col prop">
+              <span class="lbl">比例 Proportional</span>
+              <div class="rows"><div>1,408</div><div>92,640</div><div>3,001,775</div></div>
+            </div>
+            <div class="ft-col tab">
+              <span class="lbl">等宽 Tabular（右缘对齐）</span>
+              <div class="rows"><div>1,408</div><div>92,640</div><div>3,001,775</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="stack-readout" id="stack-readout"></div>
+    </div>
+
+    <!-- ============ CONTROLS ============ -->
+    <div class="controls-col">
+
+      <div class="legend">
+        <span class="lg-t">检测图例</span>
+        <span class="lg-i"><span class="badge ok">已加载/原生</span> 本机渲染正常</span>
+        <span class="lg-i"><span class="badge fallback">降级</span> 首选缺失·退到兜底</span>
+        <span class="lg-i"><span class="badge missing">缺失</span> 切了看不出效果</span>
+        <span class="lg-i">◎ dria 风格最近似 · ● 我的推荐</span>
+      </div>
+
+      <!-- DISPLAY -->
+      <div class="role-card" data-role="display">
+        <div class="role-head">
+          <div class="rh-l">
+            <span class="tier">展示<em>/</em>标题</span>
+            <span class="tier-en">Display</span>
+          </div>
+          <span class="where">用于：姓名大标题 · 章节标题 · 斜体强调词 · 深块数字</span>
+        </div>
+        <div class="subaxis">
+          <div class="ax-label"><span class="tag">EN ·</span> 英文 / 拉丁字母</div>
+          <div class="opts" data-axis="display-en"></div>
+        </div>
+        <div class="subaxis">
+          <div class="ax-label"><span class="tag">中 ·</span> 中文 / 汉字</div>
+          <div class="opts" data-axis="display-cn"></div>
+        </div>
+        <div class="fallback">
+          <div class="fb-title">降级链 · 当前平台实际生效（绿框=实渲染）</div>
+          <div class="fb-chain" data-chain="display"></div>
+        </div>
+      </div>
+
+      <!-- UI -->
+      <div class="role-card" data-role="ui">
+        <div class="role-head">
+          <div class="rh-l">
+            <span class="tier">界面<em>/</em>UI</span>
+            <span class="tier-en">Interface</span>
+          </div>
+          <span class="where">用于：导航 · 标签 eyebrow · 按钮 · chip</span>
+        </div>
+        <div class="subaxis">
+          <div class="ax-label"><span class="tag">EN ·</span> 英文 / 拉丁字母</div>
+          <div class="opts" data-axis="ui-en"></div>
+        </div>
+        <div class="subaxis">
+          <div class="ax-label"><span class="tag">中 ·</span> 中文 / 汉字</div>
+          <div class="opts" data-axis="ui-cn"></div>
+        </div>
+        <div class="fallback">
+          <div class="fb-title">降级链 · 当前平台实际生效</div>
+          <div class="fb-chain" data-chain="ui"></div>
+        </div>
+      </div>
+
+      <!-- BODY -->
+      <div class="role-card" data-role="body">
+        <div class="role-head">
+          <div class="rh-l">
+            <span class="tier">正文<em>/</em>阅读</span>
+            <span class="tier-en">Body</span>
+          </div>
+          <span class="where">用于：段落描述 · "4 年消金运营…" 这段长文</span>
+        </div>
+        <div class="subaxis">
+          <div class="ax-label"><span class="tag">EN ·</span> 英文 / 拉丁字母</div>
+          <div class="opts" data-axis="body-en"></div>
+        </div>
+        <div class="subaxis">
+          <div class="ax-label"><span class="tag">中 ·</span> 中文 / 汉字</div>
+          <div class="opts" data-axis="body-cn"></div>
+        </div>
+        <div class="fallback">
+          <div class="fb-title">降级链 · 当前平台实际生效</div>
+          <div class="fb-chain" data-chain="body"></div>
+        </div>
+      </div>
+
+      <!-- NUMBERS -->
+      <div class="role-card num-card" data-role="num">
+        <div class="role-head">
+          <div class="rh-l">
+            <span class="tier">数字<em>/</em>Figures</span>
+            <span class="tier-en">Numerals</span>
+          </div>
+          <span class="where">用于：大盘统计 1400 · 正文内 4 年 / 300 万 · 数据数字</span>
+        </div>
+        <div class="subaxis">
+          <div class="ax-label"><span class="tag">字体 ·</span> 数字专用字体（继承=跟随所在层级）</div>
+          <div class="opts" data-axis="num"></div>
+        </div>
+        <div class="subaxis">
+          <div class="miniseg-row">
+            <div class="miniseg">
+              <div class="ms-lbl">字形 Figure style</div>
+              <div class="seg" id="seg-numstyle">
+                <button data-v="default" class="on">默认</button>
+                <button data-v="old">旧体 Old</button>
+                <button data-v="lin">等高 Lin</button>
+              </div>
+            </div>
+            <div class="miniseg">
+              <div class="ms-lbl">间距 Spacing</div>
+              <div class="seg" id="seg-numspace">
+                <button data-v="default" class="on">默认</button>
+                <button data-v="prop">比例</button>
+                <button data-v="tab">等宽 Tab</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="fallback">
+          <div class="fb-title">降级链 · 数字字体实际生效</div>
+          <div class="fb-chain" data-chain="num"></div>
+        </div>
+      </div>
+
+      <div class="note">
+        <b>关于中文字体：</b>PingFang SC（苹方）、Songti SC（宋体）、Kaiti（楷体）<b>只存在于 iOS / macOS</b>，无法网络加载；Web / 安卓会自动降级到 <b>Noto Sans/Serif SC</b>（可联网加载）。<b>霞鹜文楷 (LXGW WenKai TC)</b> 我直接联网加载了，所以全平台可见。<b>OPPO Sans / HarmonyOS Sans / 汉仪旗黑</b> 体量大且需授权，未联网加载——本机没装就会显示"缺失"，这正是渲染检测要告诉你的。
+      </div>
+
+      <div class="rec-banner">
+        <h3>我的最终<em>推荐</em>（已用 ● 标在选项上）</h3>
+        <div class="rec-line"><span class="rl">展示</span><span><b>Newsreader</b> + 思源宋体 <b>Noto Serif SC</b> — 暖调高对比文学衬线，最贴 dria.co；想更古典可换 EB Garamond。</span></div>
+        <div class="rec-line"><span class="rl">UI</span><span><b>Inter</b> + 苹方 <b>PingFang SC</b>（Web 落 Noto Sans）— 复用你 RSS 栈，界面最干净。</span></div>
+        <div class="rec-line"><span class="rl">正文</span><span><b>Source Serif 4</b> + <b>Noto Serif SC</b> — 衬线治"4 年消金运营"那段的寡淡，更有书卷重量。</span></div>
+        <div class="rec-line"><span class="rl">数字</span><span><b>继承正文</b> + <b>旧体 Oldstyle · 比例</b> — 就是你爱的 3/4/5/7/9 下沉飘逸；做仪表盘要列对齐时再切「等宽 Tabular」。</span></div>
+        <button class="apply" id="apply-rec">↺ 一键套用我的推荐</button>
+      </div>
+
+    </div>
+  </div>
+
+  <footer class="pf-foot">
+    <span>Type Lab v2 · 2026</span>
+    <span>配色锁定 P1 Faithful</span>
+    <span>挑好 → 落地 <a href="../index.html">简历</a> + <a href="design-system.html">设计系统</a></span>
+  </footer>
+</div>
+
+<script>
+/* ============================================================
+   FONT REGISTRY  ·  4 个方案的字体全部纳入，自由组合
+   EN：单族 webfont/系统字体；CN：{ios:[链], web:[链]} 降级链
+   load: google | fontshare | system | commercial
+   tag : 方案来源（仅作标注）；dria: dria 风格最近似
+   ============================================================ */
+const EN_FONTS = {
+  /* 衬线 / serif */
+  newsreader:    { label: 'Newsreader',          note: '衬线·文学高对比', stack: "'Newsreader'",          kind: 'serif', load:'google',     tag:'方案2', dria:true },
+  ebgaramond:    { label: 'EB Garamond',         note: '衬线·古典优雅',   stack: "'EB Garamond'",         kind: 'serif', load:'google',     tag:'方案2', dria:true },
+  ppeditorial:   { label: 'PP Editorial New',    note: '衬线·现代灵动',   stack: "'PP Editorial New'",    kind: 'serif', load:'commercial', tag:'方案4' },
+  instrument:    { label: 'Instrument Serif',    note: '衬线·轻盈极简',   stack: "'Instrument Serif'",    kind: 'serif', load:'google' },
+  spectral:      { label: 'Spectral',            note: '衬线·厚实压秤',   stack: "'Spectral'",            kind: 'serif', load:'google' },
+  source:        { label: 'Source Serif 4',      note: '衬线·光学尺寸',   stack: "'Source Serif 4'",      kind: 'serif', load:'google' },
+  /* 无衬线 / sans */
+  bricolage:     { label: 'Bricolage Grotesque', note: '无衬线·科技编辑', stack: "'Bricolage Grotesque'", kind: 'sans',  load:'google',     tag:'方案1' },
+  inter:         { label: 'Inter',               note: '无衬线·中性理性', stack: "'Inter'",               kind: 'sans',  load:'google',     tag:'方案1·2', dria:true },
+  geist:         { label: 'Geist Sans',          note: '无衬线·现代极简', stack: "'Geist'",               kind: 'sans',  load:'google',     tag:'方案3', dria:true },
+  switzer:       { label: 'Switzer',             note: '无衬线·几何理性', stack: "'Switzer'",             kind: 'sans',  load:'fontshare',  tag:'方案3' },
+  satoshi:       { label: 'Satoshi',             note: '无衬线·几何friendly', stack: "'Satoshi'",         kind: 'sans',  load:'fontshare',  tag:'方案4' },
+  instrumentsans:{ label: 'Instrument Sans',     note: '无衬线·当代编辑', stack: "'Instrument Sans'",     kind: 'sans',  load:'google',     tag:'方案4' },
+  sfprodisplay:  { label: 'SF Pro Display',      note: '无衬线·Apple系统', stack: "'SF Pro Display', '-apple-system'", kind: 'sans', load:'system', tag:'方案2' },
+  plexsans:      { label: 'IBM Plex Sans',       note: '无衬线·工程感',   stack: "'IBM Plex Sans'",       kind: 'sans',  load:'google' },
+  hanken:        { label: 'Hanken Grotesk',      note: '无衬线·friendly', stack: "'Hanken Grotesk'",      kind: 'sans',  load:'google' },
+};
+
+const CN_FONTS = {
+  'serif-pingfang': { label: '宋体→苹方', note: '方案2·Songti/Noto', ios: ["'Songti SC'","'Noto Serif SC'"], web: ["'Noto Serif SC'"], kind:'serif', load:'system' },
+  'noto-serif':     { label: '思源宋体',  note: 'Noto Serif SC',     ios: ["'Noto Serif SC'"],               web: ["'Noto Serif SC'"], kind:'serif', load:'google' },
+  'wenkai':         { label: '霞鹜文楷',  note: '方案2·楷书温润',     ios: ["'LXGW WenKai TC'","'Kaiti SC'","'Noto Serif SC'"], web: ["'LXGW WenKai TC'","'Noto Serif SC'"], kind:'serif', load:'google' },
+  'pingfang':       { label: '苹方 PingFang', note: '方案1·iOS原生黑', ios: ["'PingFang SC'","'Noto Sans SC'"], web: ["'Noto Sans SC'"], kind:'sans', load:'system' },
+  'noto-sans':      { label: '思源黑体',  note: 'Noto Sans SC',       ios: ["'Noto Sans SC'"],                web: ["'Noto Sans SC'"], kind:'sans', load:'google' },
+  'oppo':           { label: 'OPPO Sans', note: '方案4·现代无衬线',   ios: ["'OPPO Sans'","'PingFang SC'","'Noto Sans SC'"], web: ["'OPPO Sans'","'Noto Sans SC'"], kind:'sans', load:'system' },
+  'harmony':        { label: 'HarmonyOS Sans', note: '方案4·鸿蒙',     ios: ["'HarmonyOS Sans SC'","'HarmonyOS Sans'","'PingFang SC'","'Noto Sans SC'"], web: ["'HarmonyOS Sans SC'","'Noto Sans SC'"], kind:'sans', load:'system' },
+  'hanyiqihei':     { label: '汉仪旗黑',  note: '方案3·商业黑体',     ios: ["'HYQiHei 50S'","'HYQiHei'","'PingFang SC'","'Noto Sans SC'"], web: ["'HYQiHei 50S'","'Noto Sans SC'"], kind:'sans', load:'commercial' },
+};
+
+/* dedicated NUMBER fonts (单独的数字方案) */
+const NUM_FONTS = {
+  inherit:   { label: '继承字体',        note: '跟随所在层级',     special:'inherit' },
+  ppneue:    { label: 'PP Neue Montreal', note: '方案2·几何中性',  stack: "'PP Neue Montreal'", kind:'sans', load:'commercial' },
+  sfprotext: { label: 'SF Pro Text',     note: '方案2·Apple系统',  stack: "'SF Pro Text', '-apple-system'", kind:'sans', load:'system' },
+  jetbrains: { label: 'JetBrains Mono',  note: '方案3·等宽工程',   stack: "'JetBrains Mono'", kind:'mono', load:'google' },
+  geistmono: { label: 'Geist Mono',      note: '方案3·等宽现代',   stack: "'Geist Mono'", kind:'mono', load:'google' },
+  geistnum:  { label: 'Geist Sans',      note: '方案3·中性数据',   stack: "'Geist'", kind:'sans', load:'google' },
+  golos:     { label: 'Golos Text',      note: '方案4·圆润数据',   stack: "'Golos Text'", kind:'sans', load:'google' },
+};
+
+const GENERIC = { serif: 'serif', sans: 'sans-serif', mono: 'monospace' };
+
+/* recommended defaults */
+const DEFAULT = {
+  'display-en': 'newsreader', 'display-cn': 'noto-serif',
+  'ui-en': 'inter',          'ui-cn': 'pingfang',
+  'body-en': 'source',       'body-cn': 'noto-serif',
+  'num': 'inherit', 'num-style': 'old', 'num-space': 'prop',
+};
+
+let state = Object.assign({}, DEFAULT);
+let platform = 'ios';
+let settled = false;  /* true after webfonts have had time to load */
+
+/* persistence */
+function save(){ try{ localStorage.setItem('typelab2', JSON.stringify({state, platform})); }catch(e){} }
+function load(){ try{ const d=JSON.parse(localStorage.getItem('typelab2')); if(d){ state=Object.assign({}, DEFAULT, d.state); platform=d.platform||'ios'; } }catch(e){} }
+
+const EN_AXES = ['display-en','ui-en','body-en'];
+const CN_AXES = ['display-cn','ui-cn','body-cn'];
+
+/* curated option lists per axis */
+const AXIS_OPTS = {
+  'display-en': ['newsreader','ebgaramond','ppeditorial','instrument','spectral','source','bricolage','geist'],
+  'display-cn': ['serif-pingfang','noto-serif','wenkai','pingfang','noto-sans','hanyiqihei','oppo','harmony'],
+  'ui-en':      ['inter','geist','switzer','satoshi','instrumentsans','sfprodisplay','hanken','plexsans'],
+  'ui-cn':      ['pingfang','noto-sans','oppo','harmony','hanyiqihei','noto-serif','wenkai'],
+  'body-en':    ['source','newsreader','ebgaramond','spectral','inter','geist','satoshi','instrumentsans'],
+  'body-cn':    ['noto-serif','wenkai','serif-pingfang','pingfang','noto-sans','oppo'],
+  'num':        ['inherit','ppneue','sfprotext','jetbrains','geistmono','geistnum','golos'],
+};
+
+const REC = new Set(['display-en:newsreader','display-cn:noto-serif','ui-en:inter','ui-cn:pingfang','body-en:source','body-cn:noto-serif','num:inherit']);
+
+/* =================== FONT AVAILABILITY DETECTION =================== */
+const _fcache = {};
+function isWeb(load){ return load==='google' || load==='fontshare'; }
+function cleanName(n){ return n.replace(/['"]/g,'').trim(); }
+function fontAvailable(rawName){
+  const name = cleanName(rawName);
+  if(!name) return false;
+  if(name in _fcache) return _fcache[name];
+  if(GENERIC[name] || name==='serif'||name==='sans-serif'||name==='monospace') return _fcache[name]=true;
+  const s = 'WMil10agm漢字永国Ω@#'; const px = 64;
+  const ctx = document.createElement('canvas').getContext('2d');
+  const isSys = name.charAt(0)==='-' || name==='system-ui';
+  const q = isSys ? name : ("'"+name+"'");
+  let avail = false;
+  for(const g of ['monospace','sans-serif','serif']){
+    ctx.font = px+'px '+g; const base = ctx.measureText(s).width;
+    ctx.font = px+'px '+q+','+g; const w = ctx.measureText(s).width;
+    if(Math.abs(w-base) > 0.6){ avail = true; break; }
+  }
+  return _fcache[name] = avail;
+}
+/* families: array of family strings (may include quotes). returns first available index, or -1 */
+function firstRenderable(families){
+  for(let i=0;i<families.length;i++){ if(fontAvailable(families[i])) return i; }
+  return -1;
+}
+
+/* badge for an option */
+function missOrPending(load){ return (!settled && isWeb(load)) ? {cls:'pending',txt:'加载中'} : {cls:'missing',txt:'缺失'}; }
+function optBadge(axis, key){
+  if(axis==='num'){
+    const f = NUM_FONTS[key];
+    if(f.special==='inherit') return null;
+    const fam = f.stack.split(',');
+    const idx = firstRenderable(fam);
+    if(idx===0) return isWeb(f.load) ? {cls:'ok',txt:'已加载'} : {cls:'ok',txt:'本机✓'};
+    if(idx>0) return {cls:'fallback',txt:'降级·系统'};
+    return missOrPending(f.load);
+  }
+  if(EN_AXES.includes(axis)){
+    const f = EN_FONTS[key];
+    const fam = f.stack.split(',');
+    const idx = firstRenderable(fam);
+    if(idx===0) return isWeb(f.load) ? {cls:'ok',txt:'已加载'} : {cls:'ok',txt:'本机✓'};
+    if(idx>0) return {cls:'fallback',txt:'降级'};
+    return missOrPending(f.load);
+  }
+  /* CN */
+  const f = CN_FONTS[key];
+  const chain = f[platform];
+  const idx = firstRenderable(chain);
+  if(idx===0) return {cls:'ok', txt: f.load==='google' ? '已加载' : '原生✓'};
+  if(idx>0) return {cls:'fallback', txt:'降级→'+cleanName(chain[idx]).replace('Noto ','').replace(' SC','')};
+  return missOrPending(f.load);
+}
+
+function buildOptionButtons() {
+  document.querySelectorAll('.opts').forEach(box => {
+    const axis = box.dataset.axis;
+    const isEN = EN_AXES.includes(axis);
+    const isNum = axis==='num';
+    AXIS_OPTS[axis].forEach(key => {
+      const f = isNum ? NUM_FONTS[key] : (isEN ? EN_FONTS[key] : CN_FONTS[key]);
+      const btn = document.createElement('button');
+      btn.className = 'opt' + (state[axis] === key ? ' on' : '');
+      btn.dataset.key = key;
+      btn.dataset.axis = axis;
+      const recPip  = REC.has(axis + ':' + key) ? ' <span class="rec-pip">●推荐</span>' : '';
+      const driaPip = (!isNum && f.dria) ? ' <span class="rec-pip">◎dria</span>' : '';
+      const tag = f.tag ? `<span class="scheme-tag">${f.tag}</span>` : '';
+      btn.innerHTML =
+        `<span class="of" style="font-family:${previewFamily(axis,key)}">${f.label}</span>`+
+        `<span class="om">${tag}<span class="note-t">${f.note}</span><span class="badge-slot"></span>${driaPip}${recPip}</span>`;
+      btn.addEventListener('click', () => { state[axis] = key; save(); refresh(); });
+      box.appendChild(btn);
+    });
+  });
+}
+
+/* font-family string for showing the option label in its own face */
+function previewFamily(axis, key){
+  if(axis==='num'){
+    const f = NUM_FONTS[key];
+    if(f.special==='inherit') return 'var(--f-body)';
+    return f.stack + ',' + GENERIC[f.kind];
+  }
+  if(EN_AXES.includes(axis)) return EN_FONTS[key].stack + ',' + GENERIC[EN_FONTS[key].kind];
+  const f = CN_FONTS[key];
+  return f[platform].join(',') + ',' + GENERIC[f.kind];
+}
+
+/* resolve a text role's full stack */
+function resolveRole(role){
+  const en = EN_FONTS[state[role + '-en']];
+  const cn = CN_FONTS[state[role + '-cn']];
+  const cnChain = cn[platform];
+  const generic = GENERIC[en.kind];
+  return { css: [en.stack, ...cnChain, generic].join(', '), en, cn, cnChain, generic };
+}
+
+/* number-variant string from the two toggles */
+function numVariant(){
+  const parts = [];
+  if(state['num-style']==='old') parts.push('oldstyle-nums');
+  else if(state['num-style']==='lin') parts.push('lining-nums');
+  if(state['num-space']==='prop') parts.push('proportional-nums');
+  else if(state['num-space']==='tab') parts.push('tabular-nums');
+  return parts.length ? parts.join(' ') : 'normal';
+}
+
+function refresh(){
+  const root = document.documentElement;
+
+  /* option selected states + own-face preview + badges */
+  document.querySelectorAll('.opt').forEach(btn => {
+    const axis = btn.dataset.axis, key = btn.dataset.key;
+    btn.classList.toggle('on', state[axis] === key);
+    btn.querySelector('.of').style.fontFamily = previewFamily(axis, key);
+    const slot = btn.querySelector('.badge-slot');
+    const b = optBadge(axis, key);
+    slot.innerHTML = b ? `<span class="badge ${b.cls}">${b.txt}</span>` : '';
+  });
+
+  /* apply text roles */
+  const D = resolveRole('display'), U = resolveRole('ui'), B = resolveRole('body');
+  root.style.setProperty('--f-display', D.css);
+  root.style.setProperty('--f-ui', U.css);
+  root.style.setProperty('--f-body', B.css);
+
+  /* apply number role */
+  let numStack = '继承（跟随层级）';
+  if(state.num==='inherit'){
+    root.style.removeProperty('--f-num');
+  } else {
+    const nf = NUM_FONTS[state.num];
+    const css = nf.stack + ',' + GENERIC[nf.kind];
+    root.style.setProperty('--f-num', css);
+    numStack = nf.label;
+  }
+  root.style.setProperty('--num-variant', numVariant());
+
+  /* number toggle button states */
+  document.querySelectorAll('#seg-numstyle button').forEach(x=>x.classList.toggle('on', x.dataset.v===state['num-style']));
+  document.querySelectorAll('#seg-numspace button').forEach(x=>x.classList.toggle('on', x.dataset.v===state['num-space']));
+
+  /* figures-lab live readout */
+  const styleTxt = state['num-style']==='old'?'旧体':state['num-style']==='lin'?'等高':'默认';
+  const spaceTxt = state['num-space']==='prop'?'比例':state['num-space']==='tab'?'等宽':'默认';
+  document.getElementById('fig-live-stack').textContent = `${numStack} · ${styleTxt} · ${spaceTxt}`;
+
+  /* stack readout */
+  const sr = document.getElementById('stack-readout');
+  const fmt = R => `<b>${R.en.label}</b> → ${R.cnChain.map(s=>cleanName(s)).join(' → ')} → ${R.generic}`;
+  sr.innerHTML = `
+    <div class="sr"><span class="role">展示</span><span class="val">${fmt(D)}</span></div>
+    <div class="sr"><span class="role">UI</span><span class="val">${fmt(U)}</span></div>
+    <div class="sr"><span class="role">正文</span><span class="val">${fmt(B)}</span></div>
+    <div class="sr"><span class="role">数字</span><span class="val"><b>${numStack}</b> · ${styleTxt} · ${spaceTxt}</span></div>
+  `;
+
+  /* fallback chains */
+  ['display','ui','body'].forEach(role => {
+    const R = resolveRole(role);
+    drawChain(role, [R.en.stack, ...R.cnChain], true);
+  });
+  /* num chain */
+  if(state.num==='inherit'){
+    drawChainNodes('num', [{pf:'继承', nm:'跟随所在层级字体', fade:false, active:true}]);
+  } else {
+    const nf = NUM_FONTS[state.num];
+    drawChain('num', nf.stack.split(','), false);
+  }
+
+  save();
+}
+
+/* draw a fallback chain, marking the first renderable node */
+function drawChain(role, families, isText){
+  const idx = firstRenderable(families);
+  const nodes = families.map((fam, i) => {
+    const name = cleanName(fam);
+    const isApple = /PingFang|Songti|Kaiti|SF Pro|apple-system/.test(name);
+    let pf;
+    if(isText && isApple) pf = platform==='ios' ? 'iOS生效' : 'iOS only';
+    else if(/Noto|LXGW/.test(name)) pf = 'Web可加载';
+    else pf = '';
+    return { pf, nm:name, fade: i<idx || (isApple && isText && platform==='web' && i!==idx), active: i===idx };
+  });
+  drawChainNodes(role, nodes);
+}
+function drawChainNodes(role, nodes){
+  const box = document.querySelector(`[data-chain="${role}"]`);
+  if(!box) return;
+  box.innerHTML = nodes.map((n,i) =>
+    (i ? '<span class="fb-arrow">→</span>' : '') +
+    `<div class="fb-node${n.fade?' fade':''}${n.active?' active-render':''}">`+
+    `${n.pf?`<span class="pf">${n.pf}</span>`:''}<span class="nm">${n.nm}</span></div>`
+  ).join('');
+}
+
+/* fixed oldstyle/lining digit comparison (uses Source Serif 4) */
+function fillDigitDemo(){
+  const html = '0123456789'.split('').map(d => ('34579'.includes(d) ? `<b>${d}</b>` : d)).join('');
+  document.getElementById('dig-lining').innerHTML = html;
+  document.getElementById('dig-old').innerHTML = html;
+}
+
+/* ===== event wiring ===== */
+document.getElementById('seg-platform').addEventListener('click', e=>{
+  const b = e.target.closest('button'); if(!b) return;
+  platform = b.dataset.pf;
+  document.querySelectorAll('#seg-platform button').forEach(x=>x.classList.toggle('on', x===b));
+  document.getElementById('pf-note').textContent = platform==='ios'
+    ? 'iOS：中文走 PingFang / Songti'
+    : 'Web/安卓：中文落 Noto（苹方不可用）';
+  refresh();
+});
+document.getElementById('seg-numstyle').addEventListener('click', e=>{
+  const b = e.target.closest('button'); if(!b) return; state['num-style']=b.dataset.v; refresh();
+});
+document.getElementById('seg-numspace').addEventListener('click', e=>{
+  const b = e.target.closest('button'); if(!b) return; state['num-space']=b.dataset.v; refresh();
+});
+document.getElementById('apply-rec').addEventListener('click', ()=>{ state=Object.assign({}, DEFAULT); refresh(); });
+document.getElementById('lnk-reset').addEventListener('click', e=>{
+  e.preventDefault(); state=Object.assign({}, DEFAULT); platform='ios';
+  document.querySelectorAll('#seg-platform button').forEach(x=>x.classList.toggle('on', x.dataset.pf==='ios'));
+  document.getElementById('pf-note').textContent='iOS：中文走 PingFang / Songti';
+  refresh();
+});
+
+/* ===== explicitly trigger webfont downloads so badges flip as they arrive ===== */
+function collectWebfonts(){
+  const out = [];
+  Object.values(EN_FONTS).forEach(f=>{ if(isWeb(f.load)) out.push({name:cleanName(f.stack.split(',')[0]), s:'Ag1'}); });
+  Object.values(NUM_FONTS).forEach(f=>{ if(f.stack && isWeb(f.load)) out.push({name:cleanName(f.stack.split(',')[0]), s:'Ag1'}); });
+  Object.values(CN_FONTS).forEach(f=>{ if(f.load==='google'){ ['ios','web'].forEach(p=>f[p].forEach(fam=>{ const n=cleanName(fam); if(/Noto|LXGW/.test(n)) out.push({name:n, s:'永国'}); })); } });
+  return out;
+}
+function preloadWebfonts(){
+  if(!document.fonts || !document.fonts.load) return;
+  const seen = {};
+  collectWebfonts().forEach(it=>{
+    if(seen[it.name]) return; seen[it.name]=1;
+    try{
+      document.fonts.load(`24px "${it.name}"`, it.s).then(()=>{ delete _fcache[it.name]; refresh(); }).catch(()=>{});
+    }catch(e){}
+  });
+}
+
+/* init */
+load();
+buildOptionButtons();
+fillDigitDemo();
+document.querySelectorAll('#seg-platform button').forEach(x=>x.classList.toggle('on', x.dataset.pf===platform));
+document.getElementById('pf-note').textContent = platform==='ios' ? 'iOS：中文走 PingFang / Songti' : 'Web/安卓：中文落 Noto（苹方不可用）';
+refresh();
+preloadWebfonts();
+
+/* clear cache + re-detect as fonts settle (pending → 已加载 / 缺失) */
+function recheck(){ for(const k in _fcache) delete _fcache[k]; refresh(); }
+if(document.fonts && document.fonts.ready){ document.fonts.ready.then(()=>setTimeout(recheck, 60)); }
+setTimeout(recheck, 1500);
+/* final: mark settled so any still-unloaded webfonts honestly read 缺失 */
+setTimeout(()=>{ settled = true; recheck(); }, 3500);
+</script>
+
+</body>
+</html>

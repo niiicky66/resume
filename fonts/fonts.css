@@ -1,0 +1,81 @@
+/* Local Google Fonts definition */
+
+/* Inter 300/400/500/600 + Noto Serif SC 300/400/500/600 + Noto Sans SC 300/400/500/600
+   （拆分出单独文件是因为这几组变量字体按 unicode-range 切成了上百个分片，放在这里体积太大） */
+@import url('fonts-cjk-latin.css');
+/* Caveat 400/600 + IBM Plex Mono 600 —— 之前 baseline 里都没有，已从 Google Fonts CDN 下载好本地存了 */
+@import url('fonts-caveat-plexmono600.css');
+
+/* Newsreader Regular */
+@font-face {
+  font-family: 'Newsreader';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('Newsreader-400.woff2') format('woff2');
+}
+
+/* Newsreader Italic */
+@font-face {
+  font-family: 'Newsreader';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url('Newsreader-400i.woff2') format('woff2');
+}
+
+/* IBM Plex Mono Regular */
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('IBMPlexMono-400.woff2') format('woff2');
+}
+
+/* IBM Plex Mono Medium */
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('IBMPlexMono-500.woff2') format('woff2');
+}
+
+/* Inter 300/400/500/600 完整字重见 fonts-cjk-latin.css（已在文件顶部 @import），
+   这里不再单独声明 400，避免与那边的分片规则重复/冲突 */
+
+/* Source Serif 4：完整可变字体（300–600，正常 + 斜体），一次性替代原先的
+   静态 400 子集 —— 那个子集不含 onum 旧体数字字形，也没有 500 字重，
+   曾导致数字下沉失效、.exp-role 等 500 字重段落被浏览器"伪粗体"合成 */
+@font-face {
+  font-family: 'Source Serif 4';
+  font-style: normal;
+  font-weight: 300 600;
+  font-display: swap;
+  src: url('SourceSerif4-full.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Source Serif 4';
+  font-style: italic;
+  font-weight: 300 600;
+  font-display: swap;
+  src: url('SourceSerif4-Italic-full.ttf') format('truetype');
+}
+
+/* Source Serif 4 OT：同一份文件的专用别名，供 --font-num 显式引用，
+   语义更清楚（“这里就是要 onum 特性”），行为上和上面完全等价 */
+@font-face {
+  font-family: 'Source Serif 4 OT';
+  font-style: normal;
+  font-weight: 300 600;
+  font-display: swap;
+  src: url('SourceSerif4-full.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Source Serif 4 OT';
+  font-style: italic;
+  font-weight: 300 600;
+  font-display: swap;
+  src: url('SourceSerif4-Italic-full.ttf') format('truetype');
+}

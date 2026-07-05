@@ -1,0 +1,1675 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title id="page-title">刘文俊 · 消金商业分析师 — Critical Returns</title>
+<meta name="description" id="page-desc" content="4年消金运营经验，深度操盘 1400 亿生息资产与 300 万 DAU 大盘。精通 SQL 与 Python 建模，擅长差异化定价与风险控制。">
+<meta name="theme-color" content="#191F06">
+
+<!-- Favicon（复用现有的 Ensō 圆环 SVG） -->
+<link rel="icon" type="image/svg+xml" href="assets/enso-wen.svg">
+
+<!-- Open Graph / 分享预览 -->
+<meta property="og:type" content="profile">
+<meta property="og:title" content="刘文俊 · 消金商业分析师 — Critical Returns">
+<meta property="og:description" content="4 年消金运营经验，深度操盘 1400 亿生息资产与 300 万 DAU 大盘。精通 SQL 与 Python 建模，擅长差异化定价与风险控制。">
+<meta property="og:image" content="assets/enso-preview-dark.svg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="刘文俊 · 消金商业分析师">
+<meta name="twitter:description" content="4 年消金运营经验 · 1400 亿生息资产 · 300 万 DAU。">
+<meta name="twitter:image" content="assets/enso-preview-dark.svg">
+
+<link rel="stylesheet" href="css/tokens.css">
+
+<style>
+/* ============================================================
+   PAGE-SPECIFIC STYLES (resume only)
+   ============================================================ */
+
+/* ----- Top nav ----- */
+.nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  background: color-mix(in srgb, var(--paper) 92%, transparent);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--rule-soft);
+  opacity: 0;
+  transform: translateY(-12px);
+  pointer-events: none;
+  transition: opacity 600ms var(--ease-out),
+              transform 600ms var(--ease-out);
+}
+.nav.is-shown {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+.nav-inner {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  padding-block: 14px;
+  gap: var(--s-5);
+}
+.nav-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-display);
+  font-size: 22px;
+  line-height: 1;
+  letter-spacing: var(--tk-tight);
+  color: var(--ink-primary);
+  text-wrap: nowrap;
+}
+.nav-logo {
+  width: 32px; height: 32px;
+  display: block;
+  color: var(--ink-primary);
+  --enso-dot: var(--accent-rust);
+  flex: none;
+  transform-origin: center;
+  transition: transform var(--dur-fast) var(--ease-out);
+}
+.nav-brand:hover .nav-logo { transform: rotate(-12deg); }
+
+/* Logo hover draw animation */
+@property --enso-sweep {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 360deg;
+}
+.nav-logo {
+  --enso-sweep: 360deg;
+  -webkit-mask: conic-gradient(from 30deg, transparent 0deg, transparent calc(360deg - var(--enso-sweep)), #000 calc(360deg - var(--enso-sweep)), #000 360deg);
+          mask: conic-gradient(from 30deg, transparent 0deg, transparent calc(360deg - var(--enso-sweep)), #000 calc(360deg - var(--enso-sweep)), #000 360deg);
+}
+html[data-logohover="on"] .nav-brand:hover .nav-logo {
+  animation: enso-draw 1300ms linear forwards;
+}
+@keyframes enso-draw {
+   0% { --enso-sweep:   0deg; }
+   3% { --enso-sweep:  44deg; }
+   6% { --enso-sweep:  90deg; }
+  16% { --enso-sweep: 102deg; }
+  29% { --enso-sweep: 142deg; }
+  42% { --enso-sweep: 196deg; }
+  60% { --enso-sweep: 360deg; }
+  80% { --enso-sweep: 360deg; }
+  88% { --enso-sweep: 269deg; }
+  94% { --enso-sweep: 170deg; }
+ 100% { --enso-sweep:  72deg; }
+}
+.nav-brand-tx { transition: opacity var(--dur-base); }
+.nav-brand em { font-style: italic; color: var(--accent-flame2); }
+.nav-links {
+  display: flex;
+  gap: var(--s-5);
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.nav-links a {
+  font-family: var(--font-mono);
+  font-size: var(--fs-eyebrow);
+  letter-spacing: var(--tk-eyebrow);
+  text-transform: uppercase;
+  color: var(--ink-sage);
+  transition: color var(--dur-fast);
+  position: relative;
+}
+.nav-links a::before {
+  content: attr(data-num);
+  color: var(--accent-rust);
+  margin-right: 6px;
+}
+.nav-links a:hover { color: var(--accent-flame2); }
+.nav-meta {
+  justify-self: end;
+  font-family: var(--font-mono);
+  font-size: var(--fs-eyebrow);
+  letter-spacing: var(--tk-eyebrow);
+  color: var(--ink-moss);
+  text-transform: uppercase;
+  display: flex;
+  gap: var(--s-3);
+  align-items: center;
+  white-space: nowrap;
+}
+.nav-meta a:hover { color: var(--accent-flame2); }
+.nav-meta .dot {
+  width: 6px; height: 6px;
+  background: var(--data-up);
+  border-radius: 50%;
+  display: inline-block;
+  vertical-align: middle;
+  animation: live-pulse 2s ease-in-out infinite;
+}
+@keyframes live-pulse {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+
+/* ============================================================
+   HERO
+   ============================================================ */
+.hero {
+  height: 100svh;
+  background: var(--paper);
+  padding-top: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.hero > .container {
+  max-width: none;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  flex: 1;
+  display: flex;
+  min-height: 0;
+}
+.sp-card {
+  position: relative;
+  flex: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr);
+  background: var(--paper);
+  border: none;
+  overflow: hidden;
+  min-height: 0;
+}
+.sp-cover {
+  position: absolute; inset: 0; z-index: 6;
+  background: var(--accent-rust);
+  transform-origin: right center;
+  transform: scaleX(0);
+}
+.sp-main {
+  padding: clamp(36px, 5vw, 88px) clamp(36px, 6vw, 120px);
+  display: grid;
+  grid-template-rows: auto 1fr auto auto;
+  gap: var(--s-5);
+  position: relative; z-index: 2;
+  min-height: 0;
+}
+.sp-eye {
+  font-family: var(--font-mono);
+  font-size: var(--fs-eyebrow);
+  letter-spacing: var(--tk-eyebrow);
+  text-transform: uppercase;
+  color: var(--ink-sage);
+  display: flex; align-items: center; gap: var(--s-3); flex-wrap: wrap;
+}
+.sp-eye .sep { width: 32px; height: 1px; background: var(--rule); display: inline-block; }
+.sp-eye .live { width: 6px; height: 6px; border-radius: 50%; background: var(--data-up); display: inline-block; animation: live-pulse 2s ease-in-out infinite; margin-right: 4px; }
+.sp-head {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(42px, 5.6vw, 88px);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  text-wrap: balance;
+  align-self: end;
+  padding-top: 0.08em;
+}
+.sp-head em { font-style: italic; color: var(--accent-flame2); }
+.sp-head .sage { font-style: italic; color: var(--ink-primary); }
+.sp-bottom {
+  display: flex; align-items: flex-end; justify-content: space-between;
+  gap: var(--s-6); flex-wrap: wrap;
+}
+.sp-desc {
+  font-family: var(--font-body);
+  font-size: var(--fs-body-l);
+  line-height: 1.55;
+  color: var(--ink);
+  max-width: 42ch;
+}
+.sp-desc em { font-style: italic; color: var(--accent-flame2); }
+/* 按钮 hover：还原 dria.com "See our companies" 按钮的机制 ——
+   静止态是赭石红底 + 米白字，右侧常驻一个被裁切成小圆徽章的米白圆（clip-path 让它只露出贴合箭头的一小块）；
+   hover 时圆徽章的 clip-path 缓慢展开盖满整个按钮，圆徽章内部自带一套对比色文字+箭头，
+   所以文字露出来的瞬间颜色就是对的，不需要额外做文字变色过渡。
+   箭头用等宽容器 + overflow:hidden 裁切两枚重叠图标做"滑出/滑入"替换（容器宽度按图标真实渲染宽度写死，避免裁切错位）。 */
+.sp-btn {
+  position: relative;
+  overflow: hidden;
+  height: 64px;
+  font-family: var(--font-ui);
+  font-weight: 500;
+  font-size: 17px;
+  background: var(--accent-rust);
+  color: var(--paper);
+  border: none;
+  border-radius: 999px;
+  white-space: nowrap;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+}
+.sp-btn-inner {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  padding: 0 62px 0 20px;
+}
+.sp-btn-circle {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--paper);
+  color: var(--accent-rust);
+  border-radius: 999px;
+  /* 静止态：裁出一个贴右边、上下左右各留白的正圆徽章（宽高都算成 64-2*10=44px，避免和外层圆角在角落打架而"探出去"） */
+  clip-path: inset(10px 10px 10px calc(100% - 54px) round 999px);
+  transition: clip-path 0.45s cubic-bezier(0.895, 0.03, 0.685, 0.22);
+  will-change: clip-path;
+  transform: translateZ(0);
+}
+.sp-btn:hover .sp-btn-circle { clip-path: inset(2px round 999px); }
+.sp-btn-circle-inner {
+  display: inline-flex;
+  align-items: center;
+  padding: 0 62px 0 20px;
+}
+/* 箭头脱离文字所在的 flex 行，直接按"贴右边"绝对定位，
+   这样徽章还很小的时候箭头也精确落在圆心，不会因为跟着整行内容一起走位而偏出去 */
+.sp-btn-arrow-wrap {
+  position: absolute;
+  right: 24px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  gap: 9px;
+  justify-content: flex-end;
+  align-items: center;
+  width: 17px;
+  height: 14px;
+  overflow: hidden;
+}
+.sp-btn-arrow { width: 17px; height: 14px; flex: none; transition: transform 0.45s cubic-bezier(0.895, 0.03, 0.685, 0.22); }
+.sp-btn:hover .sp-btn-arrow { transform: translateX(calc(100% + 9px)); }
+.sp-meta {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, max-content));
+  gap: clamp(16px, 2.4vw, 32px) clamp(20px, 3vw, 44px);
+  padding-top: var(--s-4);
+  border-top: 1px solid var(--rule);
+  font-size: 0.92em;
+  opacity: 0.85;
+}
+.sp-meta .k {
+  font-family: var(--font-mono);
+  font-size: var(--fs-caption);
+  letter-spacing: var(--tk-eyebrow);
+  text-transform: uppercase;
+  color: var(--ink-sage);
+  display: block; margin-bottom: 3px;
+}
+.sp-meta .v { font-family: var(--font-body); font-size: var(--fs-body-s); color: var(--ink); font-weight: 500; }
+.sp-meta .v a { border-bottom: 1px solid var(--rule); padding-bottom: 1px; transition: color var(--dur-fast), border-color var(--dur-fast); }
+.sp-meta .v a:hover { color: var(--accent-flame2); border-color: var(--accent-flame2); }
+.sp-side {
+  background: var(--ink-primary);
+  color: var(--paper);
+  padding: clamp(36px, 4vw, 72px);
+  display: flex; flex-direction: column; justify-content: space-between; gap: var(--s-6);
+  position: relative; z-index: 2;
+  min-height: 0;
+  overflow: hidden;
+}
+.sp-side .sp-watermark {
+  position: absolute;
+  right: clamp(-70px, -4vw, -40px);
+  bottom: clamp(-90px, -6vw, -60px);
+  width: clamp(280px, 38vw, 520px);
+  height: clamp(280px, 38vw, 520px);
+  color: color-mix(in srgb, var(--accent-yellow) 22%, transparent);
+  --enso-dot: var(--accent-yellow);
+  pointer-events: none;
+  z-index: 0;
+  transition: opacity var(--dur-base) var(--ease-out);
+}
+.sp-side > * { position: relative; z-index: 1; }
+html[data-watermark="off"] .sp-side .sp-watermark { display: none; }
+.sp-side-top { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--s-5); }
+.sp-brandline {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: clamp(12px, 1.5vw, 17px);
+  line-height: 1.45;
+  letter-spacing: 0.005em;
+  color: color-mix(in srgb, var(--paper) 75%, transparent);
+  white-space: nowrap;
+}
+.sp-brandline em { font-style: italic; color: var(--accent-yellow); }
+.sp-mark {
+  width: 40px; height: 40px;
+  color: color-mix(in srgb, var(--paper) 65%, transparent);
+  --enso-dot: var(--accent-yellow);
+  flex: none;
+}
+.sp-figs { display: flex; flex-direction: column; gap: var(--s-8); margin-top: auto; }
+.sp-fig { display: flex; flex-direction: column; gap: var(--s-2); }
+.sp-num {
+  font-size: clamp(56px, 6.4vw, 112px);
+  line-height: 0.9;
+  color: var(--accent-yellow);
+  letter-spacing: -0.01em;
+}
+.sp-num .u {
+  font-family: var(--font-mono);
+  font-variant-numeric: normal;
+  font-size: 0.2em;
+  vertical-align: super;
+  letter-spacing: 0.06em;
+  color: color-mix(in srgb, var(--paper) 58%, transparent);
+  margin-left: 8px;
+}
+.sp-cap {
+  font-family: var(--font-mono);
+  font-size: var(--fs-caption);
+  letter-spacing: var(--tk-wide);
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--paper) 52%, transparent);
+  line-height: 1.5;
+}
+.sp-side-foot {
+  display: flex; align-items: center; justify-content: space-between;
+  font-family: var(--font-mono);
+  font-size: var(--fs-caption);
+  letter-spacing: var(--tk-wide);
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--paper) 40%, transparent);
+  padding-top: var(--s-4);
+  border-top: 1px solid color-mix(in srgb, var(--paper) 18%, transparent);
+}
+.sp-side-foot .scroll { color: color-mix(in srgb, var(--paper) 60%, transparent); transition: color var(--dur-fast); display: inline-flex; align-items: center; gap: 6px; }
+.sp-side-foot .scroll:hover { color: var(--accent-yellow); }
+.sp-side-foot .scroll i { animation: cover-bob 2.4s ease-in-out infinite; font-style: normal; }
+@keyframes cover-bob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(3px); } }
+
+@media (max-width: 880px) {
+  .sp-card { grid-template-columns: 1fr; grid-template-rows: auto 1fr; }
+  .sp-side { flex-direction: row; flex-wrap: wrap; align-items: flex-end; }
+  .sp-figs { flex-direction: row; flex-wrap: wrap; gap: var(--s-8); margin-top: 0; }
+  .sp-side .sp-watermark { display: none; }
+}
+
+/* Hero entrance animations */
+.sp-card.play .sp-cover { animation: sp-wipe 820ms cubic-bezier(0.85,0,0.15,1) forwards; }
+.sp-card.play .sp-head  { clip-path: inset(-12% 100% -12% 0); animation: sp-draw 1000ms var(--ease-out) 360ms forwards; }
+.sp-card.play .sp-eye   { opacity: 0; animation: sp-rise 700ms var(--ease-out) 300ms forwards; }
+.sp-card.play .sp-bottom,
+.sp-card.play .sp-meta  { opacity: 0; animation: sp-rise 760ms var(--ease-out) 820ms forwards; }
+.sp-card.play .sp-meta  { animation-delay: 960ms; }
+.sp-card.play .sp-side  { opacity: 0; animation: sp-sidefade 700ms var(--ease-out) 500ms forwards; }
+.sp-card.play .sp-side > * { opacity: 0; animation: sp-rise 760ms var(--ease-out) 660ms forwards; }
+.sp-card.breathe .sp-num { animation: sp-breathe 6s ease-in-out 2s infinite; }
+@keyframes sp-wipe { from { transform: scaleX(1); } to { transform: scaleX(0); } }
+@keyframes sp-draw { from { clip-path: inset(-12% 100% -12% 0); } to { clip-path: inset(-12% 0 -12% 0); } }
+@keyframes sp-rise { from { opacity: 0; transform: translateY(22px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes sp-sidefade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes sp-breathe { 0%,100% { transform: translateY(0) scale(1); } 50% { transform: translateY(-3px) scale(1.015); } }
+
+html[data-motion="off"] .sp-card .sp-cover { transform: scaleX(0) !important; }
+html[data-motion="off"] .sp-card * { opacity: 1 !important; transform: none !important; clip-path: none !important; }
+html.cover-settled .sp-card .sp-cover { transform: scaleX(0) !important; }
+html.cover-settled .sp-card .sp-eye,
+html.cover-settled .sp-card .sp-head,
+html.cover-settled .sp-card .sp-bottom,
+html.cover-settled .sp-card .sp-meta,
+html.cover-settled .sp-card .sp-side,
+html.cover-settled .sp-card .sp-side > * {
+  opacity: 1 !important; transform: none !important; clip-path: none !important;
+}
+
+/* ----- Section header ----- */
+.s-head {
+  position: relative;
+  display: grid;
+  grid-template-columns: 80px 1fr auto;
+  gap: var(--s-5);
+  align-items: baseline;
+  padding-block: var(--s-4);
+  border-top: none;
+  margin-bottom: var(--s-8);
+}
+.s-head::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: var(--ink-primary);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 760ms var(--ease-out);
+}
+.s-head.is-in::before { transform: scaleX(1); }
+html[data-motion="off"] .s-head::before { transform: scaleX(1) !important; }
+
+/* 滚动浮现：每个 [data-reveal] 元素首次进入视口时淡入 + 轻微上移，
+   之后保持常驻（往回滑不会消失），还没进入视口的内容会在下次滚到时正常播放。 */
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 820ms cubic-bezier(0.22, 1, 0.36, 1), transform 820ms cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+[data-reveal].is-in { opacity: 1; transform: translateY(0); }
+@media (prefers-reduced-motion: reduce) {
+  [data-reveal] { opacity: 1; transform: none; transition: none; }
+}
+.s-head__idx {
+  font-family: var(--font-mono);
+  font-size: var(--fs-eyebrow);
+  letter-spacing: var(--tk-eyebrow);
+  color: var(--ink-primary);
+  text-transform: uppercase;
+  padding-top: 6px;
+}
+.s-head__title {
+  font-family: var(--font-display);
+  font-size: var(--fs-h1);
+  line-height: var(--lh-tight);
+  letter-spacing: var(--tk-tight);
+  color: var(--ink);
+}
+.s-head__title em { font-style: italic; color: var(--accent-rust); }
+.s-head__meta {
+  font-family: var(--font-mono);
+  font-size: var(--fs-caption);
+  letter-spacing: var(--tk-wide);
+  color: var(--ink-moss);
+  text-transform: uppercase;
+}
+@media (max-width: 680px) {
+  .s-head { grid-template-columns: auto 1fr; }
+  .s-head__meta { grid-column: 1 / -1; padding-top: 6px; }
+}
+
+section.s { padding-block: var(--s-10) var(--s-8); scroll-margin-top: 88px; }
+
+/* ----- About ----- */
+.about-grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: var(--col-gap);
+  row-gap: var(--s-10);
+}
+.about-lead {
+  grid-column: 1 / span 8;
+  font-family: var(--font-display);
+  font-size: clamp(24px, 2.4vw, 34px);
+  line-height: 1.35;
+  color: var(--ink);
+  text-wrap: pretty;
+}
+.about-lead em { font-style: italic; color: var(--accent-rust); }
+.about-lead .sage { font-style: italic; color: var(--ink-primary); font-family: var(--font-display); }
+.about-side {
+  grid-column: 10 / span 3;
+  font-size: var(--fs-body-s);
+  color: var(--ink-sage);
+  line-height: 1.7;
+}
+.about-side .label {
+  font-family: var(--font-mono);
+  font-size: var(--fs-eyebrow);
+  letter-spacing: var(--tk-eyebrow);
+  text-transform: uppercase;
+  color: var(--ink-primary);
+  padding-bottom: var(--s-2);
+  border-bottom: 1px solid var(--ink-primary);
+  margin-bottom: var(--s-3);
+  display: block;
+}
+.about-stats {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0;
+  border-top: 1px solid var(--ink-primary);
+  border-bottom: 1px solid var(--ink-primary);
+}
+.about-stat {
+  padding: var(--s-5) var(--s-4);
+  border-right: 1px solid var(--rule);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.about-stat:last-child { border-right: 0; }
+.about-stat .val {
+  font-size: clamp(48px, 5.5vw, 84px);
+  line-height: 1;
+  color: var(--ink-primary);
+  letter-spacing: var(--tk-tight);
+}
+.about-stat .val .u {
+  font-family: var(--font-mono);
+  font-size: 0.28em;
+  vertical-align: super;
+  color: var(--ink-sage);
+  margin-left: 4px;
+  letter-spacing: var(--tk-wide);
+  font-variant-numeric: normal;
+}
+.about-stat .lbl {
+  font-family: var(--font-mono);
+  font-size: var(--fs-caption);
+  letter-spacing: var(--tk-wide);
+  text-transform: uppercase;
+  color: var(--ink-sage);
+  margin-top: auto;
+}
+@media (max-width: 900px) {
+  .about-lead, .about-side { grid-column: 1 / -1; }
+  .about-stats { grid-template-columns: repeat(2, 1fr); }
+  .about-stat:nth-child(2) { border-right: 0; }
+  .about-stat:nth-child(1), .about-stat:nth-child(2) { border-bottom: 1px solid var(--rule); }
+}
+
+/* ----- Pull quote ----- */
+.pull {
+  margin-block: var(--s-10);
+  padding: var(--s-8) 0;
+  border-block: 1px solid var(--ink-primary);
+  text-align: center;
+}
+.pull p {
+  font-family: var(--font-display);
+  font-size: clamp(32px, 4vw, 56px);
+  line-height: 1.2;
+  letter-spacing: var(--tk-tight);
+  color: var(--ink);
+  max-width: 22ch;
+  margin: 0 auto;
+  text-wrap: balance;
+}
+.pull p em { font-style: italic; color: var(--accent-rust); }
+.pull p::before,
+.pull p::after {
+  display: inline-block;
+  color: var(--ink-moss);
+  font-family: var(--font-display);
+  font-style: italic;
+  opacity: 0.5;
+}
+.pull p::before { content: '" '; margin-right: 4px; }
+.pull p::after { content: ' "'; margin-left: 4px; }
+
+/* ----- Experience ----- */
+.exp-grid {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: var(--s-8);
+  row-gap: var(--s-8);
+}
+.exp-aside {
+  font-family: var(--font-mono);
+  font-size: var(--fs-caption);
+  letter-spacing: var(--tk-wide);
+  color: var(--ink-sage);
+  text-transform: uppercase;
+  position: sticky;
+  top: 100px;
+  align-self: start;
+}
+.exp-items { display: flex; flex-direction: column; gap: var(--s-8); }
+.exp-item {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: var(--s-5);
+  padding-bottom: var(--s-5);
+  border-bottom: 1px dashed var(--rule);
+}
+.exp-item:last-child { border-bottom: 0; }
+.exp-co {
+  font-family: var(--font-display);
+  font-size: clamp(28px, 2.6vw, 40px);
+  line-height: 1.1;
+  color: var(--ink);
+  letter-spacing: var(--tk-tight);
+  margin-bottom: 6px;
+}
+.exp-co em { font-style: italic; color: var(--accent-rust); }
+.exp-role {
+  font-family: var(--font-body);
+  font-size: var(--fs-body-l);
+  color: var(--ink-primary);
+  font-weight: 500;
+  margin-bottom: var(--s-3);
+}
+.exp-desc {
+  font-size: var(--fs-body);
+  line-height: 1.7;
+  color: var(--ink);
+  max-width: 56ch;
+  margin-bottom: var(--s-3);
+}
+.exp-desc em { font-style: italic; color: var(--accent-rust); font-family: var(--font-display); }
+.exp-bullets {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: var(--fs-body-s);
+  color: var(--ink-sage);
+  line-height: 1.7;
+}
+.exp-bullets li {
+  padding-left: 18px;
+  position: relative;
+}
+.exp-bullets li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 12px;
+  width: 10px; height: 1px;
+  background: var(--ink-sage);
+}
+.exp-date {
+  font-family: var(--font-mono);
+  font-size: var(--fs-caption);
+  letter-spacing: var(--tk-wide);
+  color: var(--ink-sage);
+  white-space: nowrap;
+  padding-top: 14px;
+}
+.exp-date .now {
+  color: var(--data-up);
+  font-weight: 600;
+}
+@media (max-width: 900px) {
+  .exp-grid { grid-template-columns: 1fr; }
+  .exp-aside { position: static; }
+  .exp-item { grid-template-columns: 1fr; }
+  .exp-date { padding-top: 0; }
+}
+
+/* ----- Projects ----- */
+.proj-list {
+  display: flex;
+  flex-direction: column;
+}
+.proj-row {
+  display: grid;
+  grid-template-columns: 80px 100px 1fr auto;
+  gap: var(--s-5);
+  align-items: baseline;
+  padding: var(--s-5) var(--s-3);
+  margin-inline: calc(var(--s-3) * -1);
+  border-top: 1px solid var(--ink-primary);
+  cursor: pointer;
+  position: relative;
+  transition: background var(--dur-fast) var(--ease-out),
+              padding-left var(--dur-fast) var(--ease-out);
+  list-style: none;
+}
+.proj-list .proj-row:last-of-type { border-bottom: 1px solid var(--ink-primary); }
+.proj-row::before {
+  content: '';
+  position: absolute;
+  left: 0; top: -1px; bottom: 0;
+  width: 2px;
+  background: var(--accent-rust);
+  transform: scaleY(0);
+  transform-origin: top center;
+  transition: transform var(--dur-base) var(--ease-out);
+}
+.proj-row:hover::before,
+.proj-row[aria-expanded="true"]::before { transform: scaleY(1); }
+html[data-motion="off"] .proj-row::before { transition: none; }
+.proj-row:hover {
+  background: var(--paper-soft);
+  padding-left: calc(var(--s-3) + 12px);
+}
+.proj-row:hover .idx { color: var(--accent-rust); }
+.proj-row .idx {
+  font-family: var(--font-mono);
+  font-size: var(--fs-caption);
+  letter-spacing: var(--tk-wide);
+  color: var(--ink-primary);
+}
+.proj-row .yr {
+  font-family: var(--font-mono);
+  font-size: var(--fs-caption);
+  color: var(--ink-sage);
+  letter-spacing: var(--tk-wide);
+}
+.proj-row .ttl {
+  font-family: var(--font-display);
+  font-size: clamp(24px, 2.2vw, 34px);
+  line-height: 1.2;
+  color: var(--ink);
+  letter-spacing: var(--tk-tight);
+}
+.proj-row .ttl em { font-style: italic; color: var(--accent-rust); }
+.proj-row .arr {
+  font-family: var(--font-mono);
+  font-size: 22px;
+  color: var(--ink-sage);
+  transition: transform var(--dur-fast) var(--ease-out), color var(--dur-fast);
+}
+.proj-row:hover .arr { color: var(--accent-rust); transform: rotate(45deg); }
+.proj-row[aria-expanded="true"] .arr { transform: rotate(135deg); color: var(--accent-rust); }
+.proj-row[aria-expanded="true"] { background: var(--paper-soft); }
+
+.proj-body {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows var(--dur-base) var(--ease-out);
+}
+.proj-row[aria-expanded="true"] + .proj-body { grid-template-rows: 1fr; }
+.proj-body-inner {
+  min-height: 0;
+  overflow: hidden;
+  background: var(--paper-soft);
+  margin-inline: calc(var(--s-3) * -1);
+}
+.proj-body-grid {
+  display: grid;
+  grid-template-columns: 1fr 240px;
+  gap: var(--s-8);
+  padding: var(--s-5) var(--s-3) var(--s-8) calc(var(--s-3) + 192px);
+  opacity: 0;
+  transform: translateY(-4px);
+  transition: opacity var(--dur-base) var(--ease-out),
+              transform var(--dur-base) var(--ease-out);
+  transition-delay: 0ms;
+}
+.proj-row[aria-expanded="true"] + .proj-body .proj-body-grid {
+  opacity: 1;
+  transform: translateY(0);
+  transition-delay: 80ms;
+}
+.proj-summary {
+  font-size: var(--fs-body-l);
+  line-height: 1.6;
+  color: var(--ink);
+  max-width: 56ch;
+  margin-bottom: var(--s-5);
+}
+.proj-summary em { font-style: italic; color: var(--accent-rust); font-family: var(--font-display); }
+.proj-detail-block {
+  margin-bottom: var(--s-5);
+}
+.proj-detail-block .lbl {
+  font-family: var(--font-mono);
+  font-size: var(--fs-eyebrow);
+  letter-spacing: var(--tk-eyebrow);
+  text-transform: uppercase;
+  color: var(--ink-primary);
+  margin-bottom: var(--s-2);
+  display: block;
+  padding-bottom: 4px;
+  border-bottom: 1px solid var(--rule);
+}
+.proj-detail-block ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: var(--fs-body-s);
+  color: var(--ink);
+  line-height: 1.7;
+}
+.proj-detail-block ul li {
+  padding-left: 16px;
+  position: relative;
+}
+.proj-detail-block ul li::before {
+  content: '·';
+  position: absolute;
+  left: 4px;
+  color: var(--ink-sage);
+}
+.proj-side .lbl {
+  font-family: var(--font-mono);
+  font-size: var(--fs-eyebrow);
+  letter-spacing: var(--tk-eyebrow);
+  text-transform: uppercase;
+  color: var(--ink-primary);
+  margin-bottom: var(--s-3);
+  display: block;
+}
+.proj-side .impact {
+  font-size: clamp(32px, 3vw, 52px);
+  line-height: 1;
+  color: var(--ink-primary);
+  letter-spacing: var(--tk-tight);
+  margin-bottom: var(--s-2);
+}
+.proj-side .impact .u {
+  font-family: var(--font-mono);
+  font-size: 0.3em;
+  vertical-align: super;
+  color: var(--ink-sage);
+  margin-left: 4px;
+  letter-spacing: var(--tk-wide);
+  font-variant-numeric: normal;
+}
+.proj-side .impact-lbl {
+  font-family: var(--font-mono);
+  font-size: var(--fs-caption);
+  color: var(--ink-sage);
+  letter-spacing: var(--tk-wide);
+  text-transform: uppercase;
+  border-top: 1px solid var(--rule);
+  padding-top: var(--s-3);
+  margin-top: var(--s-3);
+}
+.proj-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: var(--s-3);
+}
+.proj-tags .chip { font-size: 10px; padding: 4px 10px; }
+
+@media (max-width: 900px) {
+  .proj-row { grid-template-columns: 56px 1fr auto; grid-template-areas: "idx ttl arr" "idx yr arr"; }
+  .proj-row .idx { grid-area: idx; }
+  .proj-row .yr { grid-area: yr; }
+  .proj-row .ttl { grid-area: ttl; }
+  .proj-row .arr { grid-area: arr; align-self: center; }
+  .proj-body-grid {
+    grid-template-columns: 1fr;
+    padding: var(--s-5) var(--s-3) var(--s-8) calc(var(--s-3) + 56px);
+  }
+}
+
+/* ----- Skills matrix ----- */
+.sk-matrix {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  border-top: 1px solid var(--ink-primary);
+  border-left: 1px solid var(--rule);
+}
+.sk-cell {
+  padding: var(--s-5) var(--s-4);
+  border-right: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+  background: var(--paper);
+  transition: background var(--dur-fast) var(--ease-out);
+}
+.sk-cell:hover { background: var(--paper-soft); }
+.sk-cell .ix {
+  font-family: var(--font-mono);
+  font-size: var(--fs-caption);
+  color: var(--ink-primary);
+  letter-spacing: var(--tk-wide);
+}
+.sk-cell h3 {
+  font-family: var(--font-display);
+  font-size: clamp(22px, 2vw, 30px);
+  font-weight: 400;
+  color: var(--ink);
+  margin: 6px 0 var(--s-3);
+  letter-spacing: var(--tk-tight);
+  line-height: 1.1;
+}
+.sk-cell h3 em { font-style: italic; color: var(--accent-rust); }
+.sk-cell ul {
+  list-style: none;
+  font-size: var(--fs-body-s);
+  color: var(--ink);
+  line-height: 1.6;
+}
+.sk-cell ul li {
+  padding: 6px 0;
+  border-bottom: 1px dotted var(--rule);
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+.sk-cell ul li:last-child { border-bottom: 0; }
+.sk-cell ul li .lvl {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--ink-moss);
+  letter-spacing: var(--tk-wide);
+}
+@media (max-width: 900px) {
+  .sk-matrix { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 540px) {
+  .sk-matrix { grid-template-columns: 1fr; }
+}
+
+/* ----- Contact ----- */
+.contact-grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: var(--col-gap);
+  row-gap: var(--s-8);
+}
+.contact-lead {
+  grid-column: 1 / span 7;
+  font-family: var(--font-display);
+  font-size: clamp(36px, 4vw, 64px);
+  line-height: 1.1;
+  letter-spacing: var(--tk-display);
+  color: var(--ink);
+  text-wrap: balance;
+}
+.contact-lead em { font-style: italic; color: var(--accent-rust); }
+.contact-lead .sage { font-style: italic; color: var(--ink-primary); }
+.contact-meta {
+  grid-column: 9 / span 4;
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-3);
+  align-self: end;
+}
+.contact-meta-row {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: var(--s-3) 0;
+  border-top: 1px solid var(--rule);
+}
+.contact-meta-row:first-child { border-top: 1px solid var(--ink-primary); }
+.contact-meta-row .k {
+  font-family: var(--font-mono);
+  font-size: var(--fs-eyebrow);
+  letter-spacing: var(--tk-eyebrow);
+  text-transform: uppercase;
+  color: var(--ink-sage);
+}
+.contact-meta-row .v {
+  font-size: var(--fs-body-l);
+  color: var(--ink-primary);
+}
+.contact-meta-row .v a {
+  border-bottom: 1px solid var(--ink-primary);
+  transition: color var(--dur-fast), border-color var(--dur-fast);
+}
+.contact-meta-row .v a:hover { color: var(--accent-rust); border-color: var(--accent-rust); }
+@media (max-width: 900px) {
+  .contact-lead, .contact-meta { grid-column: 1 / -1; }
+}
+
+/* ----- Footer ----- */
+.foot {
+  background: var(--ink-primary);
+  color: var(--paper);
+  padding-block: var(--s-12) var(--s-6);
+  margin-top: var(--s-12);
+  position: relative;
+  overflow: hidden;
+}
+.foot-sig {
+  font-family: var(--font-display);
+  font-size: clamp(48px, 8vw, 144px);
+  line-height: 0.95;
+  letter-spacing: var(--tk-display);
+  color: var(--paper);
+  text-wrap: balance;
+  margin-bottom: var(--s-8);
+}
+.foot-sig em { font-style: italic; color: var(--accent-yellow); }
+.foot-cols {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--s-5);
+  padding-block: var(--s-5);
+  border-top: 1px solid var(--ink-sage);
+  margin-bottom: var(--s-8);
+}
+.foot-col h4 {
+  font-family: var(--font-mono);
+  font-size: var(--fs-eyebrow);
+  letter-spacing: var(--tk-eyebrow);
+  text-transform: uppercase;
+  color: var(--ink-moss);
+  margin-bottom: var(--s-3);
+  font-weight: 500;
+}
+.foot-col a, .foot-col p {
+  color: var(--paper-dust);
+  font-size: var(--fs-body-s);
+  display: block;
+  padding-block: 4px;
+  transition: color var(--dur-fast);
+}
+.foot-col a:hover { color: var(--accent-clay); }
+.foot-bottom {
+  display: flex;
+  justify-content: space-between;
+  padding-top: var(--s-5);
+  border-top: 1px solid var(--ink-sage);
+  font-family: var(--font-mono);
+  font-size: var(--fs-caption);
+  letter-spacing: var(--tk-wide);
+  color: var(--ink-moss);
+  text-transform: uppercase;
+  flex-wrap: wrap;
+  gap: var(--s-3);
+}
+.foot-name-mark {
+  position: absolute;
+  bottom: 6%;
+  right: var(--gutter-x);
+  font-family: var(--font-hand);
+  font-size: 80px;
+  color: var(--accent-clay);
+  opacity: 0.18;
+  transform: rotate(-4deg);
+  pointer-events: none;
+  user-select: none;
+}
+@media (max-width: 900px) {
+  .foot-cols { grid-template-columns: repeat(2, 1fr); }
+  .foot-name-mark { display: none; }
+}
+
+/* ----- Cursor blink ----- */
+.blink::after {
+  content: '_';
+  margin-left: 2px;
+  color: var(--accent-rust);
+  animation: blink 1.2s steps(2) infinite;
+}
+@keyframes blink { to { opacity: 0; } }
+
+/* Density modes */
+html[data-density="compact"] { --gutter-x: clamp(20px, 4vw, 64px); }
+html[data-density="compact"] section.s { padding-block: var(--s-8) var(--s-6); }
+html[data-density="compact"] .hero { padding-top: calc(var(--s-16) + 60px); padding-bottom: var(--s-12); }
+html[data-density="comfy"] section.s { padding-block: var(--s-12) var(--s-10); }
+html[data-density="comfy"] .hero { padding-bottom: var(--s-24); }
+
+/* Font scale */
+html[data-fs="s"] { font-size: 14px; }
+html[data-fs="m"] { font-size: 16px; }
+html[data-fs="l"] { font-size: 18px; }
+
+/* Italic emphasis consistency */
+.nav-brand em,
+.s-head__title em,
+.about-lead em,
+.pull p em,
+.exp-co em,
+.exp-desc em,
+.proj-row .ttl em,
+.proj-summary em,
+.sk-cell h3 em,
+.contact-lead em { color: var(--accent-flame2); }
+
+/* ============================================================
+   NUMERAL STYLING · <num> 标签
+   resume.json 里 <num>1100</num> 被 parseMarkup 转成 <span class="num">1100</span>
+   之前缺样式 → 渲染为默认等高数字。补上后能拿到 Source Serif 4 的旧体数字下沉
+   ============================================================ */
+/* 旧体数字特性只在这一处声明，.sp-num / .about-stat .val / .proj-side .impact
+   都是裸数字大字块（不套 <span class="num">），一并列进选择器共用，避免四处重复。 */
+.num, .sp-num, .about-stat .val, .proj-side .impact {
+  font-family: var(--font-num);       /* Source Serif 4 OT · 完整可变字体才带 onum 特性 */
+  font-feature-settings: 'onum' 1, 'pnum' 1;
+  font-variant-numeric: oldstyle-nums proportional-nums;
+}
+.num {
+  letter-spacing: 0.01em;              /* 直立展示；被 <em> 包裹时自然继承斜体与强调色（对齐 type-lab 参照） */
+}
+
+/* Print · A4 · 打印/导出 PDF 时使用 */
+@page {
+  size: A4;
+  margin: 12mm 14mm;
+}
+@media print {
+  .nav, .foot-name-mark { display: none !important; }
+  html, body { background: white !important; color: black !important; }
+  /* 保留强调色（斜体的赭石红），否则简历打印后会失去视觉重点 */
+  * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+  a { color: inherit; text-decoration: none; }
+  .proj-body { grid-template-rows: 1fr !important; }
+  .proj-body-grid { opacity: 1 !important; transform: none !important; }
+  .proj-body-inner { background: white !important; }
+  /* 分页控制：项目卡与经历段落尽量不跨页 */
+  section.s { page-break-inside: avoid; break-inside: avoid; }
+  .proj-row, .exp-item { page-break-inside: avoid; break-inside: avoid; }
+  h1, h2, h3 { page-break-after: avoid; break-after: avoid; }
+}
+</style>
+</head>
+
+<body>
+
+<!-- Ensō·Wen SVG symbols -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="enso-wen-bold" viewBox="0 0 512 512">
+<path class="enso-arc" d="M 317.30 118.33 L 315.32 117.11 L 313.33 115.91 L 311.31 114.74 L 309.27 113.61 L 307.21 112.50 L 305.12 111.42 L 303.02 110.38 L 300.89 109.37 L 298.75 108.38 L 296.58 107.44 L 294.40 106.52 L 292.19 105.64 L 289.97 104.79 L 287.73 103.98 L 285.47 103.20 L 283.20 102.46 L 280.91 101.76 L 278.60 101.09 L 276.28 100.46 L 273.94 99.86 L 271.59 99.30 L 269.22 98.87 L 266.84 98.60 L 264.45 98.37 L 262.05 98.17 L 259.65 98.00 L 257.24 97.87 L 254.83 97.79 L 252.42 97.74 L 250.01 97.72 L 247.60 97.75 L 245.19 97.82 L 242.77 97.92 L 240.36 98.07 L 237.95 98.25 L 235.54 98.47 L 233.14 98.74 L 230.73 99.04 L 228.34 99.38 L 225.94 99.76 L 223.56 100.18 L 221.18 100.63 L 218.80 101.13 L 216.44 101.66 L 214.08 102.23 L 211.73 102.85 L 209.39 103.49 L 207.06 104.18 L 204.74 104.90 L 202.43 105.66 L 200.14 106.46 L 197.86 107.30 L 195.59 108.17 L 193.33 109.07 L 191.09 110.01 L 188.86 110.99 L 186.65 112.00 L 184.45 113.05 L 182.27 114.13 L 180.11 115.25 L 177.96 116.39 L 175.83 117.58 L 173.72 118.79 L 171.63 120.04 L 169.55 121.31 L 167.50 122.62 L 165.46 123.96 L 163.45 125.34 L 161.45 126.74 L 159.48 128.17 L 157.52 129.63 L 155.59 131.12 L 153.68 132.64 L 151.79 134.18 L 149.93 135.76 L 148.09 137.36 L 146.27 138.99 L 144.47 140.64 L 142.70 142.32 L 140.95 144.03 L 139.22 145.76 L 137.52 147.52 L 135.84 149.30 L 134.19 151.10 L 132.56 152.93 L 130.96 154.79 L 129.39 156.66 L 127.84 158.56 L 126.31 160.48 L 124.81 162.43 L 123.34 164.39 L 121.90 166.38 L 120.48 168.38 L 119.09 170.41 L 117.73 172.46 L 116.39 174.53 L 115.08 176.62 L 113.80 178.72 L 112.55 180.85 L 111.33 182.99 L 110.14 185.16 L 108.98 187.34 L 107.84 189.54 L 106.74 191.75 L 105.66 193.98 L 104.62 196.23 L 103.61 198.50 L 102.62 200.78 L 101.67 203.08 L 100.75 205.39 L 99.87 207.72 L 99.01 210.06 L 98.19 212.42 L 97.40 214.79 L 96.64 217.17 L 95.92 219.57 L 95.23 221.97 L 94.58 224.39 L 93.96 226.83 L 93.37 229.27 L 92.82 231.73 L 92.30 234.19 L 91.83 236.67 L 91.38 239.15 L 90.98 241.64 L 90.61 244.14 L 90.27 246.65 L 89.98 249.17 L 89.72 251.69 L 89.50 254.22 L 89.32 256.76 L 89.17 259.30 L 89.07 261.85 L 89.00 264.39 L 88.98 266.95 L 88.99 269.50 L 89.04 272.06 L 89.14 274.62 L 89.27 277.18 L 89.45 279.74 L 89.66 282.30 L 89.91 284.85 L 90.21 287.41 L 90.55 289.96 L 90.93 292.51 L 91.34 295.06 L 91.80 297.60 L 92.31 300.13 L 92.85 302.66 L 93.43 305.19 L 94.06 307.70 L 94.73 310.21 L 95.43 312.70 L 96.18 315.19 L 96.97 317.66 L 97.80 320.13 L 98.68 322.58 L 99.59 325.02 L 100.54 327.45 L 101.54 329.86 L 102.57 332.26 L 103.64 334.64 L 104.76 337.00 L 105.91 339.35 L 107.10 341.68 L 108.33 343.99 L 109.60 346.28 L 110.91 348.55 L 112.26 350.80 L 113.64 353.03 L 115.06 355.24 L 116.52 357.42 L 118.01 359.59 L 119.54 361.72 L 121.10 363.84 L 122.70 365.93 L 124.33 367.99 L 126.00 370.03 L 127.70 372.04 L 129.43 374.03 L 131.20 375.98 L 132.99 377.91 L 134.82 379.82 L 136.68 381.69 L 138.57 383.53 L 140.49 385.35 L 142.43 387.13 L 144.41 388.88 L 146.41 390.61 L 148.44 392.30 L 150.50 393.96 L 152.58 395.59 L 154.69 397.19 L 156.83 398.75 L 158.98 400.28 L 161.17 401.78 L 163.37 403.25 L 165.60 404.68 L 167.85 406.08 L 170.12 407.45 L 172.41 408.78 L 174.72 410.08 L 177.06 411.35 L 179.41 412.58 L 181.78 413.77 L 184.16 414.94 L 186.57 416.06 L 188.99 417.15 L 191.43 418.21 L 193.89 419.23 L 196.36 420.22 L 198.84 421.17 L 201.34 422.09 L 203.85 422.97 L 206.38 423.81 L 208.92 424.62 L 211.50 425.30 L 214.08 425.94 L 216.68 426.55 L 219.28 427.11 L 221.89 427.65 L 224.51 428.14 L 227.13 428.60 L 229.76 429.02 L 232.40 429.40 L 235.04 429.75 L 237.69 430.06 L 240.34 430.33 L 242.99 430.57 L 245.65 430.77 L 248.31 430.93 L 250.97 431.05 L 253.64 431.14 L 256.31 431.19 L 258.97 431.20 L 261.64 431.17 L 264.31 431.11 L 266.98 431.01 L 269.64 430.87 L 272.31 430.69 L 274.97 430.48 L 277.63 430.23 L 280.29 429.94 L 282.95 429.61 L 285.60 429.24 L 288.24 428.84 L 290.88 428.40 L 293.52 427.91 L 296.15 427.39 L 298.77 426.84 L 301.39 426.24 L 303.99 425.60 L 306.59 424.93 L 309.18 424.22 L 311.76 423.47 L 314.33 422.68 L 316.89 421.85 L 319.44 420.98 L 321.98 420.08 L 324.50 419.14 L 327.01 418.15 L 329.51 417.13 L 331.99 416.07 L 334.46 414.97 L 336.91 413.84 L 339.34 412.66 L 341.75 411.45 L 344.15 410.20 L 346.53 408.91 L 348.89 407.59 L 351.23 406.22 L 353.55 404.82 L 355.85 403.39 L 358.13 401.91 L 360.38 400.40 L 362.61 398.85 L 364.81 397.27 L 366.99 395.65 L 369.15 394.00 L 371.28 392.31 L 373.38 390.58 L 375.45 388.82 L 377.50 387.03 L 379.52 385.20 L 381.51 383.34 L 383.46 381.45 L 385.39 379.53 L 387.29 377.57 L 388.68 375.16 L 390.13 372.83 L 391.58 370.51 L 393.01 368.18 L 394.41 365.85 L 395.77 363.51 L 397.11 361.16 L 398.51 358.87 L 399.91 356.58 L 401.27 354.27 L 402.60 351.95 L 403.89 349.61 L 405.14 347.26 L 406.36 344.89 L 407.55 342.50 L 408.69 340.10 L 409.80 337.68 L 410.88 335.25 L 411.91 332.81 L 412.91 330.35 L 413.86 327.89 L 414.78 325.41 L 415.66 322.91 L 416.50 320.41 L 417.30 317.90 L 418.06 315.38 L 418.79 312.85 L 419.47 310.31 L 420.12 307.76 L 420.72 305.21 L 421.29 302.65 L 421.81 300.09 L 422.30 297.51 L 422.75 294.94 L 423.16 292.36 L 423.53 289.78 L 423.86 287.19 L 424.15 284.61 L 424.40 282.02 L 424.62 279.43 L 424.79 276.84 L 424.93 274.25 L 425.03 271.66 L 425.09 269.08 L 425.12 266.49 L 425.10 263.91 L 425.05 261.33 L 424.96 258.75 L 424.84 256.18 L 424.68 253.61 L 424.48 251.05 L 424.24 248.49 L 423.97 245.94 L 423.67 243.39 L 423.32 240.85 L 422.95 238.32 L 422.53 235.80 L 422.09 233.28 L 421.60 230.77 L 421.09 228.28 L 420.54 225.79 L 419.95 223.31 L 419.33 220.84 L 418.68 218.38 L 417.99 215.93 L 417.27 213.49 L 416.52 211.06 L 415.74 208.65 L 414.92 206.25 L 414.07 203.86 L 413.19 201.48 L 412.27 199.12 L 410.96 199.60 L 411.40 202.10 L 411.81 204.60 L 412.19 207.10 L 412.52 209.60 L 412.82 212.10 L 413.08 214.59 L 413.31 217.09 L 413.49 219.58 L 413.64 222.06 L 413.76 224.54 L 413.83 227.02 L 413.87 229.49 L 413.87 231.95 L 413.84 234.41 L 413.77 236.86 L 413.66 239.31 L 413.52 241.74 L 413.34 244.17 L 413.13 246.59 L 412.88 249.00 L 412.59 251.40 L 412.27 253.79 L 411.91 256.17 L 411.51 258.53 L 411.09 260.89 L 410.62 263.23 L 410.12 265.56 L 409.58 267.88 L 409.01 270.18 L 408.41 272.47 L 407.77 274.74 L 407.09 277.00 L 406.38 279.24 L 405.64 281.46 L 404.86 283.66 L 404.05 285.85 L 403.20 288.02 L 402.32 290.17 L 401.41 292.30 L 400.46 294.41 L 399.48 296.50 L 398.47 298.56 L 397.43 300.61 L 396.35 302.63 L 395.24 304.63 L 394.10 306.60 L 392.93 308.55 L 391.73 310.47 L 390.49 312.37 L 389.23 314.24 L 387.93 316.08 L 386.61 317.89 L 385.26 319.68 L 383.87 321.44 L 382.46 323.16 L 381.02 324.86 L 379.56 326.52 L 378.06 328.16 L 376.54 329.75 L 374.99 331.32 L 373.42 332.85 L 371.82 334.35 L 370.19 335.81 L 368.54 337.23 L 366.88 338.63 L 365.30 340.07 L 363.69 341.47 L 362.04 342.83 L 360.37 344.15 L 358.65 345.41 L 356.89 346.61 L 355.00 347.68 L 353.57 349.15 L 352.10 350.59 L 350.62 352.01 L 349.11 353.40 L 347.58 354.77 L 346.03 356.11 L 344.46 357.42 L 342.86 358.71 L 341.25 359.97 L 339.62 361.20 L 337.96 362.41 L 336.29 363.59 L 334.60 364.74 L 332.90 365.86 L 331.17 366.96 L 329.43 368.02 L 327.67 369.06 L 325.90 370.07 L 324.12 371.05 L 322.32 372.00 L 320.50 372.93 L 318.67 373.82 L 316.83 374.68 L 314.98 375.52 L 313.12 376.32 L 311.25 377.10 L 309.36 377.85 L 307.47 378.57 L 305.56 379.26 L 303.65 379.92 L 301.73 380.55 L 299.80 381.15 L 297.86 381.72 L 295.92 382.27 L 293.97 382.78 L 292.01 383.27 L 290.05 383.72 L 288.08 384.15 L 286.11 384.55 L 284.14 384.93 L 282.16 385.27 L 280.17 385.58 L 278.19 385.87 L 276.20 386.13 L 274.20 386.36 L 272.21 386.56 L 270.22 386.74 L 268.22 386.89 L 266.22 387.00 L 264.22 387.10 L 262.22 387.16 L 260.22 387.20 L 258.23 387.21 L 256.23 387.19 L 254.23 387.14 L 252.24 387.07 L 250.24 386.97 L 248.25 386.84 L 246.26 386.69 L 244.28 386.51 L 242.29 386.30 L 240.31 386.07 L 238.33 385.81 L 236.36 385.52 L 234.39 385.20 L 232.43 384.86 L 230.47 384.49 L 228.51 384.09 L 226.56 383.67 L 224.62 383.22 L 222.68 382.74 L 220.75 382.24 L 218.80 381.80 L 216.86 381.34 L 214.91 380.84 L 212.98 380.32 L 211.05 379.77 L 209.12 379.19 L 207.20 378.59 L 205.29 377.95 L 203.39 377.29 L 201.49 376.60 L 199.60 375.88 L 197.72 375.13 L 195.85 374.36 L 193.99 373.55 L 192.14 372.72 L 190.30 371.86 L 188.48 370.96 L 186.66 370.05 L 184.86 369.10 L 183.06 368.12 L 181.29 367.12 L 179.52 366.08 L 177.77 365.02 L 176.04 363.93 L 174.32 362.81 L 172.62 361.67 L 170.93 360.49 L 169.26 359.29 L 167.61 358.06 L 165.98 356.80 L 164.36 355.52 L 162.77 354.21 L 161.19 352.87 L 159.64 351.51 L 158.11 350.11 L 156.59 348.70 L 155.11 347.25 L 153.64 345.78 L 152.20 344.29 L 150.78 342.77 L 149.38 341.23 L 148.01 339.66 L 146.67 338.07 L 145.35 336.46 L 144.06 334.82 L 142.80 333.16 L 141.56 331.48 L 140.35 329.77 L 139.17 328.05 L 138.01 326.30 L 136.89 324.54 L 135.79 322.75 L 134.73 320.95 L 133.69 319.13 L 132.69 317.29 L 131.71 315.43 L 130.77 313.56 L 129.86 311.67 L 128.98 309.76 L 128.13 307.84 L 127.31 305.90 L 126.53 303.95 L 125.77 301.99 L 125.05 300.01 L 124.37 298.02 L 123.71 296.02 L 123.09 294.01 L 122.50 291.99 L 121.95 289.96 L 121.43 287.92 L 120.94 285.87 L 120.48 283.82 L 120.06 281.75 L 119.67 279.68 L 119.32 277.61 L 118.99 275.53 L 118.71 273.44 L 118.45 271.35 L 118.23 269.25 L 118.04 267.15 L 117.88 265.05 L 117.76 262.95 L 117.66 260.84 L 117.61 258.74 L 117.58 256.63 L 117.59 254.52 L 117.62 252.42 L 117.69 250.31 L 117.79 248.21 L 117.93 246.10 L 118.09 244.00 L 118.29 241.90 L 118.51 239.81 L 118.77 237.72 L 119.06 235.63 L 119.38 233.55 L 119.73 231.47 L 120.11 229.39 L 120.51 227.33 L 120.95 225.26 L 121.42 223.21 L 121.92 221.16 L 122.44 219.12 L 123.00 217.08 L 123.58 215.05 L 124.20 213.03 L 124.84 211.02 L 125.51 209.02 L 126.20 207.03 L 126.93 205.04 L 127.68 203.07 L 128.46 201.10 L 129.27 199.15 L 130.11 197.21 L 130.97 195.27 L 131.86 193.35 L 132.77 191.44 L 133.72 189.54 L 134.69 187.66 L 135.68 185.79 L 136.71 183.93 L 137.75 182.08 L 138.83 180.25 L 139.93 178.43 L 141.06 176.62 L 142.21 174.83 L 143.39 173.06 L 144.59 171.30 L 145.82 169.55 L 147.07 167.83 L 148.35 166.12 L 149.66 164.42 L 150.99 162.75 L 152.34 161.09 L 153.72 159.45 L 155.12 157.82 L 156.55 156.22 L 158.00 154.64 L 159.48 153.07 L 160.98 151.53 L 162.50 150.01 L 164.05 148.51 L 165.62 147.03 L 167.21 145.57 L 168.83 144.14 L 170.47 142.73 L 172.13 141.34 L 173.82 139.98 L 175.52 138.64 L 177.25 137.33 L 179.00 136.04 L 180.77 134.78 L 182.56 133.54 L 184.38 132.33 L 186.21 131.15 L 188.06 130.00 L 189.93 128.88 L 191.82 127.78 L 193.73 126.72 L 195.66 125.68 L 197.61 124.68 L 199.57 123.70 L 201.55 122.76 L 203.55 121.85 L 205.56 120.97 L 207.59 120.12 L 209.63 119.31 L 211.69 118.53 L 213.76 117.79 L 215.84 117.07 L 217.94 116.39 L 220.05 115.75 L 222.17 115.14 L 224.30 114.57 L 226.44 114.03 L 228.59 113.53 L 230.75 113.07 L 232.92 112.64 L 235.10 112.25 L 237.28 111.89 L 239.47 111.58 L 241.67 111.30 L 243.87 111.05 L 246.08 110.85 L 248.29 110.68 L 250.50 110.55 L 252.71 110.46 L 254.93 110.40 L 257.14 110.39 L 259.36 110.41 L 261.58 110.48 L 263.79 110.58 L 266.00 110.72 L 268.21 110.90 L 270.43 111.00 L 272.66 111.05 L 274.89 111.13 L 277.12 111.26 L 279.35 111.41 L 281.58 111.61 L 283.80 111.84 L 286.03 112.11 L 288.26 112.41 L 290.48 112.75 L 292.70 113.13 L 294.91 113.54 L 297.12 113.99 L 299.33 114.48 L 301.53 115.00 L 303.72 115.55 L 305.91 116.14 L 308.09 116.77 L 310.26 117.42 L 312.42 118.12 L 314.58 118.85 L 316.73 119.61 Z" fill="currentColor"></path>
+  <circle class="enso-dot" cx="256" cy="225" r="17.5" fill="var(--enso-dot, currentColor)"></circle>
+  <path class="enso-bar" d="M 218.00 284.40 L 219.90 282.55 L 221.80 281.77 L 223.70 281.18 L 225.60 280.70 L 227.50 280.29 L 229.40 279.94 L 231.30 279.63 L 233.20 279.35 L 235.10 279.10 L 237.00 278.88 L 238.90 278.69 L 240.80 278.51 L 242.70 278.35 L 244.60 278.21 L 246.50 278.09 L 248.40 277.99 L 250.30 277.89 L 252.20 277.82 L 254.10 277.75 L 256.00 277.70 L 257.90 277.66 L 259.80 277.64 L 261.70 277.62 L 263.60 277.62 L 265.50 277.63 L 267.40 277.66 L 269.30 277.70 L 271.20 277.75 L 273.10 277.82 L 275.00 277.91 L 276.90 278.01 L 278.80 278.14 L 280.70 278.29 L 282.60 278.47 L 284.50 278.69 L 286.40 278.95 L 288.30 279.28 L 290.20 279.71 L 292.10 280.33 L 294.00 282.00 L 294.00 283.20 L 292.10 285.47 L 290.20 286.68 L 288.30 287.67 L 286.40 288.54 L 284.50 289.32 L 282.60 290.03 L 280.70 290.69 L 278.80 291.28 L 276.90 291.83 L 275.00 292.33 L 273.10 292.78 L 271.20 293.19 L 269.30 293.55 L 267.40 293.87 L 265.50 294.15 L 263.60 294.39 L 261.70 294.58 L 259.80 294.73 L 257.90 294.83 L 256.00 294.90 L 254.10 294.92 L 252.20 294.91 L 250.30 294.85 L 248.40 294.75 L 246.50 294.61 L 244.60 294.43 L 242.70 294.21 L 240.80 293.95 L 238.90 293.65 L 237.00 293.31 L 235.10 292.92 L 233.20 292.49 L 231.30 292.02 L 229.40 291.50 L 227.50 290.92 L 225.60 290.29 L 223.70 289.57 L 221.80 288.73 L 219.90 287.70 L 218.00 285.60 Z" fill="currentColor"></path>
+  </symbol>
+  <symbol id="enso-wen" viewBox="0 0 512 512">
+<path d="M 317.25 118.42 L 315.28 117.22 L 313.27 116.04 L 311.25 114.90 L 309.20 113.78 L 307.14 112.70 L 305.05 111.64 L 302.94 110.62 L 300.81 109.63 L 298.66 108.67 L 296.50 107.75 L 294.31 106.85 L 292.11 105.99 L 289.88 105.17 L 287.64 104.38 L 285.39 103.63 L 283.12 102.91 L 280.83 102.22 L 278.53 101.58 L 276.21 100.97 L 273.88 100.40 L 271.54 99.86 L 269.18 99.45 L 266.80 99.18 L 264.41 98.95 L 262.03 98.75 L 259.63 98.59 L 257.24 98.47 L 254.84 98.39 L 252.44 98.34 L 250.03 98.33 L 247.63 98.37 L 245.23 98.44 L 242.82 98.55 L 240.42 98.70 L 238.02 98.88 L 235.62 99.11 L 233.23 99.38 L 230.84 99.68 L 228.45 100.03 L 226.07 100.41 L 223.69 100.83 L 221.32 101.29 L 218.96 101.79 L 216.61 102.33 L 214.26 102.90 L 211.92 103.52 L 209.60 104.17 L 207.28 104.86 L 204.97 105.58 L 202.68 106.34 L 200.39 107.14 L 198.12 107.98 L 195.87 108.85 L 193.62 109.76 L 191.39 110.70 L 189.18 111.68 L 186.98 112.69 L 184.80 113.74 L 182.63 114.82 L 180.48 115.94 L 178.35 117.09 L 176.23 118.27 L 174.13 119.48 L 172.05 120.73 L 169.99 122.00 L 167.95 123.31 L 165.93 124.65 L 163.93 126.02 L 161.95 127.42 L 159.99 128.85 L 158.05 130.31 L 156.13 131.79 L 154.24 133.31 L 152.37 134.85 L 150.51 136.42 L 148.69 138.02 L 146.88 139.64 L 145.10 141.29 L 143.34 142.97 L 141.61 144.67 L 139.89 146.40 L 138.21 148.15 L 136.55 149.92 L 134.91 151.72 L 133.30 153.55 L 131.71 155.39 L 130.15 157.26 L 128.61 159.15 L 127.10 161.07 L 125.62 163.00 L 124.16 164.96 L 122.73 166.94 L 121.33 168.93 L 119.95 170.95 L 118.61 172.99 L 117.28 175.05 L 115.99 177.13 L 114.73 179.22 L 113.49 181.34 L 112.28 183.47 L 111.10 185.62 L 109.95 187.79 L 108.83 189.98 L 107.74 192.18 L 106.68 194.40 L 105.65 196.64 L 104.65 198.89 L 103.68 201.16 L 102.74 203.44 L 101.84 205.74 L 100.96 208.06 L 100.12 210.38 L 99.31 212.73 L 98.53 215.08 L 97.78 217.45 L 97.07 219.83 L 96.40 222.22 L 95.75 224.63 L 95.14 227.04 L 94.57 229.47 L 94.03 231.91 L 93.52 234.35 L 93.05 236.81 L 92.62 239.28 L 92.22 241.75 L 91.86 244.23 L 91.54 246.73 L 91.25 249.22 L 91.00 251.73 L 90.79 254.24 L 90.62 256.75 L 90.48 259.27 L 90.38 261.80 L 90.32 264.33 L 90.30 266.86 L 90.32 269.39 L 90.38 271.93 L 90.48 274.47 L 90.62 277.01 L 90.80 279.54 L 91.02 282.08 L 91.28 284.62 L 91.58 287.15 L 91.92 289.68 L 92.30 292.21 L 92.72 294.73 L 93.19 297.25 L 93.69 299.76 L 94.23 302.27 L 94.82 304.77 L 95.45 307.26 L 96.11 309.74 L 96.82 312.21 L 97.57 314.67 L 98.36 317.13 L 99.19 319.57 L 100.06 322.00 L 100.97 324.41 L 101.93 326.81 L 102.92 329.20 L 103.95 331.57 L 105.02 333.93 L 106.13 336.27 L 107.28 338.59 L 108.46 340.89 L 109.69 343.18 L 110.95 345.45 L 112.26 347.69 L 113.60 349.92 L 114.97 352.12 L 116.38 354.31 L 117.83 356.47 L 119.32 358.60 L 120.84 360.72 L 122.39 362.81 L 123.98 364.87 L 125.60 366.91 L 127.26 368.92 L 128.95 370.91 L 130.67 372.87 L 132.42 374.80 L 134.21 376.71 L 136.02 378.59 L 137.87 380.44 L 139.74 382.26 L 141.65 384.05 L 143.58 385.81 L 145.54 387.54 L 147.53 389.23 L 149.54 390.90 L 151.59 392.54 L 153.65 394.15 L 155.74 395.72 L 157.86 397.26 L 160.00 398.77 L 162.16 400.25 L 164.35 401.70 L 166.56 403.11 L 168.79 404.49 L 171.04 405.83 L 173.31 407.14 L 175.60 408.42 L 177.91 409.66 L 180.24 410.87 L 182.59 412.05 L 184.95 413.19 L 187.33 414.30 L 189.73 415.37 L 192.15 416.41 L 194.58 417.41 L 197.02 418.38 L 199.48 419.31 L 201.96 420.21 L 204.45 421.07 L 206.95 421.90 L 209.46 422.69 L 212.01 423.36 L 214.56 424.00 L 217.13 424.60 L 219.70 425.16 L 222.28 425.68 L 224.87 426.17 L 227.46 426.63 L 230.06 427.04 L 232.67 427.42 L 235.28 427.76 L 237.90 428.07 L 240.52 428.34 L 243.14 428.57 L 245.77 428.77 L 248.40 428.93 L 251.03 429.05 L 253.67 429.14 L 256.30 429.19 L 258.94 429.20 L 261.58 429.18 L 264.21 429.11 L 266.85 429.01 L 269.49 428.88 L 272.12 428.70 L 274.76 428.49 L 277.39 428.24 L 280.01 427.96 L 282.64 427.63 L 285.26 427.27 L 287.87 426.87 L 290.49 426.43 L 293.09 425.96 L 295.69 425.45 L 298.28 424.90 L 300.87 424.31 L 303.45 423.68 L 306.02 423.02 L 308.58 422.31 L 311.13 421.57 L 313.67 420.79 L 316.20 419.97 L 318.72 419.12 L 321.23 418.22 L 323.73 417.29 L 326.21 416.32 L 328.68 415.31 L 331.13 414.27 L 333.57 413.18 L 335.99 412.06 L 338.40 410.90 L 340.79 409.70 L 343.16 408.46 L 345.51 407.19 L 347.85 405.88 L 350.16 404.53 L 352.46 403.15 L 354.73 401.73 L 356.98 400.27 L 359.21 398.78 L 361.41 397.25 L 363.59 395.68 L 365.75 394.08 L 367.88 392.45 L 369.99 390.78 L 372.07 389.07 L 374.12 387.34 L 376.14 385.56 L 378.14 383.76 L 380.10 381.92 L 382.04 380.05 L 383.94 378.15 L 385.82 376.21 L 387.23 373.86 L 388.70 371.58 L 390.16 369.31 L 391.60 367.03 L 393.01 364.74 L 394.39 362.44 L 395.73 360.13 L 397.15 357.88 L 398.55 355.63 L 399.92 353.36 L 401.26 351.08 L 402.57 348.78 L 403.84 346.46 L 405.07 344.12 L 406.27 341.77 L 407.43 339.40 L 408.55 337.02 L 409.64 334.62 L 410.69 332.21 L 411.70 329.78 L 412.67 327.34 L 413.61 324.89 L 414.50 322.43 L 415.36 319.96 L 416.18 317.47 L 416.96 314.97 L 417.70 312.47 L 418.40 309.95 L 419.07 307.43 L 419.69 304.90 L 420.28 302.37 L 420.82 299.82 L 421.33 297.27 L 421.80 294.72 L 422.23 292.16 L 422.62 289.60 L 422.97 287.03 L 423.29 284.46 L 423.56 281.89 L 423.80 279.32 L 424.00 276.74 L 424.16 274.17 L 424.28 271.59 L 424.36 269.02 L 424.41 266.45 L 424.42 263.88 L 424.39 261.31 L 424.33 258.74 L 424.22 256.18 L 424.08 253.62 L 423.91 251.07 L 423.70 248.52 L 423.45 245.97 L 423.17 243.43 L 422.85 240.90 L 422.49 238.37 L 422.11 235.85 L 421.68 233.34 L 421.22 230.83 L 420.73 228.34 L 420.20 225.85 L 419.64 223.37 L 419.04 220.90 L 418.41 218.44 L 417.75 215.99 L 417.05 213.55 L 416.32 211.12 L 415.56 208.70 L 414.76 206.30 L 413.93 203.90 L 413.07 201.52 L 412.18 199.16 L 411.05 199.57 L 411.52 202.06 L 411.95 204.56 L 412.35 207.05 L 412.70 209.55 L 413.02 212.04 L 413.31 214.54 L 413.55 217.03 L 413.76 219.51 L 413.93 222.00 L 414.07 224.48 L 414.17 226.95 L 414.23 229.43 L 414.26 231.89 L 414.25 234.35 L 414.20 236.81 L 414.12 239.26 L 414.00 241.70 L 413.84 244.13 L 413.65 246.56 L 413.42 248.97 L 413.16 251.38 L 412.86 253.78 L 412.52 256.17 L 412.15 258.54 L 411.75 260.91 L 411.30 263.26 L 410.83 265.61 L 410.31 267.93 L 409.77 270.25 L 409.18 272.55 L 408.56 274.84 L 407.91 277.11 L 407.22 279.37 L 406.50 281.61 L 405.75 283.83 L 404.95 286.03 L 404.13 288.22 L 403.27 290.39 L 402.38 292.54 L 401.45 294.67 L 400.49 296.78 L 399.50 298.87 L 398.48 300.94 L 397.42 302.98 L 396.33 305.00 L 395.21 307.00 L 394.05 308.98 L 392.87 310.93 L 391.65 312.85 L 390.40 314.75 L 389.12 316.62 L 387.82 318.47 L 386.48 320.28 L 385.11 322.07 L 383.72 323.83 L 382.29 325.56 L 380.84 327.25 L 379.36 328.92 L 377.85 330.56 L 376.31 332.16 L 374.75 333.72 L 373.16 335.26 L 371.55 336.76 L 369.90 338.22 L 368.26 339.66 L 366.69 341.14 L 365.09 342.58 L 363.45 343.99 L 361.79 345.35 L 360.09 346.66 L 358.34 347.91 L 356.47 349.04 L 355.01 350.53 L 353.53 351.99 L 352.02 353.43 L 350.50 354.85 L 348.94 356.23 L 347.37 357.59 L 345.77 358.93 L 344.16 360.24 L 342.52 361.52 L 340.86 362.77 L 339.18 364.00 L 337.49 365.19 L 335.77 366.36 L 334.04 367.50 L 332.29 368.61 L 330.53 369.70 L 328.75 370.75 L 326.95 371.78 L 325.14 372.77 L 323.31 373.74 L 321.47 374.68 L 319.61 375.58 L 317.75 376.46 L 315.87 377.31 L 313.98 378.13 L 312.08 378.92 L 310.16 379.68 L 308.24 380.41 L 306.31 381.11 L 304.37 381.78 L 302.42 382.42 L 300.46 383.04 L 298.49 383.62 L 296.52 384.17 L 294.54 384.70 L 292.56 385.19 L 290.57 385.66 L 288.57 386.09 L 286.57 386.50 L 284.56 386.88 L 282.55 387.23 L 280.54 387.55 L 278.52 387.84 L 276.50 388.11 L 274.48 388.34 L 272.46 388.55 L 270.43 388.73 L 268.40 388.88 L 266.38 389.00 L 264.35 389.09 L 262.32 389.16 L 260.29 389.20 L 258.26 389.21 L 256.23 389.19 L 254.21 389.14 L 252.18 389.07 L 250.16 388.97 L 248.13 388.84 L 246.11 388.69 L 244.10 388.50 L 242.08 388.29 L 240.07 388.05 L 238.06 387.79 L 236.06 387.49 L 234.06 387.17 L 232.07 386.83 L 230.08 386.45 L 228.09 386.05 L 226.11 385.62 L 224.14 385.16 L 222.18 384.68 L 220.22 384.17 L 218.24 383.71 L 216.26 383.23 L 214.30 382.72 L 212.33 382.18 L 210.38 381.61 L 208.43 381.01 L 206.49 380.39 L 204.55 379.74 L 202.62 379.05 L 200.70 378.34 L 198.79 377.60 L 196.89 376.84 L 195.00 376.04 L 193.12 375.21 L 191.25 374.36 L 189.39 373.48 L 187.54 372.56 L 185.70 371.62 L 183.88 370.65 L 182.07 369.65 L 180.27 368.63 L 178.49 367.57 L 176.72 366.49 L 174.97 365.37 L 173.23 364.23 L 171.51 363.06 L 169.81 361.87 L 168.13 360.64 L 166.46 359.39 L 164.81 358.11 L 163.19 356.80 L 161.58 355.46 L 159.99 354.10 L 158.42 352.71 L 156.88 351.29 L 155.36 349.85 L 153.86 348.38 L 152.38 346.89 L 150.93 345.37 L 149.50 343.83 L 148.09 342.26 L 146.71 340.67 L 145.36 339.05 L 144.04 337.41 L 142.74 335.75 L 141.46 334.07 L 140.22 332.36 L 139.00 330.63 L 137.81 328.88 L 136.66 327.11 L 135.53 325.32 L 134.43 323.51 L 133.36 321.68 L 132.32 319.84 L 131.31 317.97 L 130.33 316.09 L 129.39 314.19 L 128.47 312.28 L 127.59 310.35 L 126.74 308.40 L 125.92 306.44 L 125.14 304.47 L 124.38 302.48 L 123.66 300.48 L 122.98 298.47 L 122.33 296.44 L 121.71 294.41 L 121.12 292.37 L 120.57 290.31 L 120.05 288.25 L 119.56 286.18 L 119.11 284.10 L 118.69 282.01 L 118.31 279.92 L 117.96 277.82 L 117.64 275.72 L 117.36 273.61 L 117.11 271.50 L 116.89 269.38 L 116.70 267.26 L 116.55 265.14 L 116.44 263.02 L 116.35 260.89 L 116.30 258.76 L 116.28 256.64 L 116.29 254.51 L 116.34 252.38 L 116.42 250.26 L 116.53 248.13 L 116.67 246.01 L 116.84 243.89 L 117.05 241.78 L 117.29 239.66 L 117.55 237.55 L 117.85 235.45 L 118.18 233.35 L 118.54 231.25 L 118.93 229.16 L 119.35 227.08 L 119.80 225.00 L 120.28 222.93 L 120.79 220.86 L 121.33 218.81 L 121.89 216.76 L 122.49 214.71 L 123.12 212.68 L 123.77 210.66 L 124.45 208.64 L 125.16 206.63 L 125.90 204.64 L 126.67 202.65 L 127.46 200.67 L 128.28 198.71 L 129.13 196.75 L 130.01 194.81 L 130.91 192.87 L 131.84 190.95 L 132.80 189.04 L 133.78 187.15 L 134.79 185.27 L 135.83 183.40 L 136.89 181.54 L 137.98 179.70 L 139.09 177.87 L 140.23 176.06 L 141.40 174.26 L 142.59 172.47 L 143.81 170.71 L 145.06 168.96 L 146.32 167.22 L 147.62 165.50 L 148.94 163.80 L 150.28 162.12 L 151.65 160.46 L 153.04 158.81 L 154.46 157.18 L 155.91 155.57 L 157.37 153.99 L 158.86 152.42 L 160.38 150.87 L 161.92 149.35 L 163.48 147.84 L 165.06 146.36 L 166.67 144.90 L 168.30 143.46 L 169.96 142.05 L 171.63 140.66 L 173.33 139.29 L 175.05 137.95 L 176.80 136.64 L 178.56 135.35 L 180.35 134.09 L 182.15 132.85 L 183.98 131.64 L 185.82 130.46 L 187.69 129.31 L 189.57 128.19 L 191.48 127.09 L 193.40 126.03 L 195.34 124.99 L 197.30 123.99 L 199.28 123.02 L 201.27 122.08 L 203.28 121.17 L 205.30 120.29 L 207.34 119.44 L 209.40 118.63 L 211.47 117.86 L 213.55 117.11 L 215.65 116.40 L 217.76 115.73 L 219.88 115.09 L 222.01 114.48 L 224.15 113.91 L 226.31 113.38 L 228.47 112.88 L 230.64 112.42 L 232.82 112.00 L 235.01 111.61 L 237.20 111.26 L 239.40 110.94 L 241.61 110.67 L 243.82 110.43 L 246.03 110.23 L 248.25 110.07 L 250.47 109.94 L 252.70 109.85 L 254.92 109.80 L 257.15 109.79 L 259.37 109.82 L 261.60 109.89 L 263.82 110.00 L 266.04 110.14 L 268.26 110.33 L 270.49 110.44 L 272.72 110.51 L 274.95 110.62 L 277.19 110.76 L 279.42 110.95 L 281.65 111.16 L 283.89 111.42 L 286.11 111.71 L 288.34 112.04 L 290.56 112.40 L 292.78 112.80 L 295.00 113.23 L 297.21 113.71 L 299.41 114.21 L 301.61 114.75 L 303.80 115.33 L 305.98 115.94 L 308.15 116.59 L 310.32 117.27 L 312.48 117.99 L 314.63 118.73 L 316.77 119.52 Z" fill="currentColor"></path>
+  <circle cx="256" cy="250" r="5.2" fill="var(--enso-dot, currentColor)"></circle>
+  <path d="M 239.00 265.75 L 240.42 265.15 L 241.83 264.78 L 243.25 264.47 L 244.67 264.21 L 246.08 263.98 L 247.50 263.79 L 248.92 263.62 L 250.33 263.49 L 251.75 263.38 L 253.17 263.31 L 254.58 263.26 L 256.00 263.25 L 257.42 263.26 L 258.83 263.31 L 260.25 263.38 L 261.67 263.49 L 263.08 263.62 L 264.50 263.79 L 265.92 263.98 L 267.33 264.21 L 268.75 264.47 L 270.17 264.78 L 271.58 265.15 L 273.00 265.75 L 273.00 266.25 L 271.58 266.85 L 270.17 267.22 L 268.75 267.53 L 267.33 267.79 L 265.92 268.02 L 264.50 268.21 L 263.08 268.38 L 261.67 268.51 L 260.25 268.62 L 258.83 268.69 L 257.42 268.74 L 256.00 268.75 L 254.58 268.74 L 253.17 268.69 L 251.75 268.62 L 250.33 268.51 L 248.92 268.38 L 247.50 268.21 L 246.08 268.02 L 244.67 267.79 L 243.25 267.53 L 241.83 267.22 L 240.42 266.85 L 239.00 266.25 Z" fill="currentColor"></path>
+</symbol></svg>
+
+<!-- NAV -->
+<nav class="nav" id="nav">
+  <div class="container nav-inner">
+    <a class="nav-brand" href="#top" id="nav-brand-link" aria-label="返回顶部">
+      <svg class="nav-logo" viewBox="0 0 512 512" aria-hidden="true"><use class="enso-use" href="#enso-wen-bold"></use></svg>
+      <span class="nav-brand-tx" id="nav-name"></span>
+    </a>
+    <div class="nav-links">
+      <a href="#about"      data-num="01">关于</a>
+      <a href="#experience" data-num="02">经历</a>
+      <a href="#projects"   data-num="03">项目</a>
+      <a href="#skills"     data-num="04">技能</a>
+      <a href="#contact"    data-num="05">联系</a>
+    </div>
+    <div class="nav-meta">
+      <span id="nav-status"><span class="dot"></span> <span id="nav-status-text"></span></span>
+    </div>
+  </div>
+</nav>
+
+<a id="top"></a>
+
+<!-- HERO -->
+<header class="hero" id="hero">
+  <div class="container">
+    <article class="sp-card" id="sp-card">
+      <div class="sp-cover" aria-hidden="true"></div>
+
+      <!-- 左栏 -->
+      <div class="sp-main">
+        <div class="sp-eye">
+          <span><span class="live"></span><span id="hero-eyebrow"></span></span>
+          <span class="sep"></span>
+          <span id="hero-location-year"></span>
+        </div>
+
+        <h1 class="sp-head" id="hero-headline"></h1>
+
+        <div class="sp-bottom">
+          <p class="sp-desc" id="hero-desc"></p>
+          <a class="sp-btn" id="hero-cta" href="#experience">
+            <span class="sp-btn-inner">
+              <span class="hero-cta-label"></span>
+            </span>
+            <span class="sp-btn-circle" aria-hidden="true">
+              <span class="sp-btn-circle-inner">
+                <span class="hero-cta-label"></span>
+              </span>
+              <span class="sp-btn-arrow-wrap">
+                <svg class="sp-btn-arrow" viewBox="0 0 23 19"><polygon fill="currentColor" points="13.5,18.7 12.1,17.3 18.9,10.5 0.3,10.5 0.3,8.5 18.9,8.5 12.1,1.7 13.5,0.3 22.7,9.5"/></svg>
+                <svg class="sp-btn-arrow" viewBox="0 0 23 19"><polygon fill="currentColor" points="13.5,18.7 12.1,17.3 18.9,10.5 0.3,10.5 0.3,8.5 18.9,8.5 12.1,1.7 13.5,0.3 22.7,9.5"/></svg>
+              </span>
+            </span>
+          </a>
+        </div>
+
+        <div class="sp-meta" id="hero-meta"></div>
+      </div>
+
+      <!-- 右栏 -->
+      <aside class="sp-side">
+        <svg class="sp-watermark" viewBox="0 0 512 512" aria-hidden="true"><use class="enso-use" href="#enso-wen"></use></svg>
+        <div class="sp-side-top">
+          <p class="sp-brandline" id="hero-brandline"></p>
+          <svg class="sp-mark" viewBox="0 0 512 512" aria-hidden="true"><use class="enso-use" href="#enso-wen"></use></svg>
+        </div>
+
+        <div class="sp-figs" id="hero-stats"></div>
+
+        <div class="sp-side-foot">
+          <span id="hero-side-footer"></span>
+          <a class="scroll" href="#about"><span>向下</span><i>↓</i></a>
+        </div>
+      </aside>
+    </article>
+  </div>
+</header>
+
+<!-- 01 ABOUT -->
+<section class="s" id="about">
+  <div class="container">
+    <div class="s-head" data-reveal>
+      <span class="s-head__idx">01</span>
+      <h2 class="s-head__title">关于我 · <em>About</em></h2>
+      <span class="s-head__meta" id="about-meta"></span>
+    </div>
+    <div class="about-grid">
+      <p class="about-lead" data-reveal id="about-lead"></p>
+      <aside class="about-side" data-reveal style="--reveal-delay:120ms">
+        <span class="label">/ Notebook</span>
+        <p id="about-notebook"></p>
+      </aside>
+      <div class="about-stats" data-reveal style="--reveal-delay:200ms" id="about-stats"></div>
+    </div>
+  </div>
+</section>
+
+<!-- pull quote -->
+<div class="container">
+  <div class="pull" data-reveal>
+    <p id="pull-quote"></p>
+  </div>
+</div>
+
+<!-- 02 EXPERIENCE -->
+<section class="s" id="experience">
+  <div class="container">
+    <div class="s-head" data-reveal>
+      <span class="s-head__idx">02</span>
+      <h2 class="s-head__title">经历 · <em>Experience</em></h2>
+      <span class="s-head__meta" id="exp-meta"></span>
+    </div>
+    <div class="exp-grid">
+      <div class="exp-aside">/ Work history</div>
+      <div class="exp-items" id="exp-items"></div>
+    </div>
+  </div>
+</section>
+
+<!-- 03 PROJECTS -->
+<section class="s" id="projects">
+  <div class="container">
+    <div class="s-head" data-reveal>
+      <span class="s-head__idx">03</span>
+      <h2 class="s-head__title">代表性项目 · <em>Selected Work</em></h2>
+      <span class="s-head__meta" id="proj-meta"></span>
+    </div>
+    <ul class="proj-list" id="proj-list"></ul>
+    <p class="t-caption" style="margin-top:var(--s-5);color:var(--ink-moss)">
+      ※ 部分数据基于公开报告口径估算，具体指标因业务保密而做模糊化处理。
+    </p>
+  </div>
+</section>
+
+<!-- 04 SKILLS -->
+<section class="s" id="skills">
+  <div class="container">
+    <div class="s-head" data-reveal>
+      <span class="s-head__idx">04</span>
+      <h2 class="s-head__title">技能矩阵 · <em>Skills</em></h2>
+      <span class="s-head__meta" id="skills-meta"></span>
+    </div>
+    <div class="sk-matrix" data-reveal id="sk-matrix"></div>
+  </div>
+</section>
+
+<!-- 05 CONTACT -->
+<section class="s" id="contact">
+  <div class="container">
+    <div class="s-head" data-reveal>
+      <span class="s-head__idx">05</span>
+      <h2 class="s-head__title">联系 · <em>Contact</em></h2>
+      <span class="s-head__meta">开放交流</span>
+    </div>
+    <div class="contact-grid">
+      <p class="contact-lead" data-reveal id="contact-lead"></p>
+      <div class="contact-meta" data-reveal style="--reveal-delay:160ms" id="contact-meta"></div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="foot">
+  <div class="container">
+    <div class="foot-sig" data-reveal id="foot-sig"></div>
+    <div class="foot-cols" id="foot-cols"></div>
+    <div class="foot-bottom" id="foot-bottom"></div>
+    <div class="foot-name-mark" aria-hidden="true" id="foot-watermark"></div>
+  </div>
+</footer>
+
+<!-- ============================================================
+     DATA RENDERER — loads resume.json and renders all sections
+     ============================================================ -->
+<script>
+(async function () {
+  // 统一的致命错误横幅：fetch 失败、resume.json 缺字段、渲染中途抛异常都走这里，
+  // 而不是让某个 section 静默崩掉、后面的内容全部不渲染却什么提示都没有。
+  function showFatalError(title, detail) {
+    document.body.insertAdjacentHTML('afterbegin',
+      `<div style="position:fixed;top:0;left:0;right:0;background:#D33900;color:#fff;padding:12px 20px;font-family:monospace;z-index:9999">
+        ⚠ ${title}<br>
+        错误: ${String(detail)}
+      </div>`);
+  }
+
+  /* ---------- 1. Fetch data ---------- */
+  let R;
+  try {
+    const res = await fetch('data/resume.json');
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    R = await res.json();
+  } catch (e) {
+    showFatalError('无法加载 data/resume.json — 请确保通过 HTTP 服务器访问（不要直接双击打开 HTML）', e.message);
+    return;
+  }
+
+  try {
+
+  /* ---------- 2. Helpers: escape + parse inline markup ---------- */
+  // resume.json 里的字段最终都是通过 innerHTML 插入的，任何原样拼接的文本
+  // （公司名、日期、标签……）一旦包含 < & 之类字符都会破坏结构甚至变成注入点。
+  // 所有"纯文本"字段都必须先过这个函数再拼进模板字符串。
+  function escapeHtml(str) {
+    return String(str ?? '').replace(/[&<>"']/g, (c) => ({
+      '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
+    }[c]));
+  }
+
+  // 支持: <em>, <sage>, <num>, <br>, *bold italic* —— 这是 resume.json 里少数
+  // 允许的"作者写的富文本"字段（标题/描述/引言）专用的迷你标记语言。
+  // 先整体转义掉所有 HTML，再针对性地把这几个白名单标记换回真实标签，
+  // 这样字段里任何意外出现的 < > 都不会破坏页面结构或被当成标签执行。
+  function parseMarkup(str) {
+    if (!str) return '';
+    return escapeHtml(str)
+      .replace(/\*([^*]+)\*/g, '<em>$1</em>')
+      .replace(/&lt;br&gt;/g, '<br>')
+      .replace(/&lt;em&gt;/g, '<em>')
+      .replace(/&lt;\/em&gt;/g, '</em>')
+      .replace(/&lt;num&gt;/g, '<span class="num">')
+      .replace(/&lt;\/num&gt;/g, '</span>')
+      .replace(/&lt;sage&gt;/g, '<span class="sage">')
+      .replace(/&lt;\/sage&gt;/g, '</span>');
+  }
+
+  function titleHtml(arr) {
+    return arr.map(t => typeof t === 'string' ? escapeHtml(t) : `<em>${escapeHtml(t.em)}</em>`).join('');
+  }
+
+  /* ---------- 3. Meta / page title ---------- */
+  const M = R.meta;
+  document.getElementById('page-title').textContent = M.pageTitle;
+  document.getElementById('page-desc').setAttribute('content', M.metaDescription);
+
+  /* ---------- 4. NAV ---------- */
+  document.getElementById('nav-brand-link').setAttribute('aria-label', `${M.name} · 返回顶部`);
+  document.getElementById('nav-name').innerHTML = `${escapeHtml(M.nameDisplay[0])}<em>${escapeHtml(M.nameDisplay[1])}</em>`;
+  document.getElementById('nav-status-text').textContent = `${M.currentStatus} · ${M.currentCompany}`;
+
+  /* ---------- 5. HERO ---------- */
+  const H = R.hero;
+  document.getElementById('hero-eyebrow').textContent = H.eyebrow;
+  document.getElementById('hero-location-year').textContent = H.locationYear;
+  document.getElementById('hero-headline').innerHTML = parseMarkup(H.headline);
+  document.getElementById('hero-desc').innerHTML = parseMarkup(H.description);
+  const cta = document.getElementById('hero-cta');
+  cta.querySelectorAll('.hero-cta-label').forEach(el => { el.textContent = H.ctaText; });
+  cta.href = H.ctaHref;
+
+  // Hero meta (name/email/phone)
+  document.getElementById('hero-meta').innerHTML = `
+    <div><span class="k">现职</span><span class="v">${escapeHtml(M.currentCompany)} · ${escapeHtml(M.currentStatus)}</span></div>
+    <div><span class="k">邮箱</span><span class="v"><a href="mailto:${escapeHtml(M.email)}">${escapeHtml(M.email)}</a></span></div>
+    <div><span class="k">电话</span><span class="v"><a href="tel:${escapeHtml(M.phoneTel)}">${escapeHtml(M.phone)}</a></span></div>
+  `;
+
+  document.getElementById('hero-brandline').innerHTML = parseMarkup(H.brandLine);
+  document.getElementById('hero-side-footer').textContent = H.sideFooter;
+
+  // Hero stats
+  document.getElementById('hero-stats').innerHTML = H.stats.map(s => `
+    <div class="sp-fig">
+      <div class="sp-num">${escapeHtml(s.value)}<span class="u">${escapeHtml(s.unit)}</span></div>
+      <div class="sp-cap">${escapeHtml(s.caption)}</div>
+    </div>
+  `).join('');
+
+  /* ---------- 6. ABOUT ---------- */
+  const A = R.about;
+  document.getElementById('about-meta').textContent = A.sectionMeta;
+  document.getElementById('about-lead').innerHTML = parseMarkup(A.lead);
+  document.getElementById('about-notebook').innerHTML = parseMarkup(A.notebook);
+  document.getElementById('about-stats').innerHTML = A.stats.map(s => `
+    <div class="about-stat">
+      <div class="val">${escapeHtml(s.value)}<span class="u">${escapeHtml(s.unit)}</span></div>
+      <div class="lbl">${escapeHtml(s.label)}</div>
+    </div>
+  `).join('');
+
+  /* ---------- 7. PULL QUOTE ---------- */
+  document.getElementById('pull-quote').innerHTML = parseMarkup(R.pullQuote);
+
+  /* ---------- 8. EXPERIENCE ---------- */
+  const exps = R.experience;
+  // Compute meta — 用显式的 e.type 字段区分学历，而不是猜 role 文案里有没有
+  // "B.B.A" 子串；文案改了/换语言，这里也不会跟着悄悄算错。
+  const jobs = exps.filter(e => e.type !== 'education');
+  const companies = jobs.length;
+  const years = jobs.reduce((sum, e) => {
+    const from = parseInt(e.dateFrom, 10);
+    const to = e.isCurrent ? new Date().getFullYear() : parseInt(e.dateTo, 10);
+    // dateFrom/dateTo 出了非数字年份（比如把 "现在" 误填到非当前岗位上），
+    // 就跳过这一条别让 NaN 污染整个求和，导致文案显示 "NaN 年"。
+    if (!Number.isFinite(from) || !Number.isFinite(to)) return sum;
+    return sum + (to - from);
+  }, 0);
+  document.getElementById('exp-meta').textContent = `${companies} 公司 · ${years} 年`;
+
+  document.getElementById('exp-items').innerHTML = exps.map(exp => {
+    const coHtml = exp.companyEn
+      ? `${escapeHtml(exp.company)} · <em>${escapeHtml(exp.companyEn)}</em>`
+      : exp.companyEm
+        ? `${escapeHtml(exp.company)}<em>${escapeHtml(exp.companyEm)}</em>`
+        : escapeHtml(exp.company);
+    const dateHtml = exp.isCurrent
+      ? `${escapeHtml(exp.dateFrom)} — <span class="now">${escapeHtml(exp.dateTo)}</span>`
+      : `${escapeHtml(exp.dateFrom)} — ${escapeHtml(exp.dateTo)}`;
+    const bulletsHtml = exp.bullets.length
+      ? `<ul class="exp-bullets">${exp.bullets.map(b => `<li>${escapeHtml(b)}</li>`).join('')}</ul>`
+      : '';
+    return `
+      <div class="exp-item" data-reveal>
+        <div>
+          <div class="exp-co">${coHtml}</div>
+          <div class="exp-role">${escapeHtml(exp.role)}</div>
+          <p class="exp-desc">${parseMarkup(exp.description)}</p>
+          ${bulletsHtml}
+        </div>
+        <div class="exp-date">${dateHtml}</div>
+      </div>
+    `;
+  }).join('');
+
+  /* ---------- 9. PROJECTS ---------- */
+  document.getElementById('proj-meta').textContent = `${R.projects.length} 个 · 点击展开`;
+  const projList = document.getElementById('proj-list');
+  R.projects.forEach((p, i) => {
+    const idx = String(i + 1).padStart(2, '0');
+    const summaryHtml = parseMarkup(p.summary);
+
+    const row = document.createElement('li');
+    row.className = 'proj-row';
+    row.setAttribute('role', 'button');
+    row.setAttribute('tabindex', '0');
+    row.setAttribute('aria-expanded', 'false');
+    row.setAttribute('aria-controls', `pbody-${i}`);
+    row.dataset.idx = i;
+    row.setAttribute('data-reveal', '');
+    row.innerHTML = `
+      <span class="idx">P-${idx}</span>
+      <span class="yr">${escapeHtml(p.year)}</span>
+      <span class="ttl">${titleHtml(p.title)}</span>
+      <span class="arr" aria-hidden="true">+</span>
+    `;
+    projList.appendChild(row);
+
+    const body = document.createElement('li');
+    body.className = 'proj-body';
+    body.id = `pbody-${i}`;
+    body.style.listStyle = 'none';
+    body.innerHTML = `
+      <div class="proj-body-inner">
+        <div class="proj-body-grid">
+          <div>
+            <p class="proj-summary">${summaryHtml}</p>
+            <div class="proj-detail-block">
+              <span class="lbl">${escapeHtml(p.whatLbl)}</span>
+              <ul>${p.what.map(x => `<li>${escapeHtml(x)}</li>`).join('')}</ul>
+            </div>
+            <div class="proj-detail-block">
+              <span class="lbl">${escapeHtml(p.howLbl)}</span>
+              <div class="proj-tags">${p.how.map(x => `<span class="chip chip-ink">${escapeHtml(x)}</span>`).join('')}</div>
+            </div>
+          </div>
+          <aside class="proj-side">
+            <span class="lbl">结果 / Impact</span>
+            <div class="impact">${escapeHtml(p.impactValue)}<span class="u">${escapeHtml(p.impactUnit)}</span></div>
+            <div class="impact-lbl">${escapeHtml(p.impactLabel)}</div>
+            <div style="margin-top:var(--s-5)">
+              <div class="proj-tags">${p.tags.map(x => `<span class="chip">${escapeHtml(x)}</span>`).join('')}</div>
+            </div>
+          </aside>
+        </div>
+      </div>
+    `;
+    projList.appendChild(body);
+
+    const toggle = () => {
+      const open = row.getAttribute('aria-expanded') === 'true';
+      row.setAttribute('aria-expanded', open ? 'false' : 'true');
+    };
+    row.addEventListener('click', toggle);
+    row.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(); }
+    });
+  });
+
+  /* ---------- 10. SKILLS ---------- */
+  document.getElementById('skills-meta').textContent = `${R.skills.length} 域 · ${R.skills.reduce((s,sk) => s + sk.items.length, 0)}+ 标签`;
+  document.getElementById('sk-matrix').innerHTML = R.skills.map(sk => `
+    <div class="sk-cell">
+      <div class="ix">${escapeHtml(sk.index)}</div>
+      <h3>${escapeHtml(sk.category)}<em>${escapeHtml(sk.categoryEm)}</em></h3>
+      <ul>${sk.items.map(it => `
+        <li>${escapeHtml(it.name)}<span class="lvl">${escapeHtml(it.level)}</span></li>
+      `).join('')}</ul>
+    </div>
+  `).join('');
+
+  /* ---------- 11. CONTACT ---------- */
+  const C = R.contact;
+  document.getElementById('contact-lead').innerHTML = parseMarkup(C.lead);
+  document.getElementById('contact-meta').innerHTML = C.items.map((it, idx) => {
+    let val = it.href
+      ? `<a href="${escapeHtml(it.href)}">${escapeHtml(it.value)}</a>`
+      : it.isLive
+        ? `<span class="dot" style="width:8px;height:8px;background:var(--data-up);display:inline-block;border-radius:50%;vertical-align:middle;margin-right:8px"></span>${escapeHtml(it.value)}`
+        : escapeHtml(it.value);
+    return `
+      <div class="contact-meta-row">
+        <span class="k">${escapeHtml(it.key)}</span>
+        <span class="v">${val}</span>
+      </div>
+    `;
+  }).join('');
+
+  /* ---------- 12. FOOTER ---------- */
+  const F = R.footer;
+  document.getElementById('foot-sig').innerHTML = parseMarkup(F.signature);
+  document.getElementById('foot-watermark').textContent = F.watermark;
+  document.getElementById('foot-cols').innerHTML = `
+    <div class="foot-col">
+      <h4>导航 / Index</h4>
+      <a href="#about">01 关于</a>
+      <a href="#experience">02 经历</a>
+      <a href="#projects">03 项目</a>
+      <a href="#skills">04 技能</a>
+      <a href="#contact">05 联系</a>
+    </div>
+    <div class="foot-col">
+      <h4>联系 / Reach out</h4>
+      <a href="mailto:${escapeHtml(M.email)}">${escapeHtml(M.email)}</a>
+      <a href="tel:${escapeHtml(M.phoneTel)}">${escapeHtml(M.phone)}</a>
+    </div>
+    <div class="foot-col">
+      <h4>状态 / Status</h4>
+      <p style="color:var(--accent-clay)">● ${escapeHtml(M.jobSearchStatus)}</p>
+      <p>2026 · Spring</p>
+    </div>
+  `;
+  document.getElementById('foot-bottom').innerHTML = `
+    <span>${escapeHtml(F.copyright)}</span>
+    <span>${escapeHtml(F.tagline)}</span>
+    <span>${escapeHtml(F.location)}</span>
+  `;
+
+  /* ---------- 13. Scroll reveal ---------- */
+  (() => {
+    if (!('IntersectionObserver' in window)) {
+      document.querySelectorAll('[data-reveal]').forEach(el => el.classList.add('is-in'));
+      return;
+    }
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('is-in');
+        } else if (e.boundingClientRect.top > 0) {
+          // 元素是从视口底部退出的（往上滑离开了它，它还没被滑到）——
+          // 重置状态，下次再往下滑回来时能重新播放一次浮现，形成"呼吸感"。
+          // 如果是从顶部退出（继续往下滑过去了），保持 is-in 不重置，
+          // 这样往上滑回来看到它时不会莫名其妙又演一遍动画。
+          e.target.classList.remove('is-in');
+        }
+      });
+    }, { rootMargin: '0px 0px -80px 0px', threshold: 0.05 });
+    document.querySelectorAll('[data-reveal]').forEach(el => io.observe(el));
+  })();
+
+  /* ---------- 15. Hero entrance ---------- */
+  (() => {
+    const card = document.getElementById('sp-card');
+    if (!card) return;
+    function play() {
+      const off = document.documentElement.getAttribute('data-motion') === 'off';
+      card.classList.remove('play', 'breathe');
+      void card.offsetWidth;
+      if (off) { document.documentElement.classList.add('cover-settled'); return; }
+      document.documentElement.classList.remove('cover-settled');
+      card.classList.add('play');
+      setTimeout(() => card.classList.add('breathe'), 1700);
+    }
+    window.playSpCard = play;
+    window.addEventListener('load', () => setTimeout(play, 120));
+    setTimeout(() => document.documentElement.classList.add('cover-settled'), 3200);
+  })();
+
+  /* ---------- 16. Nav show/hide ---------- */
+  (() => {
+    const nav = document.getElementById('nav');
+    const hero = document.getElementById('hero');
+    const onScroll = () => {
+      const threshold = hero ? hero.offsetHeight * 0.85 : 400;
+      nav.classList.toggle('is-shown', window.scrollY > threshold);
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll, { passive: true });
+    onScroll();
+  })();
+
+  } catch (e) {
+    // resume.json 缺字段、DOM id 拼写漂移等任何一处渲染异常都会在这里兜住，
+    // 而不是让页面停在半渲染状态却没有任何提示。
+    console.error('index.html render error:', e);
+    showFatalError('页面渲染出错，内容可能不完整', e && e.message ? e.message : e);
+  }
+
+})();
+</script>
+
+</body>
+</html>
